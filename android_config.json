@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101489429841",
+    "project_id": "qkomo-prod",
+    "storage_bucket": "qkomo-prod.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101489429841:android:e1982629f39c2c6333d770",
+        "android_client_info": {
+          "package_name": "com.qkomo.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnyYYQdCGEB2bclw-jibAO5dd7v7Vm83Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

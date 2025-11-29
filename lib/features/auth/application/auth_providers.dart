@@ -1,0 +1,33 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'auth_controller.dart';
+import 'secure_token_store.dart';
+
+final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
+  return FirebaseAuth.instance;
+});
+
+final authStateChangesProvider = StreamProvider<User?>((ref) {
+  return ref.watch(firebaseAuthProvider).authStateChanges();
+});
+
+final authInProgressProvider = StateProvider<bool>((ref) => false);
+
+final secureTokenStoreProvider = Provider<SecureTokenStore>((ref) {
+  return SecureTokenStore();
+});
+
+final idTokenProvider = FutureProvider<String?>((ref) {
+  return ref.watch(secureTokenStoreProvider).readToken();
+});
+
+final authControllerProvider = Provider<AuthController>((ref) {
+  final auth = ref.watch(firebaseAuthProvider);
+  final tokenStore = ref.watch(secureTokenStoreProvider);
+  return AuthController(
+    auth: auth,
+    tokenStore: tokenStore,
+    onTokenChanged: () => ref.invalidate(idTokenProvider),
+  );
+});
