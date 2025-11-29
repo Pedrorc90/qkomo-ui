@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 import '../domain/capture_job.dart';
 import '../domain/capture_job_status.dart';
 import '../domain/capture_job_type.dart';
-import 'hive_boxes.dart';
 
 class CaptureQueueRepository {
   CaptureQueueRepository({
@@ -93,7 +92,8 @@ class CaptureQueueRepository {
       final isSuccess = job.status == CaptureJobStatus.succeeded;
       final isOld = olderThan == null
           ? true
-          : job.updatedAt != null && now.difference(job.updatedAt!).compareTo(olderThan) > 0;
+          : job.updatedAt != null &&
+              now.difference(job.updatedAt!).compareTo(olderThan) > 0;
       return isSuccess && isOld;
     }).map((job) => job.id);
     await _jobBox.deleteAll(toDelete);

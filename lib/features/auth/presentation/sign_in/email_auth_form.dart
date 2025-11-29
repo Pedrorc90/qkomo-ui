@@ -18,27 +18,61 @@ class EmailAuthForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    final inputDecoration = InputDecoration(
+      filled: true,
+      fillColor: scheme.surfaceVariant.withOpacity(0.3),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: scheme.primary, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         TextField(
           controller: emailController,
           keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(labelText: 'Email'),
+          decoration: inputDecoration.copyWith(
+            labelText: 'Email',
+            prefixIcon: const Icon(Icons.email_outlined),
+          ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         TextField(
           controller: passwordController,
           obscureText: true,
-          decoration: const InputDecoration(labelText: 'Contraseña'),
+          decoration: inputDecoration.copyWith(
+            labelText: 'Contraseña',
+            prefixIcon: const Icon(Icons.lock_outline),
+          ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 24),
         Align(
-          alignment: Alignment.centerRight,
+          alignment: Alignment.center,
           child: TextButton(
             onPressed: onToggleMode,
-            child:
-                Text(mode == EmailAuthMode.signIn ? '¿Necesitas registrarte?' : '¿Ya tienes cuenta?'),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              foregroundColor: scheme.secondary,
+            ),
+            child: Text(
+              mode == EmailAuthMode.signIn
+                  ? '¿No tienes cuenta? Regístrate'
+                  : '¿Ya tienes cuenta? Inicia sesión',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
         )
       ],

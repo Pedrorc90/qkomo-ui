@@ -15,7 +15,8 @@ class PickedImagePreview extends StatelessWidget {
       return Container(
         height: 200,
         decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+          border:
+              Border.all(color: Theme.of(context).colorScheme.outlineVariant),
           borderRadius: BorderRadius.circular(12),
           color: Theme.of(context).colorScheme.surface,
         ),

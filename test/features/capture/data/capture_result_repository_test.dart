@@ -43,7 +43,8 @@ void main() {
     final today = DateTime.now();
     final yesterday = today.subtract(const Duration(days: 1));
     await repository.saveResult(CaptureResult(jobId: 'today', savedAt: today));
-    await repository.saveResult(CaptureResult(jobId: 'old', savedAt: yesterday));
+    await repository
+        .saveResult(CaptureResult(jobId: 'old', savedAt: yesterday));
 
     final items = repository.today();
     expect(items.map((e) => e.jobId), contains('today'));

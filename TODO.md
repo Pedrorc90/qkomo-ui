@@ -28,23 +28,26 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 ---
 
 ### M4 - Complete Analyze Flow Integration
-**Status:** Partial - Core implementation exists, authentication integration pending
+**Status:** Complete - Authentication integration implemented and tested
 **Goal:** Complete end-to-end backend integration with Firebase authentication
 
 #### Authentication Integration
-- [ ] Implement Firebase ID token interceptor in Dio client
-  - [ ] Create `FirebaseTokenInterceptor` class
-  - [ ] Inject `SecureTokenStore` to retrieve current token
-  - [ ] Add Authorization header: `Bearer {idToken}`
-  - [ ] Handle token expiration (401 responses)
-  - [ ] Refresh token when expired
-  - [ ] Add interceptor to `dioProvider` in `lib/core/http/dio_provider.dart`
-  - [ ] Add unit tests for interceptor logic
+- [x] Implement Firebase ID token interceptor in Dio client
+  - [x] Create `FirebaseTokenInterceptor` class
+  - [x] Inject `SecureTokenStore` to retrieve current token
+  - [x] Add Authorization header: `Bearer {idToken}`
+  - [x] Handle token expiration (401 responses)
+  - [x] Refresh token when expired
+  - [x] Add interceptor to `dioProvider` in `lib/core/http/dio_provider.dart`
+  - [x] Add unit tests for interceptor logic
 
-**Files to create/modify:**
-- `lib/core/http/firebase_token_interceptor.dart` (new)
-- `lib/core/http/dio_provider.dart` (modify)
-- `test/core/http/firebase_token_interceptor_test.dart` (new)
+**Files created/modified:**
+- `lib/core/http/firebase_token_interceptor.dart` (created)
+- `lib/core/http/dio_provider.dart` (modified)
+- `lib/features/capture/data/capture_api_client.dart` (simplified)
+- `lib/features/capture/application/capture_providers.dart` (modified)
+- `test/core/http/firebase_token_interceptor_test.dart` (created)
+- `test/features/capture/data/backend_capture_analyzer_test.dart` (created)
 
 #### Backend Integration Testing
 - [ ] Test photo upload to `/v1/analyze` with real backend

@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../data/capture_queue_repository.dart';
 import '../data/capture_result_repository.dart';
 import '../domain/capture_analyzer.dart';
+import '../domain/capture_error_messages.dart';
 import '../domain/capture_job.dart';
 
 /// Processes pending capture jobs and persists their results offline.
@@ -58,7 +59,9 @@ class CaptureQueueProcessor {
       await _queueRepository.markSuccess(job.id);
       return true;
     } catch (e) {
-      await _queueRepository.markFailure(job.id, e.toString());
+      // Convert error to user-friendly Spanish message
+      final errorMessage = CaptureErrorMessages.fromException(e);
+      await _queueRepository.markFailure(job.id, errorMessage);
       return false;
     }
   }

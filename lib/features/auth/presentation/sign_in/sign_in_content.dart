@@ -29,29 +29,19 @@ class SignInContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SignInHeader(),
-        const SizedBox(height: 24),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SignInButtonColumn(
-                  controller: controller,
-                  isLoading: isLoading,
-                  appleEnabled: appleEnabled,
-                  runAuthAction: runAuthAction,
-                  onEmailRequested: onEmailRequested,
-                ),
-                if (isLoading)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-              ],
-            ),
-          ),
+        const SizedBox(height: 48),
+        SignInButtonColumn(
+          controller: controller,
+          isLoading: isLoading,
+          appleEnabled: appleEnabled,
+          runAuthAction: runAuthAction,
+          onEmailRequested: onEmailRequested,
         ),
+        if (isLoading)
+          const Padding(
+            padding: EdgeInsets.only(top: 24),
+            child: Center(child: CircularProgressIndicator()),
+          ),
       ],
     );
   }

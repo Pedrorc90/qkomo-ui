@@ -22,14 +22,14 @@ class SignInPage extends ConsumerWidget {
     final gradient = ref.watch(appGradientProvider);
 
     return Scaffold(
-      body: DecoratedBox(
+      body: Container(
         decoration: BoxDecoration(gradient: gradient),
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 480),
+                constraints: const BoxConstraints(maxWidth: 400),
                 child: SignInContent(
                   controller: controller,
                   isLoading: isLoading,

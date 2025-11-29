@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_theme.dart';
 import 'theme_type.dart';
 
-final themeTypeProvider = StateProvider<AppThemeType>((_) => AppThemeType.fresh);
+final themeTypeProvider =
+    StateProvider<AppThemeType>((_) => AppThemeType.fresh);
 
 final appThemeProvider = Provider<ThemeData>((ref) {
   final type = ref.watch(themeTypeProvider);

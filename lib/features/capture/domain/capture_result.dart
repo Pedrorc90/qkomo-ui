@@ -1,3 +1,5 @@
+import '../../menu/domain/meal_type.dart';
+
 class CaptureResult {
   CaptureResult({
     required this.jobId,
@@ -6,6 +8,8 @@ class CaptureResult {
     this.allergens = const [],
     this.notes,
     this.title,
+    this.mealType,
+    this.isManualEntry = false,
   });
 
   final String jobId;
@@ -14,4 +18,28 @@ class CaptureResult {
   final List<String> allergens;
   final String? notes;
   final String? title;
+  final MealType? mealType;
+  final bool isManualEntry;
+
+  CaptureResult copyWith({
+    String? jobId,
+    DateTime? savedAt,
+    List<String>? ingredients,
+    List<String>? allergens,
+    String? notes,
+    String? title,
+    MealType? mealType,
+    bool? isManualEntry,
+  }) {
+    return CaptureResult(
+      jobId: jobId ?? this.jobId,
+      savedAt: savedAt ?? this.savedAt,
+      ingredients: ingredients ?? this.ingredients,
+      allergens: allergens ?? this.allergens,
+      notes: notes ?? this.notes,
+      title: title ?? this.title,
+      mealType: mealType ?? this.mealType,
+      isManualEntry: isManualEntry ?? this.isManualEntry,
+    );
+  }
 }

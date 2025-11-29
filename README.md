@@ -55,3 +55,17 @@ Para desarrollo rápido (sin backend) puedes desactivar la cola o apuntar a un m
 ```bash
 flutter run
 ```
+
+## Testing
+
+For detailed testing instructions, please refer to [TESTING.md](TESTING.md).
+
+Run all tests:
+```bash
+flutter test
+```
+
+Run integration tests:
+```bash
+flutter test integration_test/backend_integration_test.dart
+```

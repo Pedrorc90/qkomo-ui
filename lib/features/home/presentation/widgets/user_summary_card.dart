@@ -16,8 +16,10 @@ class UserSummaryCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 26,
-              backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.15),
-              child: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
+              backgroundColor:
+                  Theme.of(context).colorScheme.primary.withOpacity(0.15),
+              child: Icon(Icons.person,
+                  color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(width: 14),
             Expanded(

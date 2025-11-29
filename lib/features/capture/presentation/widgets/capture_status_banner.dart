@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../../application/capture_state.dart';
 import '../../domain/capture_mode.dart';
 
 class CaptureStatusBanner extends StatelessWidget {
-  const CaptureStatusBanner({super.key, required this.state});
+  const CaptureStatusBanner({
+    super.key,
+    required this.mode,
+    required this.hasImage,
+    this.message,
+    this.error,
+  });
 
-  final CaptureState state;
+  final CaptureMode mode;
+  final bool hasImage;
+  final String? message;
+  final String? error;
 
   @override
   Widget build(BuildContext context) {
@@ -19,38 +27,31 @@ class CaptureStatusBanner extends StatelessWidget {
           children: [
             Icon(Icons.lightbulb_outline, color: scheme.primary),
             const SizedBox(width: 12),
-            Expanded(child: Text(_hintForMode(state.mode))),
+            Expanded(child: Text(_hintForMode(mode))),
           ],
         ),
       ),
     );
 
-    if (state.error != null) {
+    if (error != null) {
       return _StatusCard(
         icon: Icons.error_outline,
         color: scheme.errorContainer,
-        text: state.error!,
+        text: error!,
       );
     }
-    if (state.message != null) {
+    if (message != null) {
       return _StatusCard(
         icon: Icons.info_outline,
         color: scheme.primaryContainer,
-        text: state.message!,
+        text: message!,
       );
     }
-    if (state.imageFile != null) {
+    if (hasImage) {
       return _StatusCard(
         icon: Icons.photo,
         color: scheme.surfaceVariant,
-        text: 'Imagen preparada desde ${_modeLabel(state.mode)}',
-      );
-    }
-    if (state.barcode != null) {
-      return _StatusCard(
-        icon: Icons.check_circle_outline,
-        color: scheme.surfaceVariant,
-        text: 'Código listo: ${state.barcode}',
+        text: 'Imagen preparada desde ${_modeLabel(mode)}',
       );
     }
     return baseCard;
@@ -62,8 +63,8 @@ class CaptureStatusBanner extends StatelessWidget {
         return 'Abre la cámara y encuadra el plato o producto.';
       case CaptureMode.gallery:
         return 'Importa una foto desde tu galería para analizarla.';
-      case CaptureMode.barcode:
-        return 'Apunta al código de barras y espera a que se detecte.';
+      case CaptureMode.text:
+        return 'Escribe el título e ingredientes de tu comida.';
     }
   }
 
@@ -73,8 +74,8 @@ class CaptureStatusBanner extends StatelessWidget {
         return 'cámara';
       case CaptureMode.gallery:
         return 'galería';
-      case CaptureMode.barcode:
-        return 'escáner';
+      case CaptureMode.text:
+        return 'texto';
     }
   }
 }

@@ -15,6 +15,7 @@ import 'capture_queue_processor.dart';
 import 'capture_queue_process_controller.dart';
 import 'capture_permissions.dart';
 import 'capture_state.dart';
+import 'text_entry_controller.dart';
 import '../data/capture_api_client.dart';
 import '../data/capture_queue_repository.dart';
 import '../data/capture_result_repository.dart';
@@ -51,15 +52,15 @@ final captureQueueRepositoryProvider = Provider<CaptureQueueRepository>((ref) {
   return CaptureQueueRepository(jobBox: box);
 });
 
-final captureResultRepositoryProvider = Provider<CaptureResultRepository>((ref) {
+final captureResultRepositoryProvider =
+    Provider<CaptureResultRepository>((ref) {
   final box = ref.watch(captureResultBoxProvider);
   return CaptureResultRepository(resultBox: box);
 });
 
 final captureApiClientProvider = Provider<CaptureApiClient>((ref) {
   final dio = ref.watch(dioProvider);
-  final FirebaseAuth auth = ref.watch(firebaseAuthProvider);
-  return CaptureApiClient(dio: dio, auth: auth);
+  return CaptureApiClient(dio: dio);
 });
 
 final captureQueueServiceProvider = Provider<CaptureQueueService>((ref) {
@@ -88,13 +89,15 @@ final captureQueueProcessorProvider = Provider<CaptureQueueProcessor>((ref) {
 });
 
 final captureEnqueueControllerProvider =
-    StateNotifierProvider<CaptureEnqueueController, AsyncValue<CaptureJob?>>((ref) {
+    StateNotifierProvider<CaptureEnqueueController, AsyncValue<CaptureJob?>>(
+        (ref) {
   final service = ref.watch(captureQueueServiceProvider);
   return CaptureEnqueueController(service);
 });
 
 final captureQueueProcessControllerProvider =
-    StateNotifierProvider<CaptureQueueProcessController, AsyncValue<int>>((ref) {
+    StateNotifierProvider<CaptureQueueProcessController, AsyncValue<int>>(
+        (ref) {
   final processor = ref.watch(captureQueueProcessorProvider);
   return CaptureQueueProcessController(processor);
 });
@@ -142,4 +145,11 @@ final captureResultsProvider = StreamProvider<List<CaptureResult>>((ref) {
   });
 
   return controller.stream;
+});
+
+final textEntryControllerProvider =
+    StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>(
+        (ref) {
+  final resultRepo = ref.watch(captureResultRepositoryProvider);
+  return TextEntryController(resultRepo);
 });

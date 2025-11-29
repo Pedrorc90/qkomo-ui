@@ -38,7 +38,8 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     final notes = dto.warnings.isNotEmpty ? dto.warnings.join('\n') : null;
     final title = switch (job.type) {
       CaptureJobType.barcode => 'Producto código ${job.barcode}',
-      CaptureJobType.image => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura ${job.id}',
+      CaptureJobType.image =>
+        dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura ${job.id}',
     };
 
     return CaptureResult(

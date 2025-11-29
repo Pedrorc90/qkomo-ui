@@ -21,8 +21,9 @@ class AnalyzeResponseDto {
       ingredients: (json['ingredients'] as List<dynamic>? ?? [])
           .map((item) => IngredientDto.fromJson(item as Map<String, dynamic>))
           .toList(),
-      warnings:
-          (json['warnings'] as List<dynamic>? ?? []).map((w) => w.toString()).toList(),
+      warnings: (json['warnings'] as List<dynamic>? ?? [])
+          .map((w) => w.toString())
+          .toList(),
     );
   }
 }
@@ -42,8 +43,9 @@ class IngredientDto {
     return IngredientDto(
       name: json['name'] as String,
       confidence: (json['confidence'] as num?)?.toDouble(),
-      allergens:
-          (json['allergens'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
+      allergens: (json['allergens'] as List<dynamic>? ?? [])
+          .map((e) => e.toString())
+          .toList(),
     );
   }
 }

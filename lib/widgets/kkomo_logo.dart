@@ -29,7 +29,8 @@ class _qkomoLogoPainter extends CustomPainter {
       endAngle: 5.8,
     );
     final ring = Paint()
-      ..shader = plateGradient.createShader(Rect.fromCircle(center: center, radius: radius))
+      ..shader = plateGradient
+          .createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.16
       ..strokeCap = StrokeCap.round;
@@ -69,7 +70,8 @@ class _qkomoLogoPainter extends CustomPainter {
       final offset = size.width * 0.18;
       canvas.drawLine(Offset(x, yTop), Offset(x, yBottom), kPaint);
       canvas.drawLine(Offset(x, yMid), Offset(x + offset, yTop + tilt), kPaint);
-      canvas.drawLine(Offset(x, yMid), Offset(x + offset, yBottom - tilt), kPaint);
+      canvas.drawLine(
+          Offset(x, yMid), Offset(x + offset, yBottom - tilt), kPaint);
     }
 
     drawK(size.width * 0.36, -size.width * 0.06);

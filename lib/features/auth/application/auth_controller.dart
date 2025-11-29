@@ -50,7 +50,8 @@ class AuthController {
     }
     if (defaultTargetPlatform != TargetPlatform.iOS &&
         defaultTargetPlatform != TargetPlatform.macOS) {
-      throw const AuthFailure('Apple Sign-In solo está disponible en dispositivos Apple');
+      throw const AuthFailure(
+          'Apple Sign-In solo está disponible en dispositivos Apple');
     }
 
     try {
@@ -70,13 +71,14 @@ class AuthController {
       if (e.code == AuthorizationErrorCode.canceled) {
         throw const AuthFailure('Inicio cancelado');
       }
-      throw AuthFailure(e.message ?? 'Apple Sign-In falló');
+      throw AuthFailure(e.message);
     } on FirebaseAuthException catch (e) {
       throw AuthFailure(e.message ?? 'Apple Sign-In falló');
     }
   }
 
-  Future<void> signInWithEmail(String email, String password, {bool register = false}) async {
+  Future<void> signInWithEmail(String email, String password,
+      {bool register = false}) async {
     if (email.isEmpty || password.isEmpty) {
       throw const AuthFailure('Email y contraseña son obligatorios');
     }

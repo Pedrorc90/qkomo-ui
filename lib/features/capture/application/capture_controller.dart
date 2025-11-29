@@ -6,7 +6,8 @@ import 'capture_permissions.dart';
 import 'capture_state.dart';
 
 class CaptureController extends StateNotifier<CaptureState> {
-  CaptureController(this._imagePicker, this._permissions) : super(CaptureState.initial());
+  CaptureController(this._imagePicker, this._permissions)
+      : super(CaptureState.initial());
 
   final ImagePicker _imagePicker;
   final CapturePermissions _permissions;
@@ -15,7 +16,16 @@ class CaptureController extends StateNotifier<CaptureState> {
     if (mode == state.mode) return;
     state = state.copyWith(
       mode: mode,
-      clearBarcode: true,
+      clearError: true,
+      clearImage: true,
+      clearMessage: true,
+      isProcessing: false,
+    );
+  }
+
+  void clearMode() {
+    state = state.copyWith(
+      clearMode: true,
       clearError: true,
       clearImage: true,
       clearMessage: true,
@@ -33,11 +43,11 @@ class CaptureController extends StateNotifier<CaptureState> {
             : 'Necesitamos permiso de cámara para continuar.',
         clearMessage: true,
         clearImage: true,
-        clearBarcode: true,
       );
       return;
     }
-    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(
+        isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.camera,
@@ -48,7 +58,6 @@ class CaptureController extends StateNotifier<CaptureState> {
           isProcessing: false,
           message: 'Captura cancelada',
           clearImage: true,
-          clearBarcode: true,
         );
         return;
       }
@@ -56,7 +65,6 @@ class CaptureController extends StateNotifier<CaptureState> {
         imageFile: file,
         isProcessing: false,
         message: 'Foto lista para analizar',
-        clearBarcode: true,
       );
     } catch (e) {
       state = state.copyWith(
@@ -76,11 +84,11 @@ class CaptureController extends StateNotifier<CaptureState> {
             : 'Necesitamos permiso de fotos/archivos para continuar.',
         clearMessage: true,
         clearImage: true,
-        clearBarcode: true,
       );
       return;
     }
-    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(
+        isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.gallery,
@@ -91,7 +99,6 @@ class CaptureController extends StateNotifier<CaptureState> {
           isProcessing: false,
           message: 'Importación cancelada',
           clearImage: true,
-          clearBarcode: true,
         );
         return;
       }
@@ -99,7 +106,6 @@ class CaptureController extends StateNotifier<CaptureState> {
         imageFile: file,
         isProcessing: false,
         message: 'Imagen importada',
-        clearBarcode: true,
       );
     } catch (e) {
       state = state.copyWith(
@@ -109,40 +115,12 @@ class CaptureController extends StateNotifier<CaptureState> {
     }
   }
 
-  void registerBarcode(String barcode) {
-    if (barcode.isEmpty || barcode == state.barcode) return;
-    state = state.copyWith(
-      barcode: barcode,
-      message: 'Código detectado',
-      clearError: true,
-      clearImage: true,
-      isProcessing: false,
-    );
-  }
-
   void clearMessage() {
     state = state.copyWith(clearMessage: true);
   }
 
   void clearError() {
     state = state.copyWith(clearError: true);
-  }
-
-  void clearBarcode() {
-    state = state.copyWith(clearBarcode: true, clearMessage: true, clearError: true);
-  }
-
-  Future<PermissionOutcome> ensureScannerPermission() async {
-    final permission = await _permissions.ensureCameraAccess();
-    if (!permission.granted) {
-      state = state.copyWith(
-        error: permission.needsSettings
-            ? 'Activa el permiso de cámara en Ajustes para escanear.'
-            : 'Necesitamos permiso de cámara para escanear.',
-        clearMessage: true,
-      );
-    }
-    return permission;
   }
 
   Future<void> openSettings() {

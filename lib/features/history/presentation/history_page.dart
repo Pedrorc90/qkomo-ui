@@ -15,14 +15,18 @@ class HistoryPage extends ConsumerWidget {
     final processState = ref.watch(captureQueueProcessControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Historial'), backgroundColor: Colors.transparent),
+      appBar: AppBar(
+          title: const Text('Historial'), backgroundColor: Colors.transparent),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
             Text(
               'Capturas en cola',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
             _ProcessQueueButton(state: processState),
@@ -46,7 +50,10 @@ class HistoryPage extends ConsumerWidget {
             const SizedBox(height: 24),
             Text(
               'Resultados guardados',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
             resultsAsync.when(
@@ -84,7 +91,8 @@ class _QueueList extends StatelessWidget {
         child: ListTile(
           leading: const Icon(Icons.inbox_outlined),
           title: const Text('No hay capturas pendientes'),
-          subtitle: const Text('Cuando tomes fotos o escanees etiquetas aparecerán aquí.'),
+          subtitle: const Text(
+              'Cuando tomes fotos o escanees etiquetas aparecerán aquí.'),
         ),
       );
     }
@@ -96,9 +104,12 @@ class _QueueList extends StatelessWidget {
               child: ListTile(
                 leading: Icon(_iconForType(job.type)),
                 title: Text(
-                  job.type == CaptureJobType.image ? 'Foto en espera' : 'Código en espera',
+                  job.type == CaptureJobType.image
+                      ? 'Foto en espera'
+                      : 'Código en espera',
                 ),
-                subtitle: Text('Creado: ${_formatDate(job.createdAt)} • Intentos: ${job.attempts}'),
+                subtitle: Text(
+                    'Creado: ${_formatDate(job.createdAt)} • Intentos: ${job.attempts}'),
                 trailing: Chip(
                   label: Text(job.status.name),
                   backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
@@ -123,7 +134,8 @@ class _ResultList extends StatelessWidget {
         child: ListTile(
           leading: const Icon(Icons.fastfood),
           title: const Text('Sin resultados aún'),
-          subtitle: const Text('Cuando se procese una captura, verás el resumen aquí.'),
+          subtitle: const Text(
+              'Cuando se procese una captura, verás el resumen aquí.'),
         ),
       );
     }
@@ -134,7 +146,8 @@ class _ResultList extends StatelessWidget {
             (result) => Card(
               child: ListTile(
                 leading: const Icon(Icons.fact_check_outlined),
-                title: Text(result.title ?? 'Captura ${result.jobId.substring(0, 6)}'),
+                title: Text(
+                    result.title ?? 'Captura ${result.jobId.substring(0, 6)}'),
                 subtitle: Text(
                   '${result.ingredients.length} ingredientes • ${result.allergens.length} alérgenos',
                 ),
@@ -179,7 +192,9 @@ class _ProcessQueueButton extends ConsumerWidget {
           child: FilledButton.icon(
             onPressed: isLoading
                 ? null
-                : () => ref.read(captureQueueProcessControllerProvider.notifier).processPending(),
+                : () => ref
+                    .read(captureQueueProcessControllerProvider.notifier)
+                    .processPending(),
             icon: isLoading
                 ? const SizedBox(
                     width: 16,
@@ -187,7 +202,8 @@ class _ProcessQueueButton extends ConsumerWidget {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.playlist_add_check),
-            label: Text(isLoading ? 'Procesando cola...' : 'Procesar cola offline'),
+            label: Text(
+                isLoading ? 'Procesando cola...' : 'Procesar cola offline'),
           ),
         ),
         const SizedBox(width: 12),

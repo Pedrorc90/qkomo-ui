@@ -15,7 +15,10 @@ class CaptureActions extends ConsumerWidget {
       children: [
         Text(
           'Captura una foto de tu comida o producto y deja que la IA liste los ingredientes.',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 16),
         FilledButton.icon(
@@ -25,15 +28,16 @@ class CaptureActions extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         OutlinedButton.icon(
-          onPressed: () => _openCapture(ref, initialMode: CaptureMode.barcode),
-          icon: const Icon(Icons.qr_code_scanner),
-          label: const Text('Escanear código de barras'),
+          onPressed: () => _openCapture(ref, initialMode: CaptureMode.gallery),
+          icon: const Icon(Icons.photo_library),
+          label: const Text('Seleccionar de galería'),
         ),
       ],
     );
   }
 
-  void _openCapture(WidgetRef ref, {CaptureMode initialMode = CaptureMode.camera}) {
+  void _openCapture(WidgetRef ref,
+      {CaptureMode initialMode = CaptureMode.camera}) {
     ref.read(captureControllerProvider.notifier).setMode(initialMode);
     ref.read(bottomNavIndexProvider.notifier).state = 1;
   }

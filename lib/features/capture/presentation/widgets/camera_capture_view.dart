@@ -31,7 +31,8 @@ class CameraCaptureView extends StatelessWidget {
           FilledButton.icon(
             onPressed: state.isProcessing ? null : onCapture,
             icon: const Icon(Icons.camera_alt),
-            label: Text(state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
+            label: Text(
+                state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
           ),
           if (!kIsWeb)
             Padding(

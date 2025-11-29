@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/home/presentation/home_page.dart';
-import '../theme/app_theme.dart';
 import '../theme/theme_providers.dart';
 import 'auth_gate.dart';
 

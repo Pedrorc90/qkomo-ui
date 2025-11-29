@@ -14,14 +14,11 @@ class CaptureQueueAction extends ConsumerWidget {
     final enqueueState = ref.watch(captureEnqueueControllerProvider);
     final pending = ref.watch(pendingCaptureJobsProvider);
     final hasImage = state.imageFile != null;
-    final hasBarcode = state.barcode != null;
     final isLoading = enqueueState.isLoading;
-    final canQueue = (hasImage || hasBarcode) && !state.isProcessing && !isLoading;
+    final canQueue = hasImage && !state.isProcessing && !isLoading;
     final label = hasImage
         ? 'Guardar foto en cola offline'
-        : hasBarcode
-            ? 'Guardar código en cola offline'
-            : 'Selecciona una foto o código';
+        : 'Selecciona una foto';
 
     return Card(
       margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
@@ -44,9 +41,7 @@ class CaptureQueueAction extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             FilledButton.icon(
-              onPressed: canQueue
-                  ? () => _enqueue(ref, hasImage: hasImage, hasBarcode: hasBarcode)
-                  : null,
+              onPressed: canQueue ? () => _enqueue(ref) : null,
               icon: isLoading
                   ? const SizedBox(
                       width: 16,
@@ -69,7 +64,10 @@ class CaptureQueueAction extends ConsumerWidget {
               },
               error: (error, _) => Text(
                 'No se pudo leer la cola: $error',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Colors.red),
               ),
               loading: () => const Text('Leyendo cola...'),
             ),
@@ -79,16 +77,10 @@ class CaptureQueueAction extends ConsumerWidget {
     );
   }
 
-  Future<void> _enqueue(
-    WidgetRef ref, {
-    required bool hasImage,
-    required bool hasBarcode,
-  }) async {
+  Future<void> _enqueue(WidgetRef ref) async {
     final notifier = ref.read(captureEnqueueControllerProvider.notifier);
-    if (hasImage) {
+    if (state.imageFile != null) {
       await notifier.enqueueImage(state.imageFile!.path);
-    } else if (hasBarcode) {
-      await notifier.enqueueBarcode(state.barcode!);
     }
   }
 }

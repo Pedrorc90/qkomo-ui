@@ -3,7 +3,9 @@
     "allow": [
       "Bash(flutter analyze:*)",
       "Bash(flutter pub get:*)",
-      "Bash(dart format:*)"
+      "Bash(dart format:*)",
+      "Bash(claude code memory list:*)",
+      "Bash(claude memory:*)"
     ],
     "deny": [],
     "ask": []
