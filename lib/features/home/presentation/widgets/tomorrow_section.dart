@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../menu/domain/meal.dart';
-import '../../../menu/domain/meal_type.dart';
-import '../../../shell/state/navigation_provider.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 
 class TomorrowSection extends ConsumerWidget {
   const TomorrowSection({

@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
-import '../../domain/meal.dart';
-import '../../domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class MealAdapter extends TypeAdapter<Meal> {
   @override

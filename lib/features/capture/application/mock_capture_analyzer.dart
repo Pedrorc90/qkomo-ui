@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 import '../domain/capture_analyzer.dart';
 import '../domain/capture_job.dart';
 import '../domain/capture_job_type.dart';
@@ -8,7 +10,7 @@ class MockCaptureAnalyzer implements CaptureAnalyzer {
   const MockCaptureAnalyzer();
 
   @override
-  Future<CaptureResult> analyze(CaptureJob job) async {
+  Future<CaptureResult> analyze(CaptureJob job, {XFile? file}) async {
     // Simulate minimal processing delay.
     await Future<void>.delayed(const Duration(milliseconds: 200));
     return CaptureResult(

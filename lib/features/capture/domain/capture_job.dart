@@ -1,5 +1,5 @@
-import 'capture_job_status.dart';
-import 'capture_job_type.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job_status.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
 
 class CaptureJob {
   CaptureJob({

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 
 class CaptureStatusBanner extends StatelessWidget {
   const CaptureStatusBanner({
@@ -63,6 +63,8 @@ class CaptureStatusBanner extends StatelessWidget {
         return 'Abre la cámara y encuadra el plato o producto.';
       case CaptureMode.gallery:
         return 'Importa una foto desde tu galería para analizarla.';
+      case CaptureMode.barcode:
+        return 'Enfoca el código de barras o código QR para escanear.';
       case CaptureMode.text:
         return 'Escribe el título e ingredientes de tu comida.';
     }
@@ -74,6 +76,8 @@ class CaptureStatusBanner extends StatelessWidget {
         return 'cámara';
       case CaptureMode.gallery:
         return 'galería';
+      case CaptureMode.barcode:
+        return 'código de barras';
       case CaptureMode.text:
         return 'texto';
     }

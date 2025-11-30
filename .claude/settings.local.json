@@ -5,7 +5,9 @@
       "Bash(flutter pub get:*)",
       "Bash(dart format:*)",
       "Bash(claude code memory list:*)",
-      "Bash(claude memory:*)"
+      "Bash(claude memory:*)",
+      "Bash(flutter test:*)",
+      "Bash(flutter build:*)"
     ],
     "deny": [],
     "ask": []

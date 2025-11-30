@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'app_theme.dart';
-import 'theme_type.dart';
+import 'package:qkomo_ui/theme/app_theme.dart';
+import 'package:qkomo_ui/theme/theme_type.dart';
 
-final themeTypeProvider =
-    StateProvider<AppThemeType>((_) => AppThemeType.fresh);
+final themeTypeProvider = StateProvider<AppThemeType>((_) => AppThemeType.fresh);
 
 final appThemeProvider = Provider<ThemeData>((ref) {
   final type = ref.watch(themeTypeProvider);

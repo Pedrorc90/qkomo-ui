@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'models/analyze_response_dto.dart';
 
@@ -12,14 +14,26 @@ class CaptureApiClient {
   final Dio _dio;
 
   Future<AnalyzeResponseDto> analyzeImage({
-    required String path,
+    required XFile file,
     String? type,
   }) async {
-    if (!await File(path).exists()) {
-      throw Exception('El archivo de imagen no existe en $path');
+    late MultipartFile multipartFile;
+
+    if (kIsWeb) {
+      final bytes = await file.readAsBytes();
+      multipartFile = MultipartFile.fromBytes(
+        bytes,
+        filename: file.name,
+      );
+    } else {
+      if (!await File(file.path).exists()) {
+        throw Exception('El archivo de imagen no existe en ${file.path}');
+      }
+      multipartFile = await MultipartFile.fromFile(file.path);
     }
+
     final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(path),
+      'file': multipartFile,
       if (type != null && type.isNotEmpty) 'type': type,
     });
 
@@ -38,4 +52,3 @@ class CaptureApiClient {
     return AnalyzeResponseDto.fromJson(response.data ?? <String, dynamic>{});
   }
 }
-

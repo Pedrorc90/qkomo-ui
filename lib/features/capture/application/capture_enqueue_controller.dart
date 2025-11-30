@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../domain/capture_job.dart';
-import 'capture_queue_service.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/application/capture_queue_service.dart';
 
 class CaptureEnqueueController extends StateNotifier<AsyncValue<CaptureJob?>> {
   CaptureEnqueueController(this._queueService) : super(const AsyncData(null));

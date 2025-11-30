@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/home_providers.dart';
-import 'day_section.dart';
-import 'tomorrow_section.dart';
+import 'package:qkomo_ui/features/home/application/home_providers.dart';
+import 'package:qkomo_ui/features/home/presentation/widgets/day_section.dart';
+import 'package:qkomo_ui/features/home/presentation/widgets/tomorrow_section.dart';
 
 class HomeContent extends ConsumerWidget {
   const HomeContent({super.key, required this.user});

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../capture/application/capture_providers.dart';
-import '../../capture/domain/capture_result.dart';
-import '../../menu/application/menu_providers.dart';
-import '../../menu/domain/meal.dart';
+import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
 
 // Today's entries
 final todayEntriesProvider = Provider<List<CaptureResult>>((ref) {
@@ -12,9 +12,7 @@ final todayEntriesProvider = Provider<List<CaptureResult>>((ref) {
 
   return allResults.where((result) {
     final date = result.savedAt;
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return date.year == now.year && date.month == now.month && date.day == now.day;
   }).toList()
     ..sort((a, b) => a.savedAt.compareTo(b.savedAt));
 });
@@ -40,9 +38,7 @@ final tomorrowMealsProvider = Provider<List<Meal>>((ref) {
 
   return allMeals.where((meal) {
     final date = meal.scheduledFor;
-    return date.year == tomorrow.year &&
-        date.month == tomorrow.month &&
-        date.day == tomorrow.day;
+    return date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day;
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });

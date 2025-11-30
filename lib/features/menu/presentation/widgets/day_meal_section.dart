@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../application/menu_providers.dart';
-import '../../domain/meal_type.dart';
-import 'meal_card.dart';
-import 'meal_form_dialog.dart';
+import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_card.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
 
 class DayMealSection extends ConsumerWidget {
   const DayMealSection({
@@ -38,8 +38,7 @@ class DayMealSection extends ConsumerWidget {
           ),
         ),
         ...MealType.values.map((mealType) {
-          final meal =
-              mealsOfDay.where((m) => m.mealType == mealType).firstOrNull;
+          final meal = mealsOfDay.where((m) => m.mealType == mealType).firstOrNull;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

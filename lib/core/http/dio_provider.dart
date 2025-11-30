@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../config/api_config.dart';
+import '../../config/env.dart';
 import '../../features/auth/application/auth_providers.dart';
 import 'firebase_token_interceptor.dart';
 
-final apiBaseUrlProvider = Provider<String>((ref) => ApiConfig.baseUrl);
+final apiBaseUrlProvider = Provider<String>((ref) => EnvConfig.baseUrl);
 
 final dioProvider = Provider<Dio>((ref) {
   final baseUrl = ref.watch(apiBaseUrlProvider);
@@ -15,7 +15,7 @@ final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
       baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 5),
+      connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 15),
     ),
   );

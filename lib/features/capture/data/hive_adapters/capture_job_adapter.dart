@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
 
-import '../../domain/capture_job.dart';
-import '../../domain/capture_job_status.dart';
-import '../../domain/capture_job_type.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job_status.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
 
 class CaptureJobAdapter extends TypeAdapter<CaptureJob> {
   @override

@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 import '../data/capture_api_client.dart';
 import '../data/models/analyze_response_dto.dart';
 import '../domain/capture_analyzer.dart';
@@ -12,14 +14,16 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
   final CaptureApiClient _apiClient;
 
   @override
-  Future<CaptureResult> analyze(CaptureJob job) async {
+  Future<CaptureResult> analyze(CaptureJob job, {XFile? file}) async {
     switch (job.type) {
       case CaptureJobType.image:
-        if (job.imagePath == null) {
+        final imageFile = file ?? (job.imagePath != null ? XFile(job.imagePath!) : null);
+
+        if (imageFile == null) {
           throw Exception('Falta la ruta de la imagen para este trabajo.');
         }
         final response = await _apiClient.analyzeImage(
-          path: job.imagePath!,
+          file: imageFile,
           type: 'meal',
         );
         return _toResult(job, response);
@@ -38,8 +42,7 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     final notes = dto.warnings.isNotEmpty ? dto.warnings.join('\n') : null;
     final title = switch (job.type) {
       CaptureJobType.barcode => 'Producto código ${job.barcode}',
-      CaptureJobType.image =>
-        dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura ${job.id}',
+      CaptureJobType.image => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura ${job.id}',
     };
 
     return CaptureResult(

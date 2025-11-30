@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../application/menu_providers.dart';
-import 'widgets/day_meal_section.dart';
+import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/day_meal_section.dart';
 
 class WeeklyMenuPage extends ConsumerWidget {
   const WeeklyMenuPage({super.key});
@@ -14,8 +14,7 @@ class WeeklyMenuPage extends ConsumerWidget {
     final dateFormat = DateFormat('d MMM', 'es');
 
     final weekEnd = weekStart.add(const Duration(days: 6));
-    final weekRange =
-        '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
+    final weekRange = '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
 
     return Scaffold(
       appBar: AppBar(

@@ -9,7 +9,7 @@ import 'package:qkomo_ui/features/profile/presentation/profile_page.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 import 'package:qkomo_ui/theme/theme_type.dart';
 
-import '../state/navigation_provider.dart';
+import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 
 class RootShell extends ConsumerWidget {
   const RootShell({super.key});
@@ -42,8 +42,7 @@ class RootShell extends ConsumerWidget {
         selectedIndex: index,
         height: 74,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        onDestinationSelected: (value) =>
-            ref.read(bottomNavIndexProvider.notifier).state = value,
+        onDestinationSelected: (value) => ref.read(bottomNavIndexProvider.notifier).state = value,
         destinations: [
           const NavigationDestination(
             icon: Icon(Icons.home_outlined),
@@ -66,9 +65,7 @@ class RootShell extends ConsumerWidget {
             label: 'Historial',
           ),
           NavigationDestination(
-            icon: Icon(themeType == AppThemeType.warm
-                ? Icons.person_outline
-                : Icons.person),
+            icon: Icon(themeType == AppThemeType.warm ? Icons.person_outline : Icons.person),
             selectedIcon: const Icon(Icons.person),
             label: 'Perfil',
           ),

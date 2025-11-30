@@ -1,13 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../domain/capture_mode.dart';
-import 'capture_permissions.dart';
-import 'capture_state.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/application/capture_permissions.dart';
+import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 
 class CaptureController extends StateNotifier<CaptureState> {
-  CaptureController(this._imagePicker, this._permissions)
-      : super(CaptureState.initial());
+  CaptureController(this._imagePicker, this._permissions) : super(CaptureState.initial());
 
   final ImagePicker _imagePicker;
   final CapturePermissions _permissions;
@@ -18,6 +17,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       mode: mode,
       clearError: true,
       clearImage: true,
+      clearBarcode: true,
       clearMessage: true,
       isProcessing: false,
     );
@@ -28,6 +28,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       clearMode: true,
       clearError: true,
       clearImage: true,
+      clearBarcode: true,
       clearMessage: true,
       isProcessing: false,
     );
@@ -46,8 +47,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.camera,
@@ -87,8 +87,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.gallery,
@@ -125,5 +124,29 @@ class CaptureController extends StateNotifier<CaptureState> {
 
   Future<void> openSettings() {
     return _permissions.openSettings();
+  }
+
+  Future<void> scanBarcode() async {
+    if (state.isProcessing) return;
+    final permission = await _permissions.ensureCameraAccess();
+    if (!permission.granted) {
+      state = state.copyWith(
+        error: permission.needsSettings
+            ? 'Activa el permiso de cámara en Ajustes para escanear.'
+            : 'Necesitamos permiso de cámara para continuar.',
+        clearMessage: true,
+        clearBarcode: true,
+      );
+      return;
+    }
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
+  }
+
+  void onBarcodeScanned(String barcode) {
+    state = state.copyWith(
+      scannedBarcode: barcode,
+      isProcessing: false,
+      message: 'Código guardado en cola offline',
+    );
   }
 }

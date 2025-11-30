@@ -1,4 +1,4 @@
-import 'meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class Meal {
   final String id;

@@ -6,8 +6,8 @@ import '../features/home/presentation/home_page.dart';
 import '../theme/theme_providers.dart';
 import 'auth_gate.dart';
 
-class qkomoApp extends ConsumerWidget {
-  const qkomoApp({super.key});
+class QkomoApp extends ConsumerWidget {
+  const QkomoApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

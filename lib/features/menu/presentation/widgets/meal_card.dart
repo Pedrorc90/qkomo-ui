@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/menu_providers.dart';
-import '../../domain/meal.dart';
-import 'meal_form_dialog.dart';
+import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
 
 class MealCard extends ConsumerWidget {
   const MealCard({
@@ -60,8 +60,7 @@ class MealCard extends ConsumerWidget {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: const Text('Eliminar comida'),
-                      content: Text(
-                          '¿Estás seguro de que quieres eliminar "${meal.name}"?'),
+                      content: Text('¿Estás seguro de que quieres eliminar "${meal.name}"?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
@@ -76,9 +75,7 @@ class MealCard extends ConsumerWidget {
                   );
 
                   if (confirmed == true) {
-                    ref
-                        .read(menuControllerProvider.notifier)
-                        .deleteMeal(meal.id);
+                    ref.read(menuControllerProvider.notifier).deleteMeal(meal.id);
                   }
                 },
               ),

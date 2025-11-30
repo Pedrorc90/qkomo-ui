@@ -1,4 +1,4 @@
-import '../../menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class CaptureResult {
   CaptureResult({
@@ -10,6 +10,9 @@ class CaptureResult {
     this.title,
     this.mealType,
     this.isManualEntry = false,
+    this.isReviewed = false,
+    this.reviewedAt,
+    this.userEdited = false,
   });
 
   final String jobId;
@@ -20,6 +23,9 @@ class CaptureResult {
   final String? title;
   final MealType? mealType;
   final bool isManualEntry;
+  final bool isReviewed;
+  final DateTime? reviewedAt;
+  final bool userEdited;
 
   CaptureResult copyWith({
     String? jobId,
@@ -30,6 +36,9 @@ class CaptureResult {
     String? title,
     MealType? mealType,
     bool? isManualEntry,
+    bool? isReviewed,
+    DateTime? reviewedAt,
+    bool? userEdited,
   }) {
     return CaptureResult(
       jobId: jobId ?? this.jobId,
@@ -40,6 +49,9 @@ class CaptureResult {
       title: title ?? this.title,
       mealType: mealType ?? this.mealType,
       isManualEntry: isManualEntry ?? this.isManualEntry,
+      isReviewed: isReviewed ?? this.isReviewed,
+      reviewedAt: reviewedAt ?? this.reviewedAt,
+      userEdited: userEdited ?? this.userEdited,
     );
   }
 }

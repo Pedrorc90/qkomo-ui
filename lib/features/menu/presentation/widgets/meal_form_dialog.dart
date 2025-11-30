@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/menu_providers.dart';
-import '../../domain/meal.dart';
-import '../../domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class MealFormDialog extends ConsumerStatefulWidget {
   const MealFormDialog({
@@ -71,10 +71,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveMeal() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients = _ingredientControllers
-        .map((c) => c.text.trim())
-        .where((text) => text.isNotEmpty)
-        .toList();
+    final ingredients =
+        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
 
     if (ingredients.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -92,9 +90,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: widget.mealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty
-            ? null
-            : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
       );
     } else {
       await controller.createMeal(
@@ -102,9 +98,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: widget.mealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty
-            ? null
-            : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
       );
     }
 
@@ -200,8 +194,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed:
-              menuState.isLoading ? null : () => Navigator.of(context).pop(),
+          onPressed: menuState.isLoading ? null : () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
         FilledButton(

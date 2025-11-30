@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
-import '../data/hive_boxes.dart';
-import '../data/meal_repository.dart';
-import '../domain/meal.dart';
-import 'menu_controller.dart';
-import 'menu_state.dart';
+import 'package:qkomo_ui/features/menu/data/hive_boxes.dart';
+import 'package:qkomo_ui/features/menu/data/meal_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
+import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
+import 'package:qkomo_ui/features/menu/application/menu_state.dart';
 
 // Box provider
 final mealBoxProvider = Provider<Box<Meal>>((ref) {
@@ -56,15 +56,13 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
   final weekEnd = weekStart.add(const Duration(days: 7));
 
   return allMeals.where((meal) {
-    return meal.scheduledFor
-            .isAfter(weekStart.subtract(const Duration(days: 1))) &&
+    return meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
         meal.scheduledFor.isBefore(weekEnd);
   }).toList();
 });
 
 // Controller provider
-final menuControllerProvider =
-    StateNotifierProvider<MenuController, MenuState>((ref) {
+final menuControllerProvider = StateNotifierProvider<MenuController, MenuState>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
   return MenuController(repository);
 });

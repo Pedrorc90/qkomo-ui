@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'theme_type.dart';
+import 'package:qkomo_ui/theme/theme_type.dart';
 
 class AppTheme {
   AppTheme._();
@@ -80,20 +80,16 @@ class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          textStyle:
-              baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          textStyle: baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           side: BorderSide(color: scheme.outline),
-          textStyle:
-              baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          textStyle: baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -111,8 +107,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: scheme.primary, width: 1.4),
         ),
-        labelStyle:
-            baseText.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+        labelStyle: baseText.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../application/capture_state.dart';
-import 'picked_image_preview.dart';
+import 'package:qkomo_ui/features/capture/application/capture_state.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/picked_image_preview.dart';
 
 class CameraCaptureView extends StatelessWidget {
   const CameraCaptureView({
@@ -31,8 +31,7 @@ class CameraCaptureView extends StatelessWidget {
           FilledButton.icon(
             onPressed: state.isProcessing ? null : onCapture,
             icon: const Icon(Icons.camera_alt),
-            label: Text(
-                state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
+            label: Text(state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
           ),
           if (!kIsWeb)
             Padding(

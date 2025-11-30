@@ -1,4 +1,4 @@
-import '../domain/meal.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
 
 class MenuState {
   final bool isLoading;

@@ -83,53 +83,53 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 ```
 
 #### Error Handling & UX
-- [ ] Add user-friendly Spanish error messages for:
-  - [ ] Network errors: "No hay conexión. La captura se guardó y se procesará cuando vuelva la conexión."
-  - [ ] Authentication errors: "Sesión expirada. Por favor, inicia sesión nuevamente."
-  - [ ] Server errors: "Error del servidor. Intenta de nuevo más tarde."
-  - [ ] Invalid image format: "Formato de imagen no válido. Usa JPG o PNG."
-  - [ ] File too large: "La imagen es demasiado grande. Máximo 10MB."
-- [ ] Show processing status in UI
-  - [ ] Pending jobs count badge
-  - [ ] Processing spinner when queue is active
-  - [ ] Success/failure notifications
-- [ ] Add retry logic for transient failures
-  - [ ] Exponential backoff for network errors
-  - [ ] Max retry attempts (e.g., 3)
-  - [ ] Manual retry button for failed jobs
+- [x] Add user-friendly Spanish error messages for:
+  - [x] Network errors: "No hay conexión. La captura se guardó y se procesará cuando vuelva la conexión."
+  - [x] Authentication errors: "Sesión expirada. Por favor, inicia sesión nuevamente."
+  - [x] Server errors: "Error del servidor. Intenta de nuevo más tarde."
+  - [x] Invalid image format: "Formato de imagen no válido. Usa JPG o PNG."
+  - [x] File too large: "La imagen es demasiado grande. Máximo 10MB."
+- [x] Show processing status in UI
+  - [x] Pending jobs count badge
+  - [x] Processing spinner when queue is active
+  - [x] Success/failure notifications
+- [x] Add retry logic for transient failures
+  - [x] Exponential backoff for network errors
+  - [x] Max retry attempts (e.g., 3)
+  - [x] Manual retry button for failed jobs
 
 **Dependencies:** Backend B3 (OpenAI Vision integration) must be deployed
 
 ---
 
 ### M5 - Review & Edit UI
-**Status:** Not started
+**Status:** Complete
 **Goal:** Provide user interface to review, edit, and confirm analysis results before saving
 
 #### Review Screen Design
-- [ ] Create `CaptureReviewPage` widget
-  - [ ] Display photo/barcode source image
-  - [ ] Show analysis title/product name
-  - [ ] List all detected ingredients with confidence scores
-  - [ ] Highlight allergens with warning badges
-  - [ ] Show additional warnings section
-  - [ ] Add edit mode toggle
-  - [ ] Add save/discard buttons
-- [ ] Create `IngredientListEditor` widget
-  - [ ] Display ingredients as editable chips
-  - [ ] Allow adding new ingredients (text input)
-  - [ ] Allow removing ingredients (swipe to delete)
-  - [ ] Allow editing ingredient names (tap to edit)
-  - [ ] Show confidence scores (read-only)
-- [ ] Create `AllergenToggleList` widget
-  - [ ] Display allergen flags with toggle switches
-  - [ ] Use prominent warning icons/colors
-  - [ ] Allow user to override allergen detection
-  - [ ] Show "why" explanations (which ingredient triggered)
-- [ ] Add photo zoom/pan capability
-  - [ ] Use `photo_view` package
-  - [ ] Allow pinch-to-zoom
-  - [ ] Allow pan to inspect details
+- [x] Create `CaptureReviewPage` widget
+  - [x] Display photo/barcode source image
+  - [x] Show analysis title/product name
+  - [x] List all detected ingredients with confidence scores
+  - [x] Highlight allergens with warning badges
+  - [x] Show additional warnings section
+  - [x] Add edit mode toggle
+  - [x] Add save/discard buttons
+- [x] Create `IngredientListEditor` widget
+  - [x] Display ingredients as editable chips
+  - [x] Allow adding new ingredients (text input)
+  - [x] Allow removing ingredients (swipe to delete)
+  - [x] Allow editing ingredient names (tap to edit)
+  - [x] Show confidence scores (read-only)
+- [x] Create `AllergenToggleList` widget
+  - [x] Display allergen flags with toggle switches
+  - [x] Use prominent warning icons/colors
+  - [x] Allow user to override allergen detection
+  - [x] Show "why" explanations (which ingredient triggered)
+- [x] Add photo zoom/pan capability
+  - [x] Use `photo_view` package
+  - [x] Allow pinch-to-zoom
+  - [x] Allow pan to inspect details
 
 **Files to create:**
 - `lib/features/capture/presentation/review/capture_review_page.dart`
@@ -139,21 +139,21 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 - `lib/features/capture/presentation/review/capture_review_controller.dart`
 
 #### Review Business Logic
-- [ ] Create `CaptureReviewController` (StateNotifier)
-  - [ ] Load analysis result by ID
-  - [ ] Track edit state (edited ingredients, allergens)
-  - [ ] Validate edits before saving
-  - [ ] Save confirmed result back to `CaptureResultRepository`
-  - [ ] Mark job as reviewed/confirmed
-  - [ ] Navigate back after save
-- [ ] Update `CaptureResult` model to track review status
-  - [ ] Add `isReviewed` boolean field
-  - [ ] Add `reviewedAt` timestamp
-  - [ ] Add `userEdited` boolean flag
-  - [ ] Update Hive adapter
-- [ ] Add navigation from History page to Review page
-  - [ ] Tap on result card → open review page
-  - [ ] Pass result ID as route parameter
+- [x] Create `CaptureReviewController` (StateNotifier)
+  - [x] Load analysis result by ID
+  - [x] Track edit state (edited ingredients, allergens)
+  - [x] Validate edits before saving
+  - [x] Save confirmed result back to `CaptureResultRepository`
+  - [x] Mark job as reviewed/confirmed
+  - [x] Navigate back after save
+- [x] Update `CaptureResult` model to track review status
+  - [x] Add `isReviewed` boolean field
+  - [x] Add `reviewedAt` timestamp
+  - [x] Add `userEdited` boolean flag
+  - [x] Update Hive adapter
+- [x] Add navigation from History page to Review page
+  - [x] Tap on result card → open review page
+  - [x] Pass result ID as route parameter
 
 **Files to create/modify:**
 - `lib/features/capture/application/capture_review_controller.dart` (new)
@@ -161,7 +161,7 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 - `lib/features/capture/data/hive_adapters/capture_result_adapter.dart` (regenerate)
 
 #### Spanish-First UX Copy
-- [ ] Add Spanish labels and help text:
+- [x] Add Spanish labels and help text:
   - "Revisa los ingredientes"
   - "Toca para editar"
   - "Desliza para eliminar"
@@ -170,10 +170,10 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
   - "Guardar análisis"
   - "Descartar cambios"
   - "¿Estás seguro de descartar los cambios?"
-- [ ] Add empty state messages:
+- [x] Add empty state messages:
   - "No se detectaron ingredientes. Puedes agregarlos manualmente."
   - "No se detectaron alérgenos."
-- [ ] Add validation messages:
+- [x] Add validation messages:
   - "Agrega al menos un ingrediente antes de guardar."
 
 **Dependencies:** M4 must be complete and tested
@@ -181,41 +181,41 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 ---
 
 ### M6 - Today & History Tabs
-**Status:** Partial - Basic history list exists, needs enhancement
+**Status:** Complete
 **Goal:** Complete daily food log with filtering, grouping, and detail views
 
 #### History Feed Enhancement
-- [ ] Enhance `HistoryPage` with proper date grouping
-  - [ ] Group results by date (today, yesterday, this week, older)
-  - [ ] Add section headers for date groups
-  - [ ] Show day-of-week labels
-  - [ ] Add summary statistics per day (total entries, unique ingredients)
-- [ ] Add date range filter
-  - [ ] "Today" tab (default view)
-  - [ ] "This Week" filter
-  - [ ] "This Month" filter
-  - [ ] Custom date range picker
-  - [ ] Filter results from Hive by date
-- [ ] Improve result cards
-  - [ ] Show thumbnail of photo/barcode
-  - [ ] Display product name/title prominently
-  - [ ] Show ingredient count and top 3 ingredients
-  - [ ] Show allergen badges if any
-  - [ ] Add review status indicator (reviewed vs. pending review)
-  - [ ] Add tap action to open review page
-- [ ] Add pull-to-refresh
-  - [ ] Refresh local Hive data
-  - [ ] Trigger queue processing
-  - [ ] Show sync status (when M7 is implemented)
-- [ ] Add search functionality
-  - [ ] Search by product name
-  - [ ] Search by ingredient
-  - [ ] Search by allergen
-  - [ ] Filter results based on search query
-- [ ] Add empty states
-  - [ ] No entries today: "Aún no has registrado comidas hoy. ¡Empieza capturando una foto!"
-  - [ ] No entries in date range: "No hay entradas en este período."
-  - [ ] No search results: "No se encontraron resultados para '{query}'."
+- [x] Enhance `HistoryPage` with proper date grouping
+  - [x] Group results by date (today, yesterday, this week, older)
+  - [x] Add section headers for date groups
+  - [x] Show day-of-week labels
+  - [x] Add summary statistics per day (total entries, unique ingredients)
+- [x] Add date range filter
+  - [x] "Today" tab (default view)
+  - [x] "This Week" filter
+  - [x] "This Month" filter
+  - [x] Custom date range picker
+  - [x] Filter results from Hive by date
+- [x] Improve result cards
+  - [x] Show thumbnail of photo/barcode
+  - [x] Display product name/title prominently
+  - [x] Show ingredient count and top 3 ingredients
+  - [x] Show allergen badges if any
+  - [x] Add review status indicator (reviewed vs. pending review)
+  - [x] Add tap action to open review page
+- [x] Add pull-to-refresh
+  - [x] Refresh local Hive data
+  - [x] Trigger queue processing
+  - [x] Show sync status (when M7 is implemented)
+- [x] Add search functionality
+  - [x] Search by product name
+  - [x] Search by ingredient
+  - [x] Search by allergen
+  - [x] Filter results based on search query
+- [x] Add empty states
+  - [x] No entries today: "Aún no has registrado comidas hoy. ¡Empieza capturando una foto!"
+  - [x] No entries in date range: "No hay entradas en este período."
+  - [x] No search results: "No se encontraron resultados para '{query}'."
 
 **Files to modify:**
 - `lib/features/history/presentation/history_page.dart` (major refactor)
@@ -229,14 +229,14 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 - `lib/features/history/application/history_providers.dart`
 
 #### Today Tab Implementation
-- [ ] Create dedicated "Today" view (alternative to filtered history)
-  - [ ] Show today's entries prominently
-  - [ ] Add daily summary card (total meals, calories if available)
-  - [ ] Show timeline view (breakfast, lunch, dinner, snacks)
-  - [ ] Add quick capture actions
-- [ ] Or: Simplify by making History page default to "today" filter
-  - [ ] Use tab bar: Today | This Week | All
-  - [ ] Keep single `HistoryPage` with filter state
+- [x] Create dedicated "Today" view (alternative to filtered history)
+  - [x] Show today's entries prominently
+  - [x] Add daily summary card (total meals, calories if available)
+  - [x] Show timeline view (breakfast, lunch, dinner, snacks)
+  - [x] Add quick capture actions
+- [x] Or: Simplify by making History page default to "today" filter
+  - [x] Use tab bar: Today | This Week | All
+  - [x] Keep single `HistoryPage` with filter state
 
 **Decision needed:** Separate Today tab vs. filtered History page? (Ask user or default to filtered approach)
 

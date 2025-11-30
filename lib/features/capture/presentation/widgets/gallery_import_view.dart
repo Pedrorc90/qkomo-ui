@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../application/capture_state.dart';
-import 'picked_image_preview.dart';
+import 'package:qkomo_ui/features/capture/application/capture_state.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/picked_image_preview.dart';
 
 class GalleryImportView extends StatelessWidget {
   const GalleryImportView({
@@ -30,9 +30,7 @@ class GalleryImportView extends StatelessWidget {
           FilledButton.icon(
             onPressed: state.isProcessing ? null : onImport,
             icon: const Icon(Icons.photo_library_outlined),
-            label: Text(state.isProcessing
-                ? 'Abriendo galería...'
-                : 'Elegir desde galería'),
+            label: Text(state.isProcessing ? 'Abriendo galería...' : 'Elegir desde galería'),
           ),
           if (state.isProcessing)
             const Padding(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../menu/domain/meal_type.dart';
-import '../../application/capture_providers.dart';
-import '../../domain/capture_result.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 
 class TextEntryView extends ConsumerStatefulWidget {
   const TextEntryView({super.key});
@@ -17,9 +17,7 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
   final _allergensController = TextEditingController();
-  final List<TextEditingController> _ingredientControllers = [
-    TextEditingController()
-  ];
+  final List<TextEditingController> _ingredientControllers = [TextEditingController()];
   MealType? _selectedMealType;
 
   @override
@@ -51,10 +49,8 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
   Future<void> _saveEntry() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients = _ingredientControllers
-        .map((c) => c.text.trim())
-        .where((text) => text.isNotEmpty)
-        .toList();
+    final ingredients =
+        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
 
     if (ingredients.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -76,9 +72,7 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
           title: _titleController.text.trim(),
           ingredients: ingredients,
           allergens: allergens.isEmpty ? null : allergens,
-          notes: _notesController.text.trim().isEmpty
-              ? null
-              : _notesController.text.trim(),
+          notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
           mealType: _selectedMealType,
         );
   }
@@ -109,8 +103,7 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
           if (result != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content:
-                    Text('Entrada guardada: ${result.title ?? "Sin título"}'),
+                content: Text('Entrada guardada: ${result.title ?? "Sin título"}'),
                 backgroundColor: Colors.green,
               ),
             );

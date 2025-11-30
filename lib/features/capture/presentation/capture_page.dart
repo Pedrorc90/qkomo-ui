@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
-import '../application/capture_controller.dart';
-import '../application/capture_providers.dart';
-import '../application/capture_state.dart';
-import '../domain/capture_job.dart';
-import '../domain/capture_job_type.dart';
-import '../domain/capture_mode.dart';
-import 'widgets/camera_capture_view.dart';
-import 'widgets/capture_queue_action.dart';
-import 'widgets/capture_status_banner.dart';
-import 'widgets/gallery_import_view.dart';
-import 'widgets/text_entry_view.dart';
+import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
+import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
+import 'package:qkomo_ui/features/capture/application/capture_state.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/barcode_scanner_view.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_view.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/capture_queue_action.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/capture_status_banner.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/gallery_import_view.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/text_entry_view.dart';
 
 class CapturePage extends ConsumerStatefulWidget {
   const CapturePage({super.key});
@@ -24,6 +25,7 @@ class CapturePage extends ConsumerStatefulWidget {
 class _CapturePageState extends ConsumerState<CapturePage> {
   ProviderSubscription<CaptureState>? _captureSubscription;
   ProviderSubscription<AsyncValue<CaptureJob?>>? _enqueueSubscription;
+  ProviderSubscription<AsyncValue<String?>>? _analyzeSubscription;
 
   @override
   void initState() {
@@ -61,12 +63,28 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         );
       },
     );
+
+    _analyzeSubscription = ref.listenManual<AsyncValue<String?>>(
+      directAnalyzeControllerProvider,
+      (previous, next) {
+        next.when(
+          data: (jobId) {
+            if (jobId != null) {
+              _showSnackBar('Análisis completado. ID: $jobId');
+            }
+          },
+          error: (error, _) => _showSnackBar('Error al analizar: $error', isError: true),
+          loading: () {},
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
     _captureSubscription?.close();
     _enqueueSubscription?.close();
+    _analyzeSubscription?.close();
     super.dispose();
   }
 
@@ -160,6 +178,14 @@ class _CapturePageState extends ConsumerState<CapturePage> {
             ),
             const SizedBox(height: 16),
             _CaptureOptionCard(
+              icon: Icons.qr_code_2_outlined,
+              label: 'Código de barras',
+              description: 'Escanear código o QR',
+              color: Colors.purple,
+              onPressed: () => controller.setMode(CaptureMode.barcode),
+            ),
+            const SizedBox(height: 16),
+            _CaptureOptionCard(
               icon: Icons.edit_note_outlined,
               label: 'Texto',
               description: 'Escribir ingredientes',
@@ -187,7 +213,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         Expanded(
           child: _buildModeContent(mode),
         ),
-        if (mode != CaptureMode.text && state.imageFile != null)
+        if (mode != CaptureMode.text && (state.imageFile != null || state.scannedBarcode != null))
           CaptureQueueAction(
             state: state,
           ),
@@ -209,6 +235,11 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         return GalleryImportView(
           state: captureState,
           onImport: controller.importFromGallery,
+        );
+      case CaptureMode.barcode:
+        return BarcodeScannerView(
+          state: captureState,
+          onBarcodeScanned: controller.onBarcodeScanned,
         );
       case CaptureMode.text:
         return const TextEntryView();
