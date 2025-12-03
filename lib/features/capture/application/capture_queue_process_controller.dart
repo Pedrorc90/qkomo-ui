@@ -4,7 +4,8 @@ import '../data/capture_queue_repository.dart';
 import 'capture_queue_processor.dart';
 
 class CaptureQueueProcessController extends StateNotifier<AsyncValue<int>> {
-  CaptureQueueProcessController(this._processor, this._queueRepository) : super(const AsyncData(0));
+  CaptureQueueProcessController(this._processor, this._queueRepository)
+      : super(const AsyncData(0));
 
   final CaptureQueueProcessor _processor;
   final CaptureQueueRepository _queueRepository;

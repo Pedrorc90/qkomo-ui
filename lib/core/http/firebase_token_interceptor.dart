@@ -87,7 +87,7 @@ class FirebaseTokenInterceptor extends Interceptor {
   Future<String?> _getToken() async {
     // Try to get cached token from secure storage
     String? token = await _tokenStore.readToken();
-    
+
     // If no cached token, try to get fresh token from Firebase Auth
     if (token == null || token.isEmpty) {
       final user = _auth.currentUser;
@@ -99,7 +99,7 @@ class FirebaseTokenInterceptor extends Interceptor {
         }
       }
     }
-    
+
     return token;
   }
 
@@ -112,12 +112,12 @@ class FirebaseTokenInterceptor extends Interceptor {
 
     // Force refresh the token
     final token = await user.getIdToken(true);
-    
+
     // Save the new token to secure storage
     if (token != null) {
       await _tokenStore.save(token);
     }
-    
+
     return token;
   }
 }

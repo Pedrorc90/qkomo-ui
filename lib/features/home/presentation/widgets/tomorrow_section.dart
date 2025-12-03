@@ -34,7 +34,8 @@ class TomorrowSection extends ConsumerWidget {
               ),
               TextButton(
                 onPressed: () {
-                  ref.read(bottomNavIndexProvider.notifier).state = 2; // Menu tab
+                  ref.read(bottomNavIndexProvider.notifier).state =
+                      2; // Menu tab
                 },
                 style: TextButton.styleFrom(
                   visualDensity: VisualDensity.compact,
@@ -76,7 +77,10 @@ class _EmptyStateCard extends StatelessWidget {
             Icon(
               Icons.calendar_today_outlined,
               size: 32,
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurfaceVariant
+                  .withOpacity(0.5),
             ),
             const SizedBox(height: 12),
             Text(
@@ -119,7 +123,10 @@ class _MealCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+                color: Theme.of(context)
+                    .colorScheme
+                    .secondaryContainer
+                    .withOpacity(0.4),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(

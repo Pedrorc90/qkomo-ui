@@ -1,259 +1,17 @@
 # qkomo-ui TODO
 
-This file tracks implementation tasks and technical debt for the qkomo-ui Flutter mobile app.
+This file tracks pending implementation tasks for the qkomo-ui Flutter mobile app.
 
-**Last Updated:** 2025-11-27
+**Last Updated:** 2025-12-03
 **Project Phase:** MVP - Core capture flow complete, pending review/history features
 
 ---
 
 ## High Priority - MVP Completion
 
-### Infra - Flutter Development Environment
-**Status:** Pending
-**Goal:** Ensure development tooling is properly configured
 
-- [ ] Install `unzip` utility (Windows MSYS environment)
-- [ ] Verify Dart/Flutter SDK is properly installed and current
-- [ ] Run `flutter pub get` to ensure dependencies are resolved
-- [ ] Run `flutter pub run build_runner build --delete-conflicting-outputs` to regenerate code
-- [ ] Run `dart format .` on entire codebase
-- [ ] Run `flutter analyze` and fix any warnings/errors
-- [ ] Run `flutter test` and ensure all existing tests pass
-- [ ] Verify app builds and runs on Android emulator
-- [ ] Verify app builds and runs on iOS simulator (if available)
 
-**Dependencies:** None
 
----
-
-### M4 - Complete Analyze Flow Integration
-**Status:** Complete - Authentication integration implemented and tested
-**Goal:** Complete end-to-end backend integration with Firebase authentication
-
-#### Authentication Integration
-- [x] Implement Firebase ID token interceptor in Dio client
-  - [x] Create `FirebaseTokenInterceptor` class
-  - [x] Inject `SecureTokenStore` to retrieve current token
-  - [x] Add Authorization header: `Bearer {idToken}`
-  - [x] Handle token expiration (401 responses)
-  - [x] Refresh token when expired
-  - [x] Add interceptor to `dioProvider` in `lib/core/http/dio_provider.dart`
-  - [x] Add unit tests for interceptor logic
-
-**Files created/modified:**
-- `lib/core/http/firebase_token_interceptor.dart` (created)
-- `lib/core/http/dio_provider.dart` (modified)
-- `lib/features/capture/data/capture_api_client.dart` (simplified)
-- `lib/features/capture/application/capture_providers.dart` (modified)
-- `test/core/http/firebase_token_interceptor_test.dart` (created)
-- `test/features/capture/data/backend_capture_analyzer_test.dart` (created)
-
-#### Backend Integration Testing
-- [ ] Test photo upload to `/v1/analyze` with real backend
-  - [ ] Verify multipart file upload works
-  - [ ] Verify Firebase token is sent correctly
-  - [ ] Verify response parsing works
-  - [ ] Handle successful analysis response
-  - [ ] Handle network errors gracefully
-  - [ ] Handle 401 authentication errors
-  - [ ] Handle 4xx/5xx server errors
-- [ ] Test barcode analysis to `/v1/analyze/barcode` with real backend
-  - [ ] Verify JSON payload is sent correctly
-  - [ ] Verify Firebase token authentication
-  - [ ] Verify response parsing works
-  - [ ] Handle missing product scenarios
-  - [ ] Handle network/auth errors
-- [ ] Test offline queue processing
-  - [ ] Verify jobs queue when offline
-  - [ ] Verify jobs process when back online
-  - [ ] Verify failed jobs are marked correctly
-  - [ ] Verify succeeded jobs are cleaned up after TTL
-- [ ] Run integration tests with backend running locally
-- [ ] Document test scenarios in README
-
-**Test Cases:**
-```dart
-// test/features/capture/integration/backend_integration_test.dart
-- Photo capture → queue → process → success
-- Photo capture → queue → process → network error → retry
-- Photo capture → queue → process → auth error → fail
-- Barcode scan → queue → process → success
-- Queue builds up offline → comes online → batch processes
-```
-
-#### Error Handling & UX
-- [x] Add user-friendly Spanish error messages for:
-  - [x] Network errors: "No hay conexión. La captura se guardó y se procesará cuando vuelva la conexión."
-  - [x] Authentication errors: "Sesión expirada. Por favor, inicia sesión nuevamente."
-  - [x] Server errors: "Error del servidor. Intenta de nuevo más tarde."
-  - [x] Invalid image format: "Formato de imagen no válido. Usa JPG o PNG."
-  - [x] File too large: "La imagen es demasiado grande. Máximo 10MB."
-- [x] Show processing status in UI
-  - [x] Pending jobs count badge
-  - [x] Processing spinner when queue is active
-  - [x] Success/failure notifications
-- [x] Add retry logic for transient failures
-  - [x] Exponential backoff for network errors
-  - [x] Max retry attempts (e.g., 3)
-  - [x] Manual retry button for failed jobs
-
-**Dependencies:** Backend B3 (OpenAI Vision integration) must be deployed
-
----
-
-### M5 - Review & Edit UI
-**Status:** Complete
-**Goal:** Provide user interface to review, edit, and confirm analysis results before saving
-
-#### Review Screen Design
-- [x] Create `CaptureReviewPage` widget
-  - [x] Display photo/barcode source image
-  - [x] Show analysis title/product name
-  - [x] List all detected ingredients with confidence scores
-  - [x] Highlight allergens with warning badges
-  - [x] Show additional warnings section
-  - [x] Add edit mode toggle
-  - [x] Add save/discard buttons
-- [x] Create `IngredientListEditor` widget
-  - [x] Display ingredients as editable chips
-  - [x] Allow adding new ingredients (text input)
-  - [x] Allow removing ingredients (swipe to delete)
-  - [x] Allow editing ingredient names (tap to edit)
-  - [x] Show confidence scores (read-only)
-- [x] Create `AllergenToggleList` widget
-  - [x] Display allergen flags with toggle switches
-  - [x] Use prominent warning icons/colors
-  - [x] Allow user to override allergen detection
-  - [x] Show "why" explanations (which ingredient triggered)
-- [x] Add photo zoom/pan capability
-  - [x] Use `photo_view` package
-  - [x] Allow pinch-to-zoom
-  - [x] Allow pan to inspect details
-
-**Files to create:**
-- `lib/features/capture/presentation/review/capture_review_page.dart`
-- `lib/features/capture/presentation/review/widgets/ingredient_list_editor.dart`
-- `lib/features/capture/presentation/review/widgets/allergen_toggle_list.dart`
-- `lib/features/capture/presentation/review/widgets/photo_viewer.dart`
-- `lib/features/capture/presentation/review/capture_review_controller.dart`
-
-#### Review Business Logic
-- [x] Create `CaptureReviewController` (StateNotifier)
-  - [x] Load analysis result by ID
-  - [x] Track edit state (edited ingredients, allergens)
-  - [x] Validate edits before saving
-  - [x] Save confirmed result back to `CaptureResultRepository`
-  - [x] Mark job as reviewed/confirmed
-  - [x] Navigate back after save
-- [x] Update `CaptureResult` model to track review status
-  - [x] Add `isReviewed` boolean field
-  - [x] Add `reviewedAt` timestamp
-  - [x] Add `userEdited` boolean flag
-  - [x] Update Hive adapter
-- [x] Add navigation from History page to Review page
-  - [x] Tap on result card → open review page
-  - [x] Pass result ID as route parameter
-
-**Files to create/modify:**
-- `lib/features/capture/application/capture_review_controller.dart` (new)
-- `lib/features/capture/domain/capture_result.dart` (modify - add review fields)
-- `lib/features/capture/data/hive_adapters/capture_result_adapter.dart` (regenerate)
-
-#### Spanish-First UX Copy
-- [x] Add Spanish labels and help text:
-  - "Revisa los ingredientes"
-  - "Toca para editar"
-  - "Desliza para eliminar"
-  - "Alérgenos detectados"
-  - "Advertencias adicionales"
-  - "Guardar análisis"
-  - "Descartar cambios"
-  - "¿Estás seguro de descartar los cambios?"
-- [x] Add empty state messages:
-  - "No se detectaron ingredientes. Puedes agregarlos manualmente."
-  - "No se detectaron alérgenos."
-- [x] Add validation messages:
-  - "Agrega al menos un ingrediente antes de guardar."
-
-**Dependencies:** M4 must be complete and tested
-
----
-
-### M6 - Today & History Tabs
-**Status:** Complete
-**Goal:** Complete daily food log with filtering, grouping, and detail views
-
-#### History Feed Enhancement
-- [x] Enhance `HistoryPage` with proper date grouping
-  - [x] Group results by date (today, yesterday, this week, older)
-  - [x] Add section headers for date groups
-  - [x] Show day-of-week labels
-  - [x] Add summary statistics per day (total entries, unique ingredients)
-- [x] Add date range filter
-  - [x] "Today" tab (default view)
-  - [x] "This Week" filter
-  - [x] "This Month" filter
-  - [x] Custom date range picker
-  - [x] Filter results from Hive by date
-- [x] Improve result cards
-  - [x] Show thumbnail of photo/barcode
-  - [x] Display product name/title prominently
-  - [x] Show ingredient count and top 3 ingredients
-  - [x] Show allergen badges if any
-  - [x] Add review status indicator (reviewed vs. pending review)
-  - [x] Add tap action to open review page
-- [x] Add pull-to-refresh
-  - [x] Refresh local Hive data
-  - [x] Trigger queue processing
-  - [x] Show sync status (when M7 is implemented)
-- [x] Add search functionality
-  - [x] Search by product name
-  - [x] Search by ingredient
-  - [x] Search by allergen
-  - [x] Filter results based on search query
-- [x] Add empty states
-  - [x] No entries today: "Aún no has registrado comidas hoy. ¡Empieza capturando una foto!"
-  - [x] No entries in date range: "No hay entradas en este período."
-  - [x] No search results: "No se encontraron resultados para '{query}'."
-
-**Files to modify:**
-- `lib/features/history/presentation/history_page.dart` (major refactor)
-
-**Files to create:**
-- `lib/features/history/presentation/widgets/date_group_header.dart`
-- `lib/features/history/presentation/widgets/result_card.dart`
-- `lib/features/history/presentation/widgets/date_filter_tabs.dart`
-- `lib/features/history/presentation/widgets/search_bar.dart`
-- `lib/features/history/application/history_controller.dart`
-- `lib/features/history/application/history_providers.dart`
-
-#### Today Tab Implementation
-- [x] Create dedicated "Today" view (alternative to filtered history)
-  - [x] Show today's entries prominently
-  - [x] Add daily summary card (total meals, calories if available)
-  - [x] Show timeline view (breakfast, lunch, dinner, snacks)
-  - [x] Add quick capture actions
-- [x] Or: Simplify by making History page default to "today" filter
-  - [x] Use tab bar: Today | This Week | All
-  - [x] Keep single `HistoryPage` with filter state
-
-**Decision needed:** Separate Today tab vs. filtered History page? (Ask user or default to filtered approach)
-
-#### Statistics & Insights (Optional Enhancement)
-- [ ] Add summary cards
-  - [ ] Total entries this week/month
-  - [ ] Most common ingredients
-  - [ ] Allergen exposure frequency
-  - [ ] Streak counter (days logged)
-- [ ] Add charts/visualizations (consider `fl_chart` package)
-  - [ ] Entries per day (bar chart)
-  - [ ] Ingredient frequency (pie chart)
-  - [ ] Allergen warnings over time
-
-**Dependencies:** M5 (Review UI) should be complete for best UX, but can proceed in parallel
-
----
 
 ### M7 - Sync-Ready Architecture
 **Status:** Not started
@@ -349,7 +107,6 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 
 #### Unit Tests
 - [ ] Test `CaptureQueueProcessor`
-  - [x] Basic processing flow (already exists)
   - [ ] Error handling and retry logic
   - [ ] TTL cleanup of succeeded jobs
   - [ ] Concurrent processing prevention
@@ -360,14 +117,12 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
   - [ ] Auth error handling (401)
   - [ ] Invalid response handling
 - [ ] Test `CaptureQueueRepository`
-  - [x] Basic CRUD operations (already exists)
   - [ ] Status transitions (pending → processing → succeeded/failed)
   - [ ] Query methods (pendingJobs, failedJobs)
 - [ ] Test `CaptureResultRepository`
-  - [x] Basic save/retrieve (already exists)
   - [ ] Query by date range
   - [ ] Delete operations
-- [ ] Test `FirebaseTokenInterceptor` (once implemented)
+- [ ] Test `FirebaseTokenInterceptor`
   - [ ] Token injection in requests
   - [ ] Token refresh on 401
   - [ ] Error handling when token unavailable
@@ -383,7 +138,7 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
   - [ ] Gallery picker triggers
   - [ ] Barcode scanner navigation works
   - [ ] Error states display properly
-- [ ] Test `CaptureReviewPage` (once M5 is complete)
+- [ ] Test `CaptureReviewPage`
   - [ ] Review screen displays result data
   - [ ] Edit mode toggles correctly
   - [ ] Ingredient add/remove works
@@ -438,7 +193,7 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
   - [ ] Data layer: 70%+ (repositories, API clients)
   - [ ] Presentation layer: 60%+ (widgets, UI logic)
 
-**Dependencies:** M4, M5 should be complete for comprehensive testing
+**Dependencies:** M4, M5, M6 should be complete for comprehensive testing
 
 ---
 
@@ -560,51 +315,23 @@ This file tracks implementation tasks and technical debt for the qkomo-ui Flutte
 
 ## Notes
 
-### Current Implementation Status
-
-✅ **Completed:**
-- Firebase authentication (Apple, Google, email/password)
-- Token persistence with `SecureTokenStore`
-- Camera, gallery, and barcode scanner capture flows
-- Offline queue system with Hive storage
-- Queue processor with retry logic
-- Backend API client for analyze endpoints
-- Basic history page with queue and results lists
-
-⚠️ **Partial:**
-- M4 (Analyze flow) - Core logic exists, but missing Firebase token interceptor in Dio
-- History page - Basic list exists, needs date grouping, filtering, and detail navigation
-
-❌ **Not Started:**
-- Review & edit UI (M5)
-- Complete history/today tabs (M6)
-- Sync-ready architecture (M7)
-- Comprehensive test suite (M8)
-
 ### Dependencies Map
 
 ```
 M4 (Analyze flow completion)
   ↓
-M5 (Review UI) ← can start after M4 validation
-  ↓
-M6 (History enhancement) ← can run parallel with M5
-  ↓
 M7 (Sync architecture) ← requires Backend B6 (Entries API)
                       ← requires Backend B5 (Analysis persistence)
   ↓
-M8 (Testing) ← should cover M5, M6, M7 once complete
+M8 (Testing) ← should cover M4, M7 once complete
 ```
 
 ### Immediate Next Steps (Recommended Order)
 
 1. **Infra:** Run `flutter analyze` and `flutter test` to check current code health
-2. **M4:** Implement Firebase token interceptor in Dio
-3. **M4:** Test backend integration end-to-end with real Firebase auth
-4. **M5:** Build review & edit UI
-5. **M6:** Enhance history page with grouping and filters
-6. **M7:** Start sync architecture (while waiting for backend B5/B6)
-7. **M8:** Add comprehensive test coverage
+2. **M4:** Test backend integration end-to-end with real Firebase auth
+3. **M7:** Start sync architecture (while waiting for backend B5/B6)
+4. **M8:** Add comprehensive test coverage
 
 ### Key Reminders
 
@@ -632,4 +359,4 @@ M8 (Testing) ← should cover M5, M6, M7 once complete
 
 ---
 
-**Maintainer:** Update this file when completing tasks and mirror changes to `../PLAN.md` and `../TODOs.md`.
+**Maintainer:** Update this file when completing tasks. Move completed tasks to DONE.md.

@@ -7,7 +7,8 @@ import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 import 'package:qkomo_ui/features/history/application/history_controller.dart';
 
 /// Provider for history controller
-final historyControllerProvider = StateNotifierProvider<HistoryController, HistoryState>((ref) {
+final historyControllerProvider =
+    StateNotifierProvider<HistoryController, HistoryState>((ref) {
   return HistoryController();
 });
 
@@ -24,12 +25,14 @@ final filteredEntriesProvider = Provider<List<Entry>>((ref) {
   List<Entry> filteredEntries;
   switch (state.dateFilter) {
     case DateFilter.today:
-      filteredEntries =
-          allEntries.where((e) => DateGroupingHelper.isToday(e.result.savedAt)).toList();
+      filteredEntries = allEntries
+          .where((e) => DateGroupingHelper.isToday(e.result.savedAt))
+          .toList();
       break;
     case DateFilter.thisWeek:
-      filteredEntries =
-          allEntries.where((e) => DateGroupingHelper.isThisWeek(e.result.savedAt)).toList();
+      filteredEntries = allEntries
+          .where((e) => DateGroupingHelper.isThisWeek(e.result.savedAt))
+          .toList();
       break;
     case DateFilter.all:
       filteredEntries = allEntries;
@@ -80,7 +83,8 @@ final filteredResultsProvider = Provider<List<CaptureResult>>((ref) {
 });
 
 /// Deprecated: Use groupedEntriesProvider instead
-final groupedResultsProvider = Provider<Map<DateGroup, List<CaptureResult>>>((ref) {
+final groupedResultsProvider =
+    Provider<Map<DateGroup, List<CaptureResult>>>((ref) {
   final results = ref.watch(filteredResultsProvider);
   return DateGroupingHelper.groupResultsByDate(results);
 });

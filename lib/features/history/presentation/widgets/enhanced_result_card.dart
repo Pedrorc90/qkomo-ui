@@ -48,7 +48,9 @@ class EnhancedResultCard extends StatelessWidget {
                       Text(
                         '${result.ingredients.length} ingredientes',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                       ),
                       const SizedBox(height: 4),
@@ -72,8 +74,10 @@ class EnhancedResultCard extends StatelessWidget {
                               allergen,
                               style: const TextStyle(fontSize: 11),
                             ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.errorContainer.withOpacity(0.5),
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .errorContainer
+                                .withOpacity(0.5),
                             padding: EdgeInsets.zero,
                             visualDensity: VisualDensity.compact,
                           );

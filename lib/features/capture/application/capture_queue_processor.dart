@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 
-import '../data/capture_queue_repository.dart';
-import '../data/capture_result_repository.dart';
-import '../domain/capture_analyzer.dart';
-import '../domain/capture_error_messages.dart';
-import '../domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/data/capture_queue_repository.dart';
+import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_analyzer.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_error_messages.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
 
 /// Processes pending capture jobs and persists their results offline.
 class CaptureQueueProcessor {
@@ -43,7 +43,8 @@ class CaptureQueueProcessor {
       for (final job in pending) {
         // Skip jobs that have exceeded max retry attempts
         if (job.attempts >= _maxRetryAttempts) {
-          print('Skipping job ${job.id} - exceeded max retry attempts ($_maxRetryAttempts)');
+          print(
+              'Skipping job ${job.id} - exceeded max retry attempts ($_maxRetryAttempts)');
           continue;
         }
 

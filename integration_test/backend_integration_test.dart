@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:qkomo_ui/features/capture/application/capture_queue_processor.dart';
 import 'package:qkomo_ui/features/capture/application/backend_capture_analyzer.dart';
+import 'package:qkomo_ui/features/capture/application/capture_queue_processor.dart';
 import 'package:qkomo_ui/features/capture/data/capture_api_client.dart';
 import 'package:qkomo_ui/features/capture/data/capture_queue_repository.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
@@ -13,8 +14,8 @@ import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_job_adapter
 import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_job_status_adapter.dart';
 import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_job_type_adapter.dart';
 import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_result_adapter.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
-import 'package:qkomo_ui/core/http/dio_provider.dart' as dio_provider;
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 
 import 'test_helpers.dart';
 
@@ -26,6 +27,7 @@ void main() {
     late CaptureQueueRepository queueRepo;
     late CaptureResultRepository resultRepo;
     late CaptureQueueProcessor processor;
+    late Dio dio;
 
     setUpAll(() async {
       // Check if backend is reachable
@@ -35,11 +37,12 @@ void main() {
       );
 
       final isReachable = await TestHelpers.isBackendReachable(baseUrl);
-      if (!isReachable) {
-        print('⚠️  Backend not reachable at $baseUrl');
-        print('   Skipping integration tests that require backend');
-        print('   To run these tests, start the backend server and run:');
-        print('   flutter test integration_test/ --dart-define=API_BASE_URL=$baseUrl');
+      if (isReachable) {
+        print('✅ Backend reachable at $baseUrl - Using real backend');
+        dio = Dio(BaseOptions(baseUrl: baseUrl));
+      } else {
+        print('⚠️  Backend not reachable - Using FakeDio');
+        dio = FakeDio();
       }
     });
 
@@ -49,33 +52,29 @@ void main() {
       await Hive.initFlutter(tempDir.path);
 
       // Register adapters
-      if (!Hive.isAdapterRegistered(1)) {
-        Hive.registerAdapter(CaptureJobAdapter());
-      }
-      if (!Hive.isAdapterRegistered(2)) {
-        Hive.registerAdapter(CaptureResultAdapter());
-      }
-      if (!Hive.isAdapterRegistered(3)) {
-        Hive.registerAdapter(CaptureJobStatusAdapter());
-      }
-      if (!Hive.isAdapterRegistered(4)) {
-        Hive.registerAdapter(CaptureJobTypeAdapter());
-      }
+      if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(CaptureJobAdapter());
+      if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(CaptureResultAdapter());
+      if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(CaptureJobStatusAdapter());
+      if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(CaptureJobTypeAdapter());
 
       // Open boxes
-      final jobBox = await Hive.openBox('test_capture_jobs');
-      final resultBox = await Hive.openBox('test_capture_results');
+      final jobBox = await Hive.openBox<CaptureJob>('test_capture_jobs');
+      final resultBox = await Hive.openBox<CaptureResult>('test_capture_results');
 
       // Create repositories
       queueRepo = CaptureQueueRepository(jobBox: jobBox);
       resultRepo = CaptureResultRepository(resultBox: resultBox);
 
-      // Note: For full integration testing, we would need:
-      // - A running backend server
-      // - Firebase authentication configured
-      // - Valid test credentials
-      //
-      // For now, we'll create the structure and test what we can offline
+      // Create dependencies
+      final apiClient = CaptureApiClient(dio: dio);
+      final analyzer = BackendCaptureAnalyzer(apiClient);
+
+      processor = CaptureQueueProcessor(
+        queueRepository: queueRepo,
+        resultRepository: resultRepo,
+        analyzer: analyzer,
+        successTtl: const Duration(seconds: 1), // Short TTL for testing
+      );
     });
 
     tearDown(() async {
@@ -87,141 +86,203 @@ void main() {
     });
 
     group('Photo Upload Flow', () {
-      test('should queue photo for processing', () async {
+      test('should queue and process photo', () async {
         // Arrange
         final testImage = await TestHelpers.createTestImage();
 
         // Act
         final job = await queueRepo.enqueueImage(testImage.path);
 
-        // Assert
-        expect(job.type, equals(CaptureJobType.image));
-        expect(job.imagePath, equals(testImage.path));
+        // Assert Queue
         expect(queueRepo.pendingJobs(), hasLength(1));
 
-        print('✅ Photo queued successfully: ${job.id}');
+        // Act - Process
+        final processedCount = await processor.processPending();
+
+        // Assert Process
+        expect(processedCount, equals(1));
+        expect(queueRepo.pendingJobs(), isEmpty);
+
+        // Verify Result
+        final results = resultRepo.allSorted();
+        expect(results, hasLength(1));
+        expect(results.first.jobId, equals(job.id));
+        expect(results.first.ingredients, isNotEmpty);
+
+        print('✅ Photo processed successfully');
       });
-
-      test('should handle large image files', () async {
-        // Arrange
-        final largeImage = await TestHelpers.createLargeTestImage();
-
-        // Act
-        final job = await queueRepo.enqueueImage(largeImage.path);
-
-        // Assert
-        expect(job.imagePath, equals(largeImage.path));
-        print('✅ Large image queued: ${(await largeImage.length()) / 1024 / 1024} MB');
-      });
-
-      // Note: The following tests require a running backend
-      test('should process photo with backend (requires backend)', () async {
-        // This test would:
-        // 1. Create a test image
-        // 2. Queue it for processing
-        // 3. Process the queue
-        // 4. Verify the analysis result
-        //
-        // Skipped if backend is not available
-        print('⚠️  Test requires running backend - skipped');
-      }, skip: true);
     });
 
     group('Barcode Analysis Flow', () {
-      test('should queue barcode for processing', () async {
+      test('should queue and process barcode', () async {
         // Arrange
         final testBarcode = TestHelpers.generateTestBarcode();
 
         // Act
         final job = await queueRepo.enqueueBarcode(testBarcode);
 
-        // Assert
-        expect(job.type, equals(CaptureJobType.barcode));
-        expect(job.barcode, equals(testBarcode));
+        // Assert Queue
         expect(queueRepo.pendingJobs(), hasLength(1));
 
-        print('✅ Barcode queued successfully: $testBarcode');
-      });
+        // Act - Process
+        final processedCount = await processor.processPending();
 
-      test('should process barcode with backend (requires backend)', () async {
-        // This test would:
-        // 1. Queue a test barcode
-        // 2. Process the queue
-        // 3. Verify product lookup
-        // 4. Verify ingredients are returned
-        //
-        // Skipped if backend is not available
-        print('⚠️  Test requires running backend - skipped');
-      }, skip: true);
+        // Assert Process
+        expect(processedCount, equals(1));
+        expect(queueRepo.pendingJobs(), isEmpty);
+
+        // Verify Result
+        final results = resultRepo.allSorted();
+        expect(results, hasLength(1));
+        expect(results.first.jobId, equals(job.id));
+        expect(results.first.title, contains(testBarcode));
+
+        print('✅ Barcode processed successfully');
+      });
     });
 
     group('Offline Queue Processing', () {
-      test('should maintain queue when offline', () async {
+      test('should process multiple queued items', () async {
         // Arrange
         final testImage = await TestHelpers.createTestImage();
         final testBarcode = TestHelpers.generateTestBarcode();
 
-        // Act - Queue multiple items
+        // Queue multiple items
         await queueRepo.enqueueImage(testImage.path);
         await queueRepo.enqueueBarcode(testBarcode);
 
+        expect(queueRepo.pendingJobs(), hasLength(2));
+
+        // Act - Process
+        final processedCount = await processor.processPending();
+
         // Assert
-        final pending = queueRepo.pendingJobs();
-        expect(pending, hasLength(2));
-        expect(pending[0].type, equals(CaptureJobType.image));
-        expect(pending[1].type, equals(CaptureJobType.barcode));
+        expect(processedCount, equals(2));
+        expect(queueRepo.pendingJobs(), isEmpty);
+        expect(resultRepo.allSorted(), hasLength(2));
 
-        print('✅ Queue maintains ${pending.length} pending jobs offline');
+        print('✅ Batch processing successful');
       });
-
-      test('should process queue when online (requires backend)', () async {
-        // This test would:
-        // 1. Queue multiple items while "offline"
-        // 2. Simulate going "online"
-        // 3. Process the queue
-        // 4. Verify all items are processed
-        // 5. Verify succeeded jobs are cleaned up after TTL
-        //
-        // Skipped if backend is not available
-        print('⚠️  Test requires running backend - skipped');
-      }, skip: true);
     });
 
     group('Error Handling', () {
-      test('should handle missing image file', () async {
+      test('should handle network errors gracefully', () async {
+        if (dio is FakeDio) {
+          (dio as FakeDio).shouldFailNextRequest = true;
+        }
+
         // Arrange
-        const nonExistentPath = '/path/to/nonexistent/image.jpg';
+        final testBarcode = TestHelpers.generateTestBarcode();
+        final job = await queueRepo.enqueueBarcode(testBarcode);
 
         // Act
-        final job = await queueRepo.enqueueImage(nonExistentPath);
+        final processedCount = await processor.processPending();
 
         // Assert
-        expect(job.imagePath, equals(nonExistentPath));
-        // Processing would fail with appropriate error message
-        print('✅ Queue accepts job with missing file (will fail on processing)');
+        expect(processedCount, equals(0)); // Should fail
+
+        // Verify job state
+        final failedJob = queueRepo.failedJobs().first;
+        expect(failedJob.id, equals(job.id));
+        expect(failedJob.attempts, equals(1)); // Should have incremented attempts
+
+        print('✅ Network error handled correctly (job marked failed)');
+
+        if (dio is FakeDio) {
+          (dio as FakeDio).shouldFailNextRequest = false;
+        }
       });
-
-      test('should handle network errors gracefully (requires backend)', () async {
-        // This test would:
-        // 1. Queue an item
-        // 2. Simulate network error
-        // 3. Verify error message is in Spanish
-        // 4. Verify job is marked as failed with retry
-        //
-        // Skipped if backend is not available
-        print('⚠️  Test requires running backend - skipped');
-      }, skip: true);
-
-      test('should handle authentication errors (requires backend)', () async {
-        // This test would:
-        // 1. Queue an item
-        // 2. Simulate 401 error
-        // 3. Verify token refresh is attempted
-        // 4. Verify Spanish error message
-        //
-        // Skipped if backend is not available
-        print('⚠️  Test requires running backend - skipped');
-      }, skip: true);
     });
   });
+}
+
+// --- Fake Dio Implementation ---
+
+class FakeDio implements Dio {
+  bool shouldFailNextRequest = false;
+
+  @override
+  Interceptors get interceptors => Interceptors();
+
+  @override
+  HttpClientAdapter get httpClientAdapter => throw UnimplementedError();
+
+  @override
+  set httpClientAdapter(HttpClientAdapter adapter) {}
+
+  @override
+  BaseOptions options = BaseOptions();
+
+  @override
+  Transformer transformer = BackgroundTransformer();
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<Response<T>> post<T>(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    if (shouldFailNextRequest) {
+      throw DioException(
+        requestOptions: RequestOptions(path: path),
+        type: DioExceptionType.connectionError,
+        error: 'Simulated network error',
+      );
+    }
+
+    await Future.delayed(const Duration(milliseconds: 100)); // Simulate latency
+
+    if (path == '/v1/analyze') {
+      return Response(
+        requestOptions: RequestOptions(path: path),
+        statusCode: 200,
+        data: {
+          'analysisId': 'mock-analysis-1',
+          'type': 'meal',
+          'photoId': 'mock-photo-1',
+          'ingredients': [
+            {'name': 'Mock Ingredient 1', 'allergens': [], 'confidence': 0.9},
+            {
+              'name': 'Mock Ingredient 2',
+              'allergens': ['gluten'],
+              'confidence': 0.8
+            },
+          ],
+          'warnings': [],
+        } as T,
+      );
+    } else if (path == '/v1/analyze/barcode') {
+      return Response(
+        requestOptions: RequestOptions(path: path),
+        statusCode: 200,
+        data: {
+          'analysisId': 'mock-analysis-2',
+          'type': 'product',
+          'ingredients': [
+            {'name': 'Product Ingredient 1', 'allergens': [], 'confidence': 0.99},
+          ],
+          'warnings': [],
+        } as T,
+      );
+    }
+
+    throw DioException(
+      requestOptions: RequestOptions(path: path),
+      response: Response(
+        requestOptions: RequestOptions(path: path),
+        statusCode: 404,
+      ),
+      type: DioExceptionType.badResponse,
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

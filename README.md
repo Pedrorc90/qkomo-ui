@@ -69,3 +69,12 @@ Run integration tests:
 ```bash
 flutter test integration_test/backend_integration_test.dart
 ```
+Para arrancar el emulador de Android, ejecuta:
+```bash
+flutter emulators --launch android_emulator
+```
+
+Después de arrancar el emulador, ejecuta:
+```bash
+flutter run
+``` 

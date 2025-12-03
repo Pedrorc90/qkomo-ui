@@ -7,10 +7,10 @@ import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/auth/domain/auth_failure.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
-import 'auth_action_typedefs.dart';
-import 'email_auth_dialog.dart';
-import 'email_auth_result.dart';
-import 'sign_in_content.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/auth_action_typedefs.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/email_auth_dialog.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/email_auth_result.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/sign_in_content.dart';
 
 class SignInPage extends ConsumerWidget {
   const SignInPage({super.key});
@@ -34,8 +34,10 @@ class SignInPage extends ConsumerWidget {
                   controller: controller,
                   isLoading: isLoading,
                   appleEnabled: _appleSignInAvailable,
-                  runAuthAction: (action) => _runAuthAction(context, ref, action),
-                  onEmailRequested: () => _promptEmailSignIn(context, ref, controller),
+                  runAuthAction: (action) =>
+                      _runAuthAction(context, ref, action),
+                  onEmailRequested: () =>
+                      _promptEmailSignIn(context, ref, controller),
                 ),
               ),
             ),
@@ -51,7 +53,8 @@ class SignInPage extends ConsumerWidget {
         defaultTargetPlatform == TargetPlatform.macOS;
   }
 
-  Future<void> _runAuthAction(BuildContext context, WidgetRef ref, AuthAction action) async {
+  Future<void> _runAuthAction(
+      BuildContext context, WidgetRef ref, AuthAction action) async {
     final progress = ref.read(authInProgressProvider.notifier);
     if (progress.state) return;
     progress.state = true;
@@ -86,6 +89,7 @@ class SignInPage extends ConsumerWidget {
   }
 
   void _showError(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }

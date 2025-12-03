@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'auth_controller.dart';
-import 'secure_token_store.dart';
+import 'package:qkomo_ui/features/auth/application/auth_controller.dart';
+import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
   return FirebaseAuth.instance;

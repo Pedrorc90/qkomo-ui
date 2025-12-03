@@ -42,20 +42,20 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions appleAndroid = FirebaseOptions(
     apiKey: String.fromEnvironment('FIREBASE_API_KEY',
-        defaultValue: 'YOUR_MOBILE_API_KEY'),
+        defaultValue: 'AIzaSyAnyYYQdCGEB2bclw-jibAO5dd7v7Vm83Q'),
     appId: String.fromEnvironment(
       'FIREBASE_APP_ID',
-      defaultValue: '1:000000000000:ios:placeholder',
+      defaultValue: '1:101489429841:android:e1982629f39c2c6333d770',
     ),
     messagingSenderId: String.fromEnvironment(
       'FIREBASE_MESSAGING_SENDER_ID',
-      defaultValue: '000000000000',
+      defaultValue: '101489429841',
     ),
     projectId: String.fromEnvironment('FIREBASE_PROJECT_ID',
-        defaultValue: 'qkomo-placeholder'),
+        defaultValue: 'qkomo-prod'),
     storageBucket: String.fromEnvironment(
       'FIREBASE_STORAGE_BUCKET',
-      defaultValue: 'qkomo-placeholder.appspot.com',
+      defaultValue: 'qkomo-prod.firebasestorage.app',
     ),
     iosClientId:
         String.fromEnvironment('FIREBASE_IOS_CLIENT_ID', defaultValue: ''),

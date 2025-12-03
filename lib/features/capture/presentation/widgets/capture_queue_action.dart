@@ -97,7 +97,10 @@ class CaptureQueueAction extends ConsumerWidget {
               },
               error: (error, _) => Text(
                 'No se pudo leer la cola: $error',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Colors.red),
               ),
               loading: () => const Text('Leyendo cola...'),
             ),

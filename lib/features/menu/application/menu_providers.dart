@@ -56,13 +56,15 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
   final weekEnd = weekStart.add(const Duration(days: 7));
 
   return allMeals.where((meal) {
-    return meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
+    return meal.scheduledFor
+            .isAfter(weekStart.subtract(const Duration(days: 1))) &&
         meal.scheduledFor.isBefore(weekEnd);
   }).toList();
 });
 
 // Controller provider
-final menuControllerProvider = StateNotifierProvider<MenuController, MenuState>((ref) {
+final menuControllerProvider =
+    StateNotifierProvider<MenuController, MenuState>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
   return MenuController(repository);
 });

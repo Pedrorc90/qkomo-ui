@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 
-import '../../domain/capture_result.dart';
-import '../../../menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
   @override

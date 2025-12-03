@@ -30,7 +30,9 @@ class GalleryImportView extends StatelessWidget {
           FilledButton.icon(
             onPressed: state.isProcessing ? null : onImport,
             icon: const Icon(Icons.photo_library_outlined),
-            label: Text(state.isProcessing ? 'Abriendo galería...' : 'Elegir desde galería'),
+            label: Text(state.isProcessing
+                ? 'Abriendo galería...'
+                : 'Elegir desde galería'),
           ),
           if (state.isProcessing)
             const Padding(

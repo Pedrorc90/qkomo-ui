@@ -14,7 +14,8 @@ class WeeklyMenuPage extends ConsumerWidget {
     final dateFormat = DateFormat('d MMM', 'es');
 
     final weekEnd = weekStart.add(const Duration(days: 6));
-    final weekRange = '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
+    final weekRange =
+        '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
 
     return Scaffold(
       appBar: AppBar(

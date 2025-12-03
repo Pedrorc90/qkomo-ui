@@ -39,7 +39,8 @@ class CaptureState {
     return CaptureState(
       mode: clearMode ? null : (mode ?? this.mode),
       imageFile: clearImage ? null : (imageFile ?? this.imageFile),
-      scannedBarcode: clearBarcode ? null : (scannedBarcode ?? this.scannedBarcode),
+      scannedBarcode:
+          clearBarcode ? null : (scannedBarcode ?? this.scannedBarcode),
       message: clearMessage ? null : (message ?? this.message),
       error: clearError ? null : (error ?? this.error),
       isProcessing: isProcessing ?? this.isProcessing,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../features/auth/application/auth_providers.dart';
-import '../features/auth/presentation/sign_in/sign_in_page.dart';
-import '../features/shell/presentation/root_shell.dart';
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/sign_in_page.dart';
+import 'package:qkomo_ui/features/shell/presentation/root_shell.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key, required this.child});

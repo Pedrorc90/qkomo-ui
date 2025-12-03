@@ -11,8 +11,7 @@ class CaptureErrorMessages {
       'Sesión expirada. Por favor, inicia sesión nuevamente.';
 
   // Server errors
-  static const serverError =
-      'Error del servidor. Intenta de nuevo más tarde.';
+  static const serverError = 'Error del servidor. Intenta de nuevo más tarde.';
 
   // Validation errors
   static const invalidImageFormat =

@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:qkomo_ui/core/http/firebase_token_interceptor.dart';
 import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
 
 // Simple manual mocks for testing
@@ -33,25 +32,25 @@ void main() {
     test('should be instantiable', () {
       // This is a basic smoke test to ensure the interceptor can be created
       // Full integration testing would require a running backend
-      
+
       final tokenStore = FakeSecureTokenStore();
-      
+
       // Note: We can't easily test FirebaseAuth without mocking
       // This test just verifies the class structure is correct
-      
+
       expect(tokenStore, isNotNull);
     });
 
     test('FakeSecureTokenStore should store and retrieve tokens', () async {
       final store = FakeSecureTokenStore();
-      
+
       // Initially null
       expect(await store.readToken(), isNull);
-      
+
       // Save a token
       await store.save('test-token-123');
       expect(await store.readToken(), equals('test-token-123'));
-      
+
       // Clear token
       await store.clear();
       expect(await store.readToken(), isNull);
@@ -61,7 +60,7 @@ void main() {
       // Test that RequestOptions can be created and modified
       final options = RequestOptions(path: '/test');
       options.headers['Authorization'] = 'Bearer test-token';
-      
+
       expect(options.headers['Authorization'], equals('Bearer test-token'));
     });
   });

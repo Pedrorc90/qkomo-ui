@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:qkomo_ui/features/auth/application/auth_controller.dart';
 
-import 'auth_action_typedefs.dart';
-import 'sign_in_button_column.dart';
-import 'sign_in_header.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/auth_action_typedefs.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/sign_in_button_column.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/sign_in_header.dart';
 
 class SignInContent extends StatelessWidget {
   const SignInContent({

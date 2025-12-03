@@ -42,7 +42,8 @@ class RootShell extends ConsumerWidget {
         selectedIndex: index,
         height: 74,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        onDestinationSelected: (value) => ref.read(bottomNavIndexProvider.notifier).state = value,
+        onDestinationSelected: (value) =>
+            ref.read(bottomNavIndexProvider.notifier).state = value,
         destinations: [
           const NavigationDestination(
             icon: Icon(Icons.home_outlined),
@@ -65,7 +66,9 @@ class RootShell extends ConsumerWidget {
             label: 'Historial',
           ),
           NavigationDestination(
-            icon: Icon(themeType == AppThemeType.warm ? Icons.person_outline : Icons.person),
+            icon: Icon(themeType == AppThemeType.warm
+                ? Icons.person_outline
+                : Icons.person),
             selectedIcon: const Icon(Icons.person),
             label: 'Perfil',
           ),

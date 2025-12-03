@@ -5,7 +5,8 @@ enum Environment {
 }
 
 class EnvConfig {
-  static const appEnv = String.fromEnvironment('APP_ENV', defaultValue: 'local');
+  static const appEnv =
+      String.fromEnvironment('APP_ENV', defaultValue: 'local');
 
   static Environment get environment {
     switch (appEnv) {

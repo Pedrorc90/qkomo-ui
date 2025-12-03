@@ -1,7 +1,7 @@
-import '../data/capture_queue_repository.dart';
-import '../data/capture_result_repository.dart';
-import '../domain/capture_job.dart';
-import '../domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/data/capture_queue_repository.dart';
+import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 
 /// Handles offline queue operations for capture jobs and their results.
 class CaptureQueueService {

@@ -38,17 +38,23 @@ class CaptureQueueRepository {
   }
 
   List<CaptureJob> pendingJobs() {
-    return _jobBox.values.where((job) => job.status == CaptureJobStatus.pending).toList()
+    return _jobBox.values
+        .where((job) => job.status == CaptureJobStatus.pending)
+        .toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
   List<CaptureJob> failedJobs() {
-    return _jobBox.values.where((job) => job.status == CaptureJobStatus.failed).toList()
+    return _jobBox.values
+        .where((job) => job.status == CaptureJobStatus.failed)
+        .toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
   List<CaptureJob> processingJobs() {
-    return _jobBox.values.where((job) => job.status == CaptureJobStatus.processing).toList()
+    return _jobBox.values
+        .where((job) => job.status == CaptureJobStatus.processing)
+        .toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
@@ -57,14 +63,17 @@ class CaptureQueueRepository {
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
-  int get pendingCount =>
-      _jobBox.values.where((job) => job.status == CaptureJobStatus.pending).length;
+  int get pendingCount => _jobBox.values
+      .where((job) => job.status == CaptureJobStatus.pending)
+      .length;
 
-  int get failedCount =>
-      _jobBox.values.where((job) => job.status == CaptureJobStatus.failed).length;
+  int get failedCount => _jobBox.values
+      .where((job) => job.status == CaptureJobStatus.failed)
+      .length;
 
-  int get processingCount =>
-      _jobBox.values.where((job) => job.status == CaptureJobStatus.processing).length;
+  int get processingCount => _jobBox.values
+      .where((job) => job.status == CaptureJobStatus.processing)
+      .length;
 
   Future<void> markProcessing(String id) async {
     final job = _jobBox.get(id);
@@ -131,7 +140,8 @@ class CaptureQueueRepository {
       final isSuccess = job.status == CaptureJobStatus.succeeded;
       final isOld = olderThan == null
           ? true
-          : job.updatedAt != null && now.difference(job.updatedAt!).compareTo(olderThan) > 0;
+          : job.updatedAt != null &&
+              now.difference(job.updatedAt!).compareTo(olderThan) > 0;
       return isSuccess && isOld;
     }).map((job) => job.id);
     await _jobBox.deleteAll(toDelete);

@@ -1,9 +1,9 @@
 import 'package:image_picker/image_picker.dart';
 
-import '../domain/capture_analyzer.dart';
-import '../domain/capture_job.dart';
-import '../domain/capture_job_type.dart';
-import '../domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_analyzer.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 
 /// Local mock analyzer used offline until backend wiring (M4) is in place.
 class MockCaptureAnalyzer implements CaptureAnalyzer {

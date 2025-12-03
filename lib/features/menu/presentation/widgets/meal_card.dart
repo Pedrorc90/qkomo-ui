@@ -60,7 +60,8 @@ class MealCard extends ConsumerWidget {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: const Text('Eliminar comida'),
-                      content: Text('¿Estás seguro de que quieres eliminar "${meal.name}"?'),
+                      content: Text(
+                          '¿Estás seguro de que quieres eliminar "${meal.name}"?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
@@ -75,7 +76,9 @@ class MealCard extends ConsumerWidget {
                   );
 
                   if (confirmed == true) {
-                    ref.read(menuControllerProvider.notifier).deleteMeal(meal.id);
+                    ref
+                        .read(menuControllerProvider.notifier)
+                        .deleteMeal(meal.id);
                   }
                 },
               ),

@@ -1,11 +1,11 @@
 import 'package:image_picker/image_picker.dart';
 
-import '../data/capture_api_client.dart';
-import '../data/models/analyze_response_dto.dart';
-import '../domain/capture_analyzer.dart';
-import '../domain/capture_job.dart';
-import '../domain/capture_job_type.dart';
-import '../domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/data/capture_api_client.dart';
+import 'package:qkomo_ui/features/capture/data/models/analyze_response_dto.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_analyzer.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 
 /// Analyzer that calls the backend `/v1/analyze` and `/v1/analyze/barcode` endpoints.
 class BackendCaptureAnalyzer implements CaptureAnalyzer {
@@ -17,7 +17,8 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
   Future<CaptureResult> analyze(CaptureJob job, {XFile? file}) async {
     switch (job.type) {
       case CaptureJobType.image:
-        final imageFile = file ?? (job.imagePath != null ? XFile(job.imagePath!) : null);
+        final imageFile =
+            file ?? (job.imagePath != null ? XFile(job.imagePath!) : null);
 
         if (imageFile == null) {
           throw Exception('Falta la ruta de la imagen para este trabajo.');
@@ -42,7 +43,8 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     final notes = dto.warnings.isNotEmpty ? dto.warnings.join('\n') : null;
     final title = switch (job.type) {
       CaptureJobType.barcode => 'Producto código ${job.barcode}',
-      CaptureJobType.image => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura ${job.id}',
+      CaptureJobType.image =>
+        dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura ${job.id}',
     };
 
     return CaptureResult(

@@ -3,7 +3,6 @@
 .packages
 build/
 ios/
-android/
 macos/
 linux/
 windows/

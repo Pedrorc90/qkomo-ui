@@ -99,8 +99,7 @@ class TestHelpers {
   static Future<void> cleanupTestFiles() async {
     final tempDir = await getTemporaryDirectory();
     final testFiles = tempDir.listSync().where((file) {
-      return file.path.contains('test_image') ||
-          file.path.contains('test_');
+      return file.path.contains('test_image') || file.path.contains('test_');
     });
 
     for (final file in testFiles) {

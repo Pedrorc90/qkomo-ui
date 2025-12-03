@@ -19,8 +19,17 @@ class DayMealSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final repository = ref.watch(mealRepositoryProvider);
-    final mealsOfDay = repository.forDay(date);
+    final weekMeals = ref.watch(weekMealsProvider);
+    final mealsOfDay = weekMeals.where((meal) {
+      final mealDate = meal.scheduledFor;
+      return mealDate.year == date.year &&
+          mealDate.month == date.month &&
+          mealDate.day == date.day;
+    }).toList();
+
+    // Sort meals by type
+    final sortedMeals = mealsOfDay.toList()
+      ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 
     final dateFormat = DateFormat('d MMM', 'es');
 
@@ -37,9 +46,18 @@ class DayMealSection extends ConsumerWidget {
             ),
           ),
         ),
-        ...MealType.values.map((mealType) {
-          final meal = mealsOfDay.where((m) => m.mealType == mealType).firstOrNull;
-
+        if (sortedMeals.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              'No hay comidas planificadas',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ...sortedMeals.map((meal) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Column(
@@ -48,13 +66,13 @@ class DayMealSection extends ConsumerWidget {
                 Row(
                   children: [
                     Icon(
-                      _getMealIcon(mealType),
+                      _getMealIcon(meal.mealType),
                       size: 20,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      mealType.displayName,
+                      meal.mealType.displayName,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -64,45 +82,55 @@ class DayMealSection extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                if (meal != null)
-                  MealCard(meal: meal)
-                else
-                  Card(
-                    child: InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => MealFormDialog(
-                            date: date,
-                            mealType: mealType,
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Agregar comida',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                MealCard(meal: meal),
               ],
             ),
           );
         }),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => MealFormDialog(
+                    date: date,
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Agregar comida',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
         const Divider(height: 24),
       ],
     );

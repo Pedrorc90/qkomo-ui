@@ -39,7 +39,8 @@ class DaySection extends ConsumerWidget {
               if (entries.isNotEmpty)
                 TextButton(
                   onPressed: () {
-                    ref.read(bottomNavIndexProvider.notifier).state = 3; // History tab
+                    ref.read(bottomNavIndexProvider.notifier).state =
+                        3; // History tab
                   },
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,
@@ -83,7 +84,10 @@ class _EmptyStateCard extends StatelessWidget {
             Icon(
               Icons.no_meals_outlined,
               size: 48,
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurfaceVariant
+                  .withOpacity(0.5),
             ),
             const SizedBox(height: 12),
             Text(
@@ -136,11 +140,16 @@ class _EntryCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.4),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .withOpacity(0.4),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
-                    entry.isManualEntry ? Icons.edit_note : Icons.camera_alt_outlined,
+                    entry.isManualEntry
+                        ? Icons.edit_note
+                        : Icons.camera_alt_outlined,
                     color: Theme.of(context).colorScheme.primary,
                     size: 24,
                   ),
@@ -152,9 +161,10 @@ class _EntryCard extends StatelessWidget {
                     children: [
                       Text(
                         entry.title ?? 'Sin título',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -162,7 +172,9 @@ class _EntryCard extends StatelessWidget {
                       Text(
                         '${entry.ingredients.length} ingredientes',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                       ),
                     ],
@@ -170,9 +182,13 @@ class _EntryCard extends StatelessWidget {
                 ),
                 if (entry.allergens.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.5),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .errorContainer
+                          .withOpacity(0.5),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(

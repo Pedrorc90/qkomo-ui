@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
@@ -12,6 +11,7 @@ import 'package:qkomo_ui/features/history/presentation/widgets/date_filter_tabs.
 import 'package:qkomo_ui/features/history/presentation/widgets/date_group_header.dart';
 import 'package:qkomo_ui/features/history/presentation/widgets/enhanced_result_card.dart';
 import 'package:qkomo_ui/features/history/presentation/widgets/history_search_bar.dart';
+import 'package:qkomo_ui/features/statistics/presentation/statistics_page.dart';
 
 class HistoryPage extends ConsumerWidget {
   const HistoryPage({super.key});
@@ -26,8 +26,19 @@ class HistoryPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Historial'),
         backgroundColor: Colors.transparent,
-        actions: const [
-          HistorySearchBar(),
+        actions: [
+          const HistorySearchBar(),
+          IconButton(
+            icon: const Icon(Icons.bar_chart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StatisticsPage(),
+                ),
+              );
+            },
+          ),
           SizedBox(width: 8),
         ],
       ),
@@ -48,10 +59,10 @@ class HistoryPage extends ConsumerWidget {
             ),
 
             // Date filter tabs
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: const DateFilterTabs(),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: DateFilterTabs(),
               ),
             ),
 
@@ -136,7 +147,8 @@ class HistoryPage extends ConsumerWidget {
             for (final entry in entries) {
               widgets.add(
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Stack(
                     children: [
                       EnhancedResultCard(
@@ -145,7 +157,8 @@ class HistoryPage extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CaptureReviewPage(resultId: entry.id),
+                              builder: (context) =>
+                                  CaptureReviewPage(resultId: entry.id),
                             ),
                           );
                         },
@@ -220,7 +233,8 @@ class HistoryPage extends ConsumerWidget {
     } else {
       switch (state.dateFilter) {
         case DateFilter.today:
-          message = 'Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!';
+          message =
+              'Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!';
           icon = Icons.camera_alt_outlined;
           break;
         case DateFilter.thisWeek:
@@ -261,6 +275,8 @@ class HistoryPage extends ConsumerWidget {
 
   Future<void> _onRefresh(WidgetRef ref) async {
     // Trigger queue processing
-    await ref.read(captureQueueProcessControllerProvider.notifier).processPending();
+    await ref
+        .read(captureQueueProcessControllerProvider.notifier)
+        .processPending();
   }
 }

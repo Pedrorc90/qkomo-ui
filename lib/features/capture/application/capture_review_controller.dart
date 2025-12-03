@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../entry/domain/entry.dart';
-import '../../entry/domain/entry_repository.dart';
-import '../../entry/domain/sync_status.dart';
-import '../data/capture_result_repository.dart';
-import '../domain/capture_result.dart';
+import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
+import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 
 /// State for the capture review screen
 class CaptureReviewState {
@@ -103,7 +103,8 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
 
   /// Remove an ingredient
   void removeIngredient(String ingredient) {
-    final newIngredients = state.editedIngredients.where((i) => i != ingredient).toList();
+    final newIngredients =
+        state.editedIngredients.where((i) => i != ingredient).toList();
 
     state = state.copyWith(
       editedIngredients: newIngredients,
@@ -119,8 +120,9 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
     }
 
     final trimmed = newIngredient.trim();
-    final newIngredients =
-        state.editedIngredients.map((i) => i == oldIngredient ? trimmed : i).toList();
+    final newIngredients = state.editedIngredients
+        .map((i) => i == oldIngredient ? trimmed : i)
+        .toList();
 
     state = state.copyWith(
       editedIngredients: newIngredients,

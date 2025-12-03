@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'models/analyze_response_dto.dart';
+import 'package:qkomo_ui/features/capture/data/models/analyze_response_dto.dart';
 
 class CaptureApiClient {
   CaptureApiClient({

@@ -35,7 +35,10 @@ class SignInHeader extends StatelessWidget {
           child: Text(
             'Captura ingredientes, analiza etiquetas y entiende lo que comes con IA.',
             style: textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.8),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurfaceVariant
+                  .withOpacity(0.8),
               height: 1.5,
             ),
             textAlign: TextAlign.center,

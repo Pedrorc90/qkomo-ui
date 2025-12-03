@@ -9,12 +9,12 @@ class MealFormDialog extends ConsumerStatefulWidget {
   const MealFormDialog({
     super.key,
     required this.date,
-    required this.mealType,
+    this.mealType,
     this.existingMeal,
   });
 
   final DateTime date;
-  final MealType mealType;
+  final MealType? mealType;
   final Meal? existingMeal;
 
   @override
@@ -26,10 +26,14 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   final _nameController = TextEditingController();
   final _notesController = TextEditingController();
   final List<TextEditingController> _ingredientControllers = [];
+  late MealType _selectedMealType;
 
   @override
   void initState() {
     super.initState();
+    _selectedMealType =
+        widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
+
     if (widget.existingMeal != null) {
       _nameController.text = widget.existingMeal!.name;
       _notesController.text = widget.existingMeal!.notes ?? '';
@@ -71,8 +75,10 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveMeal() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients =
-        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
+    final ingredients = _ingredientControllers
+        .map((c) => c.text.trim())
+        .where((text) => text.isNotEmpty)
+        .toList();
 
     if (ingredients.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,17 +94,21 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         id: widget.existingMeal!.id,
         name: _nameController.text.trim(),
         ingredients: ingredients,
-        mealType: widget.mealType,
+        mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
       );
     } else {
       await controller.createMeal(
         name: _nameController.text.trim(),
         ingredients: ingredients,
-        mealType: widget.mealType,
+        mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
       );
     }
 
@@ -114,8 +124,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     return AlertDialog(
       title: Text(
         widget.existingMeal != null
-            ? 'Editar ${widget.mealType.displayName}'
-            : 'Agregar ${widget.mealType.displayName}',
+            ? 'Editar ${_selectedMealType.displayName}'
+            : 'Agregar comida',
       ),
       content: SingleChildScrollView(
         child: Form(
@@ -124,6 +134,27 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Meal Type Selector
+              DropdownButtonFormField<MealType>(
+                value: _selectedMealType,
+                decoration: const InputDecoration(
+                  labelText: 'Tipo de comida',
+                ),
+                items: MealType.values.map((type) {
+                  return DropdownMenuItem(
+                    value: type,
+                    child: Text(type.displayName),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _selectedMealType = value;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -194,7 +225,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: menuState.isLoading ? null : () => Navigator.of(context).pop(),
+          onPressed:
+              menuState.isLoading ? null : () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
         FilledButton(

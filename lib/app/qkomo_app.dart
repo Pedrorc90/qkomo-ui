@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../features/home/presentation/home_page.dart';
-import '../theme/theme_providers.dart';
-import 'auth_gate.dart';
+import 'package:qkomo_ui/features/home/presentation/home_page.dart';
+import 'package:qkomo_ui/theme/theme_providers.dart';
+import 'package:qkomo_ui/app/auth_gate.dart';
 
 class QkomoApp extends ConsumerWidget {
   const QkomoApp({super.key});

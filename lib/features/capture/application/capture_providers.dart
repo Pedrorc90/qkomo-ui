@@ -33,7 +33,8 @@ final capturePermissionsProvider = Provider<CapturePermissions>((ref) {
   return CapturePermissions();
 });
 
-final captureControllerProvider = StateNotifierProvider<CaptureController, CaptureState>((ref) {
+final captureControllerProvider =
+    StateNotifierProvider<CaptureController, CaptureState>((ref) {
   final picker = ref.watch(imagePickerProvider);
   final permissions = ref.watch(capturePermissionsProvider);
   return CaptureController(picker, permissions);
@@ -52,7 +53,8 @@ final captureQueueRepositoryProvider = Provider<CaptureQueueRepository>((ref) {
   return CaptureQueueRepository(jobBox: box);
 });
 
-final captureResultRepositoryProvider = Provider<CaptureResultRepository>((ref) {
+final captureResultRepositoryProvider =
+    Provider<CaptureResultRepository>((ref) {
   final box = ref.watch(captureResultBoxProvider);
   return CaptureResultRepository(resultBox: box);
 });
@@ -88,13 +90,15 @@ final captureQueueProcessorProvider = Provider<CaptureQueueProcessor>((ref) {
 });
 
 final captureEnqueueControllerProvider =
-    StateNotifierProvider<CaptureEnqueueController, AsyncValue<CaptureJob?>>((ref) {
+    StateNotifierProvider<CaptureEnqueueController, AsyncValue<CaptureJob?>>(
+        (ref) {
   final service = ref.watch(captureQueueServiceProvider);
   return CaptureEnqueueController(service);
 });
 
 final captureQueueProcessControllerProvider =
-    StateNotifierProvider<CaptureQueueProcessController, AsyncValue<int>>((ref) {
+    StateNotifierProvider<CaptureQueueProcessController, AsyncValue<int>>(
+        (ref) {
   final processor = ref.watch(captureQueueProcessorProvider);
   final queueRepo = ref.watch(captureQueueRepositoryProvider);
   return CaptureQueueProcessController(processor, queueRepo);
@@ -104,7 +108,9 @@ final pendingCaptureJobsProvider = StreamProvider<List<CaptureJob>>((ref) {
   final box = ref.watch(captureJobBoxProvider);
 
   List<CaptureJob> _buildPending() {
-    return box.values.where((job) => job.status == CaptureJobStatus.pending).toList()
+    return box.values
+        .where((job) => job.status == CaptureJobStatus.pending)
+        .toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
@@ -126,7 +132,9 @@ final failedCaptureJobsProvider = StreamProvider<List<CaptureJob>>((ref) {
   final box = ref.watch(captureJobBoxProvider);
 
   List<CaptureJob> _buildFailed() {
-    return box.values.where((job) => job.status == CaptureJobStatus.failed).toList()
+    return box.values
+        .where((job) => job.status == CaptureJobStatus.failed)
+        .toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
@@ -148,7 +156,9 @@ final processingCaptureJobsProvider = StreamProvider<List<CaptureJob>>((ref) {
   final box = ref.watch(captureJobBoxProvider);
 
   List<CaptureJob> _buildProcessing() {
-    return box.values.where((job) => job.status == CaptureJobStatus.processing).toList()
+    return box.values
+        .where((job) => job.status == CaptureJobStatus.processing)
+        .toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
@@ -250,14 +260,14 @@ final captureResultsProvider = StreamProvider<List<CaptureResult>>((ref) {
 });
 
 final textEntryControllerProvider =
-    StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>((ref) {
+    StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>(
+        (ref) {
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   return TextEntryController(resultRepo);
 });
 
-final captureReviewControllerProvider =
-    StateNotifierProvider.family<CaptureReviewController, CaptureReviewState, String>(
-        (ref, resultId) {
+final captureReviewControllerProvider = StateNotifierProvider.family<
+    CaptureReviewController, CaptureReviewState, String>((ref, resultId) {
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   final entryRepo = ref.watch(entryRepositoryProvider);
   return CaptureReviewController(

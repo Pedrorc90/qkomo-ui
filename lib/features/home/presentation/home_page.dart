@@ -26,7 +26,8 @@ class HomePage extends ConsumerWidget {
             children: [
               // Custom Top Bar
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(
                   children: [
                     const QkomoLogo(size: 32),
@@ -35,8 +36,9 @@ class HomePage extends ConsumerWidget {
                       tooltip: 'Cambiar tema',
                       onPressed: () {
                         final notifier = ref.read(themeTypeProvider.notifier);
-                        notifier.state =
-                            themeType == AppThemeType.warm ? AppThemeType.fresh : AppThemeType.warm;
+                        notifier.state = themeType == AppThemeType.warm
+                            ? AppThemeType.fresh
+                            : AppThemeType.warm;
                       },
                       icon: Icon(
                         themeType == AppThemeType.warm

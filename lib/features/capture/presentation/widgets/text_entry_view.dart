@@ -17,7 +17,9 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
   final _allergensController = TextEditingController();
-  final List<TextEditingController> _ingredientControllers = [TextEditingController()];
+  final List<TextEditingController> _ingredientControllers = [
+    TextEditingController()
+  ];
   MealType? _selectedMealType;
 
   @override
@@ -49,8 +51,10 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
   Future<void> _saveEntry() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients =
-        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
+    final ingredients = _ingredientControllers
+        .map((c) => c.text.trim())
+        .where((text) => text.isNotEmpty)
+        .toList();
 
     if (ingredients.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -72,7 +76,9 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
           title: _titleController.text.trim(),
           ingredients: ingredients,
           allergens: allergens.isEmpty ? null : allergens,
-          notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+          notes: _notesController.text.trim().isEmpty
+              ? null
+              : _notesController.text.trim(),
           mealType: _selectedMealType,
         );
   }
@@ -103,7 +109,8 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
           if (result != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Entrada guardada: ${result.title ?? "Sin título"}'),
+                content:
+                    Text('Entrada guardada: ${result.title ?? "Sin título"}'),
                 backgroundColor: Colors.green,
               ),
             );

@@ -37,7 +37,9 @@ class LocalEntryRepository {
   }
 
   List<Entry> getPendingEntries() {
-    return _entryBox.values.where((e) => e.syncStatus == SyncStatus.pending).toList();
+    return _entryBox.values
+        .where((e) => e.syncStatus == SyncStatus.pending)
+        .toList();
   }
 
   Stream<List<Entry>> watchEntries() {

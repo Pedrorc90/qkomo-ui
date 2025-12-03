@@ -42,8 +42,9 @@ class PhotoViewer extends StatelessWidget {
         ),
         loadingBuilder: (context, event) => Center(
           child: CircularProgressIndicator(
-            value:
-                event == null ? 0 : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
+            value: event == null
+                ? 0
+                : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
           ),
         ),
         errorBuilder: (context, error, stackTrace) {

@@ -72,8 +72,9 @@ class AllergenToggleList extends StatelessWidget {
           final isSelected = selectedAllergens.contains(allergen);
 
           return Card(
-            color:
-                isSelected ? Theme.of(context).colorScheme.errorContainer.withOpacity(0.3) : null,
+            color: isSelected
+                ? Theme.of(context).colorScheme.errorContainer.withOpacity(0.3)
+                : null,
             child: SwitchListTile(
               value: isSelected,
               onChanged: (_) => onToggle(allergen),
@@ -81,7 +82,8 @@ class AllergenToggleList extends StatelessWidget {
                 allergen,
                 style: TextStyle(
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                  color: isSelected ? Theme.of(context).colorScheme.error : null,
+                  color:
+                      isSelected ? Theme.of(context).colorScheme.error : null,
                 ),
               ),
               secondary: Icon(

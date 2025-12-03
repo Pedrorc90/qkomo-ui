@@ -74,7 +74,8 @@ void main() {
 
       expect(ingredient.name, equals('Leche'));
       expect(ingredient.allergens, hasLength(2));
-      expect(ingredient.allergens, containsAll(['lactosa', 'proteína de leche']));
+      expect(
+          ingredient.allergens, containsAll(['lactosa', 'proteína de leche']));
       expect(ingredient.confidence, equals(0.88));
     });
 
@@ -95,12 +96,11 @@ void main() {
       // 1. A running backend server
       // 2. Valid Firebase authentication
       // 3. Network connectivity
-      // 
+      //
       // These tests verify the data models work correctly.
       // For full E2E testing, run the app with a real backend.
-      
+
       expect(true, isTrue);
     });
   });
 }
-
