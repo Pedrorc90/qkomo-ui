@@ -14,32 +14,32 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 
 ### M7 - Sync-Ready Architecture
-**Status:** Not started
+**Status:** In Progress
 **Goal:** Prepare data layer for cloud sync once backend entries API is available
 
 #### Repository Abstraction
-- [ ] Define `EntryRepository` interface
-  - [ ] `Future<List<Entry>> getEntries({DateTime? from, DateTime? to})`
-  - [ ] `Future<Entry> getEntryById(String id)`
-  - [ ] `Future<void> saveEntry(Entry entry)`
-  - [ ] `Future<void> deleteEntry(String id)`
-  - [ ] `Future<SyncStatus> syncPending()`
-- [ ] Implement `LocalEntryRepository` (Hive-based)
-  - [ ] Wraps existing `CaptureResultRepository`
-  - [ ] Adds sync metadata (syncStatus, lastSyncedAt)
-  - [ ] Tracks local-only vs. cloud-synced entries
-- [ ] Implement `RemoteEntryRepository` (backend API)
-  - [ ] Calls `/v1/entries` endpoints (when B6 is complete)
-  - [ ] Uses Dio client with Firebase auth
-  - [ ] Handles pagination
-  - [ ] Handles date range queries
-- [ ] Implement `HybridEntryRepository` (orchestrator)
-  - [ ] Write-through: save locally first, queue for sync
-  - [ ] Read-through: check local cache, fall back to remote
-  - [ ] Sync pending entries to backend
-  - [ ] Handle conflicts (last-write-wins or user prompt)
+- [x] Define `EntryRepository` interface
+  - [x] `Future<List<Entry>> getEntries({DateTime? from, DateTime? to})`
+  - [x] `Future<Entry> getEntryById(String id)`
+  - [x] `Future<void> saveEntry(Entry entry)`
+  - [x] `Future<void> deleteEntry(String id)`
+  - [x] `Future<SyncStatus> syncPending()`
+- [x] Implement `LocalEntryRepository` (Hive-based)
+  - [x] Wraps existing `CaptureResultRepository`
+  - [x] Adds sync metadata (syncStatus, lastSyncedAt)
+  - [x] Tracks local-only vs. cloud-synced entries
+- [x] Implement `RemoteEntryRepository` (backend API)
+  - [x] Calls `/v1/entries` endpoints (when B6 is complete)
+  - [x] Uses Dio client with Firebase auth
+  - [x] Handles pagination
+  - [x] Handles date range queries
+- [x] Implement `HybridEntryRepository` (orchestrator)
+  - [x] Write-through: save locally first, queue for sync
+  - [x] Read-through: check local cache, fall back to remote
+  - [x] Sync pending entries to backend
+  - [x] Handle conflicts (last-write-wins or user prompt)
 
-**Files to create:**
+**Files created:**
 - `lib/features/entry/domain/entry_repository.dart` (interface)
 - `lib/features/entry/data/local_entry_repository.dart`
 - `lib/features/entry/data/remote_entry_repository.dart`
@@ -48,50 +48,49 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 - `lib/features/entry/domain/sync_status.dart` (enum: pending, synced, failed)
 
 #### Sync Metadata & Conflict Resolution
-- [ ] Add sync fields to `CaptureResult` or new `Entry` model
-  - [ ] `syncStatus` (pending, synced, conflict, failed)
-  - [ ] `lastSyncedAt` timestamp
+- [x] Add sync fields to `CaptureResult` or new `Entry` model
+  - [x] `syncStatus` (pending, synced, conflict, failed)
+  - [x] `lastSyncedAt` timestamp
   - [ ] `cloudVersion` (for conflict detection)
   - [ ] `pendingChanges` (track local edits)
 - [ ] Implement conflict resolution strategy
-  - [ ] Last-write-wins (default, simple)
+  - [x] Last-write-wins (default, simple)
   - [ ] User prompt to choose version (advanced)
   - [ ] Merge changes intelligently (complex)
-- [ ] Add sync queue similar to capture queue
-  - [ ] Queue entries for upload when created/edited
-  - [ ] Process queue when online
+- [x] Add sync queue similar to capture queue
+  - [x] Queue entries for upload when created/edited
+  - [x] Process queue when online
   - [ ] Retry failed syncs with exponential backoff
   - [ ] Mark conflicts for user resolution
 
-**Files to create:**
-- `lib/features/entry/data/sync_queue_repository.dart`
-- `lib/features/entry/application/sync_service.dart`
+**Files created:**
+- `lib/features/sync/application/sync_service.dart`
 
 #### Background Sync Worker
-- [ ] Implement background sync service
-  - [ ] Use `workmanager` package for Android/iOS background tasks
-  - [ ] Schedule periodic sync (e.g., every 30 minutes when online)
-  - [ ] Trigger sync on connectivity change
-  - [ ] Show sync status in UI (syncing, last synced time)
-- [ ] Add sync settings
-  - [ ] Enable/disable auto-sync
+- [x] Implement background sync service
+  - [x] Use `workmanager` package for Android/iOS background tasks
+  - [x] Schedule periodic sync (e.g., every 30 minutes when online)
+  - [x] Trigger sync on connectivity change
+  - [x] Show sync status in UI (syncing, last synced time)
+- [x] Add sync settings
+  - [x] Enable/disable auto-sync
   - [ ] Sync only on Wi-Fi vs. any connection
   - [ ] Sync frequency preference
-  - [ ] Manual sync trigger button
+  - [x] Manual sync trigger button
 
-**Files to create:**
-- `lib/core/sync/background_sync_worker.dart`
+**Files created:**
+- `lib/features/sync/application/background_sync_worker.dart`
 - `lib/features/settings/presentation/sync_settings_page.dart`
 
 #### Migration Plan
-- [ ] Create migration script for existing Hive data
-  - [ ] Add sync metadata to existing `CaptureResult` entries
-  - [ ] Set initial `syncStatus` to `pending`
-  - [ ] Preserve existing data integrity
-- [ ] Add feature flag for cloud sync
-  - [ ] Allow gradual rollout
-  - [ ] Fall back to local-only if backend unavailable
-  - [ ] Environment variable: `ENABLE_CLOUD_SYNC`
+- [x] Create migration script for existing Hive data
+  - [x] Add sync metadata to existing `CaptureResult` entries
+  - [x] Set initial `syncStatus` to `pending`
+  - [x] Preserve existing data integrity
+- [x] Add feature flag for cloud sync
+  - [x] Allow gradual rollout
+  - [x] Fall back to local-only if backend unavailable
+  - [x] Environment variable: `ENABLE_CLOUD_SYNC`
 
 **Dependencies:**
 - **Backend B6** (Entries & History API) must be complete

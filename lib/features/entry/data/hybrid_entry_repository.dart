@@ -10,11 +10,13 @@ class HybridEntryRepository implements EntryRepository {
   HybridEntryRepository({
     required LocalEntryRepository localRepo,
     required RemoteEntryRepository remoteRepo,
+    this.enableCloudSync = false,
   })  : _localRepo = localRepo,
         _remoteRepo = remoteRepo;
 
   final LocalEntryRepository _localRepo;
   final RemoteEntryRepository _remoteRepo;
+  final bool enableCloudSync;
 
   @override
   Future<List<Entry>> getEntries({DateTime? from, DateTime? to}) async {
@@ -81,6 +83,11 @@ class HybridEntryRepository implements EntryRepository {
   }
 
   Future<void> _syncSingle(Entry entry) async {
+    // Skip remote sync if cloud sync is disabled
+    if (!enableCloudSync) {
+      return;
+    }
+
     try {
       if (entry.isDeleted) {
         await _remoteRepo.deleteEntry(entry.id);
