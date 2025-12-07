@@ -12,6 +12,10 @@ class AppTheme {
         return _warmTheme;
       case AppThemeType.fresh:
         return _freshTheme;
+      case AppThemeType.offWhite:
+        return _offWhiteTheme;
+      case AppThemeType.dark:
+        return _darkTheme;
     }
   }
 
@@ -26,6 +30,18 @@ class AppTheme {
       case AppThemeType.fresh:
         return const LinearGradient(
           colors: [Color(0xFFE7FFF7), Color(0xFFE1ECFF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case AppThemeType.offWhite:
+        return const LinearGradient(
+          colors: [Color(0xFFFBFBFB), Color(0xFFEAEAEA)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case AppThemeType.dark:
+        return const LinearGradient(
+          colors: [Color(0xFF1A1A1A), Color(0xFF2C2C2C)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
@@ -52,6 +68,31 @@ class AppTheme {
   );
 
   static ThemeData get _freshTheme => _baseTheme(_freshScheme);
+
+  // -- Off-White (Dirty White) --
+  static final ColorScheme _offWhiteScheme = ColorScheme.fromSeed(
+    seedColor: const Color(0xFF5D5D5D), // Neutral greyish seed
+    brightness: Brightness.light,
+    surface: const Color(0xFFFAFAFA), // Dirty white background
+    background: const Color(0xFFFAFAFA),
+    primary: const Color(0xFF2D2D2D), // Dark grey for primary actions
+    onSurface: const Color(0xFF1A1A1A),
+    secondary: const Color(0xFF757575),
+  );
+
+  static ThemeData get _offWhiteTheme => _baseTheme(_offWhiteScheme);
+
+  // -- Dark --
+  static final ColorScheme _darkScheme = ColorScheme.fromSeed(
+    seedColor: const Color(0xFF3B82F6),
+    brightness: Brightness.dark,
+    surface: const Color(0xFF121212),
+    background: const Color(0xFF121212),
+    primary: const Color(0xFF3B82F6),
+    onSurface: const Color(0xFFE0E0E0),
+  );
+
+  static ThemeData get _darkTheme => _baseTheme(_darkScheme);
 
   static ThemeData _baseTheme(ColorScheme scheme) {
     final baseText = GoogleFonts.spaceGroteskTextTheme();
@@ -80,20 +121,16 @@ class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          textStyle:
-              baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          textStyle: baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           side: BorderSide(color: scheme.outline),
-          textStyle:
-              baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          textStyle: baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -111,8 +148,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: scheme.primary, width: 1.4),
         ),
-        labelStyle:
-            baseText.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+        labelStyle: baseText.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
