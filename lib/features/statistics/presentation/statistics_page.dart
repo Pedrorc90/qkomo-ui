@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/statistics/application/statistics_controller.dart';
 import 'package:qkomo_ui/features/statistics/presentation/widgets/entries_bar_chart.dart';
 import 'package:qkomo_ui/features/statistics/presentation/widgets/ingredients_pie_chart.dart';
@@ -13,21 +14,16 @@ class StatisticsPage extends ConsumerWidget {
     final state = ref.watch(statisticsControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Estadísticas'),
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: const QkomoNavBar(),
       body: state.when(
         data: (data) {
           if (data.totalEntries == 0) {
             return const Center(
-              child:
-                  Text('No hay datos suficientes para mostrar estadísticas.'),
+              child: Text('No hay datos suficientes para mostrar estadísticas.'),
             );
           }
           return RefreshIndicator(
-            onRefresh: () =>
-                ref.read(statisticsControllerProvider.notifier).refresh(),
+            onRefresh: () => ref.read(statisticsControllerProvider.notifier).refresh(),
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/core/config/feature_flags.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 
@@ -10,7 +11,7 @@ class SyncSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (!FeatureFlags.enableCloudSync) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Sync Settings')),
+        appBar: const QkomoNavBar(),
         body: const Center(
           child: Text('Cloud sync is currently disabled.'),
         ),
@@ -18,7 +19,7 @@ class SyncSettingsPage extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sync Settings')),
+      appBar: const QkomoNavBar(),
       body: ListView(
         children: [
           SwitchListTile(

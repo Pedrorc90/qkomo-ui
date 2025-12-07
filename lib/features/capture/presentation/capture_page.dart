@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
@@ -53,15 +54,12 @@ class _CapturePageState extends ConsumerState<CapturePage> {
             if (job != null) {
               final isImage = job.type == CaptureJobType.image;
               _showSnackBar(
-                isImage
-                    ? 'Foto guardada en cola offline'
-                    : 'Código guardado en cola offline',
+                isImage ? 'Foto guardada en cola offline' : 'Código guardado en cola offline',
               );
             }
           },
-          error: (error, _) => _showSnackBar(
-              'No se pudo encolar la captura: $error',
-              isError: true),
+          error: (error, _) =>
+              _showSnackBar('No se pudo encolar la captura: $error', isError: true),
           loading: () {},
         );
       },
@@ -76,8 +74,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
               _showSnackBar('Análisis completado. ID: $jobId');
             }
           },
-          error: (error, _) =>
-              _showSnackBar('Error al analizar: $error', isError: true),
+          error: (error, _) => _showSnackBar('Error al analizar: $error', isError: true),
           loading: () {},
         );
       },
@@ -114,34 +111,14 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         child: SafeArea(
           child: Column(
             children: [
-              // Custom Header
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    if (captureState.mode != null)
-                      IconButton(
+              // Qkomo NavBar
+              QkomoNavBar(
+                leading: captureState.mode != null
+                    ? IconButton(
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () => controller.clearMode(),
-                      ),
-                    Expanded(
-                      child: Text(
-                        captureState.mode == null
-                            ? 'Registrar Comida'
-                            : 'Nueva Captura',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                        textAlign: captureState.mode == null
-                            ? TextAlign.center
-                            : TextAlign.start,
-                      ),
-                    ),
-                    if (captureState.mode != null)
-                      const SizedBox(width: 48), // Balance back button
-                  ],
-                ),
+                      )
+                    : null,
               ),
               Expanded(
                 child: captureState.mode == null
@@ -155,8 +132,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
     );
   }
 
-  Widget _buildActionButtons(
-      BuildContext context, CaptureController controller) {
+  Widget _buildActionButtons(BuildContext context, CaptureController controller) {
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -224,8 +200,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         Expanded(
           child: _buildModeContent(mode),
         ),
-        if (mode != CaptureMode.text &&
-            (state.imageFile != null || state.scannedBarcode != null))
+        if (mode != CaptureMode.text && (state.imageFile != null || state.scannedBarcode != null))
           CaptureQueueAction(
             state: state,
           ),

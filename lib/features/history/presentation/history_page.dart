@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
@@ -23,9 +24,7 @@ class HistoryPage extends ConsumerWidget {
     final queueStatsAsync = ref.watch(queueStatsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Historial'),
-        backgroundColor: Colors.transparent,
+      appBar: QkomoNavBar(
         actions: [
           const HistorySearchBar(),
           IconButton(
@@ -39,7 +38,7 @@ class HistoryPage extends ConsumerWidget {
               );
             },
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
       ),
       body: RefreshIndicator(
@@ -147,8 +146,7 @@ class HistoryPage extends ConsumerWidget {
             for (final entry in entries) {
               widgets.add(
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Stack(
                     children: [
                       EnhancedResultCard(
@@ -157,8 +155,7 @@ class HistoryPage extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  CaptureReviewPage(resultId: entry.id),
+                              builder: (context) => CaptureReviewPage(resultId: entry.id),
                             ),
                           );
                         },
@@ -233,8 +230,7 @@ class HistoryPage extends ConsumerWidget {
     } else {
       switch (state.dateFilter) {
         case DateFilter.today:
-          message =
-              'Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!';
+          message = 'Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!';
           icon = Icons.camera_alt_outlined;
           break;
         case DateFilter.thisWeek:
@@ -275,8 +271,6 @@ class HistoryPage extends ConsumerWidget {
 
   Future<void> _onRefresh(WidgetRef ref) async {
     // Trigger queue processing
-    await ref
-        .read(captureQueueProcessControllerProvider.notifier)
-        .processPending();
+    await ref.read(captureQueueProcessControllerProvider.notifier).processPending();
   }
 }
