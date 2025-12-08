@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
-import 'package:qkomo_ui/features/menu/presentation/widgets/day_meal_section.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/weekly_calendar_widget.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/selected_day_meals_section.dart';
 
 class WeeklyMenuPage extends ConsumerWidget {
   const WeeklyMenuPage({super.key});
@@ -26,6 +27,8 @@ class WeeklyMenuPage extends ConsumerWidget {
             onPressed: () {
               ref.read(currentWeekStartProvider.notifier).state =
                   weekStart.subtract(const Duration(days: 7));
+              // Reset selected day when changing weeks
+              ref.read(selectedDayProvider.notifier).state = null;
             },
             tooltip: 'Semana anterior',
           ),
@@ -35,6 +38,8 @@ class WeeklyMenuPage extends ConsumerWidget {
               final now = DateTime.now();
               ref.read(currentWeekStartProvider.notifier).state =
                   now.subtract(Duration(days: now.weekday - 1));
+              // Select today when going to current week
+              ref.read(selectedDayProvider.notifier).state = DateTime(now.year, now.month, now.day);
             },
             tooltip: 'Semana actual',
           ),
@@ -43,6 +48,8 @@ class WeeklyMenuPage extends ConsumerWidget {
             onPressed: () {
               ref.read(currentWeekStartProvider.notifier).state =
                   weekStart.add(const Duration(days: 7));
+              // Reset selected day when changing weeks
+              ref.read(selectedDayProvider.notifier).state = null;
             },
             tooltip: 'Semana siguiente',
           ),
@@ -64,39 +71,12 @@ class WeeklyMenuPage extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Expanded(
-            child: ListView(
-              children: [
-                DayMealSection(
-                  date: weekStart,
-                  dayName: 'Lunes',
-                ),
-                DayMealSection(
-                  date: weekStart.add(const Duration(days: 1)),
-                  dayName: 'Martes',
-                ),
-                DayMealSection(
-                  date: weekStart.add(const Duration(days: 2)),
-                  dayName: 'Miércoles',
-                ),
-                DayMealSection(
-                  date: weekStart.add(const Duration(days: 3)),
-                  dayName: 'Jueves',
-                ),
-                DayMealSection(
-                  date: weekStart.add(const Duration(days: 4)),
-                  dayName: 'Viernes',
-                ),
-                DayMealSection(
-                  date: weekStart.add(const Duration(days: 5)),
-                  dayName: 'Sábado',
-                ),
-                DayMealSection(
-                  date: weekStart.add(const Duration(days: 6)),
-                  dayName: 'Domingo',
-                ),
-              ],
-            ),
+          // Upper half: Weekly Calendar
+          WeeklyCalendarWidget(weekStart: weekStart),
+          const Divider(height: 1),
+          // Lower half: Selected Day Meals
+          const Expanded(
+            child: SelectedDayMealsSection(),
           ),
         ],
       ),

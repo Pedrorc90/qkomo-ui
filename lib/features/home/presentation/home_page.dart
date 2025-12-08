@@ -25,32 +25,7 @@ class HomePage extends ConsumerWidget {
           child: Column(
             children: [
               // Qkomo NavBar
-              QkomoNavBar(
-                actions: [
-                  IconButton(
-                    tooltip: 'Cambiar tema',
-                    onPressed: () {
-                      final notifier = ref.read(themeTypeProvider.notifier);
-                      notifier.state =
-                          themeType == AppThemeType.warm ? AppThemeType.fresh : AppThemeType.warm;
-                    },
-                    icon: Icon(
-                      themeType == AppThemeType.warm
-                          ? Icons.palette_outlined
-                          : Icons.auto_awesome_outlined,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Actualizar',
-                    onPressed: authController.refreshIdToken,
-                    icon: Icon(
-                      Icons.refresh,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                ],
-              ),
+              const QkomoNavBar(),
               // Main Content
               Expanded(
                 child: SingleChildScrollView(

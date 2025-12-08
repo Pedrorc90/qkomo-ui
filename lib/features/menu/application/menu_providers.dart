@@ -56,15 +56,44 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
   final weekEnd = weekStart.add(const Duration(days: 7));
 
   return allMeals.where((meal) {
-    return meal.scheduledFor
-            .isAfter(weekStart.subtract(const Duration(days: 1))) &&
+    return meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
         meal.scheduledFor.isBefore(weekEnd);
   }).toList();
 });
 
+// Selected day provider
+final selectedDayProvider = StateProvider<DateTime?>((ref) => null);
+
+// Filtered meals for selected day
+final selectedDayMealsProvider = Provider<List<Meal>>((ref) {
+  final selectedDay = ref.watch(selectedDayProvider);
+  if (selectedDay == null) return [];
+
+  final allMeals = ref.watch(mealsProvider).value ?? [];
+
+  return allMeals.where((meal) {
+    final mealDate = meal.scheduledFor;
+    return mealDate.year == selectedDay.year &&
+        mealDate.month == selectedDay.month &&
+        mealDate.day == selectedDay.day;
+  }).toList()
+    ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
+});
+
+// Today's meals provider
+final todayMealsProvider = Provider<List<Meal>>((ref) {
+  final allMeals = ref.watch(mealsProvider).value ?? [];
+  final now = DateTime.now();
+
+  return allMeals.where((meal) {
+    final mealDate = meal.scheduledFor;
+    return mealDate.year == now.year && mealDate.month == now.month && mealDate.day == now.day;
+  }).toList()
+    ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
+});
+
 // Controller provider
-final menuControllerProvider =
-    StateNotifierProvider<MenuController, MenuState>((ref) {
+final menuControllerProvider = StateNotifierProvider<MenuController, MenuState>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
   return MenuController(repository);
 });

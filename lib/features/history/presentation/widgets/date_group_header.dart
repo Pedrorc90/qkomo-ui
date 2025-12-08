@@ -20,7 +20,7 @@ class DateGroupHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       child: Text(
-        label,
+        "hola",
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: Theme.of(context).colorScheme.primary,

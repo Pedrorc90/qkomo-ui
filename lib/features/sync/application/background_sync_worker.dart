@@ -7,7 +7,6 @@ import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dio/dio.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_result_adapter.dart';
 
 const String syncTaskName = 'qkomo_sync_task';

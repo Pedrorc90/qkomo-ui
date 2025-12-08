@@ -6,7 +6,6 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:qkomo_ui/app.dart';
 import 'package:qkomo_ui/features/sync/application/background_sync_worker.dart';
-import 'package:qkomo_ui/features/sync/application/sync_service.dart';
 import 'package:qkomo_ui/features/capture/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';

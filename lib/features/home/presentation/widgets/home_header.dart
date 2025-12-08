@@ -9,12 +9,11 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = user?.displayName?.split(' ').first ?? 'Hola';
+    final name = user?.displayName?.split(' ').first ?? '';
     final now = DateTime.now();
     final dateStr = DateFormat('EEEE, d MMMM', 'es').format(now);
     // Capitalize first letter of the date
-    final formattedDate =
-        dateStr.substring(0, 1).toUpperCase() + dateStr.substring(1);
+    final formattedDate = dateStr.substring(0, 1).toUpperCase() + dateStr.substring(1);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),

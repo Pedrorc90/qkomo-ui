@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_logo.dart';
+import 'package:qkomo_ui/features/profile/presentation/profile_page.dart';
 
 /// Reusable navbar component with centered Qkomo logo and title
 ///
@@ -27,6 +28,22 @@ class QkomoNavBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // Combine custom actions with default profile button
+    final allActions = [
+      ...?actions,
+      IconButton(
+        icon: const Icon(Icons.person_outline),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const ProfilePage(),
+            ),
+          );
+        },
+        tooltip: 'Perfil',
+      ),
+    ];
+
     return AppBar(
       leading: leading,
       title: Row(
@@ -45,7 +62,7 @@ class QkomoNavBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       centerTitle: true,
-      actions: actions,
+      actions: allActions,
       backgroundColor: Colors.transparent,
       elevation: 0,
     );
