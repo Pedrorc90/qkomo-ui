@@ -31,16 +31,19 @@ class QkomoNavBar extends StatelessWidget implements PreferredSizeWidget {
     // Combine custom actions with default profile button
     final allActions = [
       ...?actions,
-      IconButton(
-        icon: const Icon(Icons.person_outline),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const ProfilePage(),
-            ),
-          );
-        },
-        tooltip: 'Perfil',
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: IconButton(
+          icon: const Icon(Icons.person_outline, size: 28),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ProfilePage(),
+              ),
+            );
+          },
+          tooltip: 'Perfil',
+        ),
       ),
     ];
 

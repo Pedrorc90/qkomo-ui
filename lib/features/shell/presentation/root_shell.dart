@@ -47,6 +47,7 @@ class RootShell extends ConsumerWidget {
                 selectedIndex: index,
                 height: 65,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                indicatorColor: Colors.transparent,
                 onDestinationSelected: (value) =>
                     ref.read(bottomNavIndexProvider.notifier).state = value,
                 destinations: const [
