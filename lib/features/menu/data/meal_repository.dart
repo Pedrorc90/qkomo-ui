@@ -7,11 +7,14 @@ import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 class MealRepository {
   MealRepository({
     required Box<Meal> mealBox,
+    required String userId,
     Uuid? uuid,
   })  : _mealBox = mealBox,
+        _userId = userId,
         _uuid = uuid ?? const Uuid();
 
   final Box<Meal> _mealBox;
+  final String _userId;
   final Uuid _uuid;
 
   Future<Meal> create({
@@ -23,6 +26,7 @@ class MealRepository {
   }) async {
     final meal = Meal(
       id: _uuid.v4(),
+      userId: _userId,
       name: name,
       ingredients: ingredients,
       mealType: mealType,
@@ -35,7 +39,7 @@ class MealRepository {
   }
 
   List<Meal> allSorted() {
-    final items = _mealBox.values.toList();
+    final items = _mealBox.values.where((meal) => meal.userId == _userId).toList();
     items.sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
     return items;
   }
@@ -43,8 +47,8 @@ class MealRepository {
   List<Meal> forWeek(DateTime weekStart) {
     final weekEnd = weekStart.add(const Duration(days: 7));
     return _mealBox.values.where((meal) {
-      return meal.scheduledFor
-              .isAfter(weekStart.subtract(const Duration(days: 1))) &&
+      return meal.userId == _userId &&
+          meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
           meal.scheduledFor.isBefore(weekEnd);
     }).toList()
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
@@ -53,7 +57,8 @@ class MealRepository {
   List<Meal> forDay(DateTime date) {
     return _mealBox.values.where((meal) {
       final mealDate = meal.scheduledFor;
-      return mealDate.year == date.year &&
+      return meal.userId == _userId &&
+          mealDate.year == date.year &&
           mealDate.month == date.month &&
           mealDate.day == date.day;
     }).toList()

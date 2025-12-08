@@ -29,7 +29,7 @@ class RootShell extends ConsumerWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 128, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 16),
         child: Material(
           elevation: 3,
           borderRadius: BorderRadius.circular(20),

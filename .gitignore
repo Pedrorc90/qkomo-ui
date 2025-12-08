@@ -8,6 +8,7 @@ linux/
 windows/
 web/
 coverage/
+android/.kotlin/errors/
 pubspec.lock
 
 # IDE

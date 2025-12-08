@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
@@ -17,7 +18,13 @@ final mealBoxProvider = Provider<Box<Meal>>((ref) {
 // Repository provider
 final mealRepositoryProvider = Provider<MealRepository>((ref) {
   final box = ref.watch(mealBoxProvider);
-  return MealRepository(mealBox: box);
+  final user = ref.watch(firebaseAuthProvider).currentUser;
+
+  // If no user is logged in, use empty string as userId
+  // This ensures meals are isolated even when not logged in
+  final userId = user?.uid ?? '';
+
+  return MealRepository(mealBox: box, userId: userId);
 });
 
 // Stream provider for reactive updates

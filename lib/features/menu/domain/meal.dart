@@ -2,6 +2,7 @@ import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class Meal {
   final String id;
+  final String userId;
   final String name;
   final List<String> ingredients;
   final MealType mealType;
@@ -12,6 +13,7 @@ class Meal {
 
   Meal({
     required this.id,
+    required this.userId,
     required this.name,
     required this.ingredients,
     required this.mealType,
@@ -23,6 +25,7 @@ class Meal {
 
   Meal copyWith({
     String? id,
+    String? userId,
     String? name,
     List<String>? ingredients,
     MealType? mealType,
@@ -33,6 +36,7 @@ class Meal {
   }) {
     return Meal(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
       name: name ?? this.name,
       ingredients: ingredients ?? this.ingredients,
       mealType: mealType ?? this.mealType,

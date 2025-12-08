@@ -51,7 +51,7 @@ class UpcomingMealsSection extends StatelessWidget {
                 Text(
                   'Menú Semanal',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
                   ),

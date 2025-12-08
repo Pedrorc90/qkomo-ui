@@ -14,35 +14,38 @@ class MealAdapter extends TypeAdapter<Meal> {
     };
     return Meal(
       id: fields[0] as String,
-      name: fields[1] as String,
-      ingredients: (fields[2] as List).cast<String>(),
-      mealType: MealType.values[fields[3] as int],
-      scheduledFor: fields[4] as DateTime,
-      createdAt: fields[5] as DateTime,
-      updatedAt: fields[6] as DateTime?,
-      notes: fields[7] as String?,
+      userId: fields[1] as String,
+      name: fields[2] as String,
+      ingredients: (fields[3] as List).cast<String>(),
+      mealType: MealType.values[fields[4] as int],
+      scheduledFor: fields[5] as DateTime,
+      createdAt: fields[6] as DateTime,
+      updatedAt: fields[7] as DateTime?,
+      notes: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Meal obj) {
     writer
-      ..writeByte(8) // Number of fields
+      ..writeByte(9) // Number of fields (was 8, now 9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.userId)
       ..writeByte(2)
-      ..write(obj.ingredients)
+      ..write(obj.name)
       ..writeByte(3)
-      ..write(obj.mealType.index)
+      ..write(obj.ingredients)
       ..writeByte(4)
-      ..write(obj.scheduledFor)
+      ..write(obj.mealType.index)
       ..writeByte(5)
-      ..write(obj.createdAt)
+      ..write(obj.scheduledFor)
       ..writeByte(6)
-      ..write(obj.updatedAt)
+      ..write(obj.createdAt)
       ..writeByte(7)
+      ..write(obj.updatedAt)
+      ..writeByte(8)
       ..write(obj.notes);
   }
 }

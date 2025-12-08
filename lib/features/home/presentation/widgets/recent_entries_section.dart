@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -51,7 +53,7 @@ class RecentEntriesSection extends StatelessWidget {
                 Text(
                   'Registros Recientes',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
                   ),
@@ -155,6 +157,20 @@ class RecentEntriesSection extends StatelessWidget {
   ) {
     final timeFormat = DateFormat('HH:mm');
 
+    // Check if we should try to display an image
+    bool hasImage = false;
+    File? imageFile;
+
+    try {
+      if (!entry.isManualEntry && entry.jobId.isNotEmpty) {
+        imageFile = File(entry.jobId);
+        hasImage = imageFile.existsSync();
+      }
+    } catch (e) {
+      // If there's any error accessing the file, just don't show the image
+      hasImage = false;
+    }
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       elevation: 0,
@@ -166,10 +182,43 @@ class RecentEntriesSection extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        leading: Icon(
-          entry.isManualEntry ? Icons.edit : Icons.camera_alt,
-          color: colorScheme.primary,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        leading: hasImage && imageFile != null
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(
+                  imageFile,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.image_not_supported,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    );
+                  },
+                ),
+              )
+            : Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  entry.isManualEntry ? Icons.edit : Icons.camera_alt,
+                  color: colorScheme.primary,
+                ),
+              ),
         title: Text(
           entry.title ??
               (entry.ingredients.isNotEmpty
