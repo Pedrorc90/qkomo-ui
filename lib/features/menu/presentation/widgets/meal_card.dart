@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,6 +32,28 @@ class MealCard extends ConsumerWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
+              // Meal Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: meal.photoPath != null
+                    ? (meal.photoPath!.startsWith('assets/')
+                        ? Image.asset(
+                            meal.photoPath!,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _buildPlaceholder(),
+                          )
+                        : Image.file(
+                            File(meal.photoPath!),
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _buildPlaceholder(),
+                          ))
+                    : _buildPlaceholder(),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,8 +83,7 @@ class MealCard extends ConsumerWidget {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: const Text('Eliminar comida'),
-                      content: Text(
-                          '¿Estás seguro de que quieres eliminar "${meal.name}"?'),
+                      content: Text('¿Estás seguro de que quieres eliminar "${meal.name}"?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
@@ -76,9 +98,7 @@ class MealCard extends ConsumerWidget {
                   );
 
                   if (confirmed == true) {
-                    ref
-                        .read(menuControllerProvider.notifier)
-                        .deleteMeal(meal.id);
+                    ref.read(menuControllerProvider.notifier).deleteMeal(meal.id);
                   }
                 },
               ),
@@ -86,6 +106,15 @@ class MealCard extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      width: 60,
+      height: 60,
+      color: Colors.grey[200],
+      child: const Icon(Icons.restaurant, color: Colors.grey),
     );
   }
 }

@@ -10,6 +10,7 @@ class Meal {
   final DateTime createdAt;
   final DateTime? updatedAt;
   final String? notes;
+  final String? photoPath; // Path to local image or asset
 
   Meal({
     required this.id,
@@ -21,6 +22,7 @@ class Meal {
     required this.createdAt,
     this.updatedAt,
     this.notes,
+    this.photoPath,
   });
 
   Meal copyWith({
@@ -33,6 +35,7 @@ class Meal {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? notes,
+    String? photoPath,
   }) {
     return Meal(
       id: id ?? this.id,
@@ -44,6 +47,7 @@ class Meal {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       notes: notes ?? this.notes,
+      photoPath: photoPath ?? this.photoPath,
     );
   }
 }

@@ -32,6 +32,8 @@ dependencies:
   fl_chart: ^1.1.1
   workmanager: ^0.9.0+3
   connectivity_plus: ^7.0.0
+  path_provider: ^2.1.2
+
 
 dev_dependencies:
   flutter_test:
@@ -66,3 +68,6 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/meals/preset/
+

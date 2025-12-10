@@ -16,6 +16,7 @@ class MenuController extends StateNotifier<MenuState> {
     required MealType mealType,
     required DateTime scheduledFor,
     String? notes,
+    String? photoPath,
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
@@ -25,6 +26,7 @@ class MenuController extends StateNotifier<MenuState> {
         mealType: mealType,
         scheduledFor: scheduledFor,
         notes: notes,
+        photoPath: photoPath,
       );
       state = state.copyWith(isLoading: false);
     } catch (e) {
@@ -42,6 +44,7 @@ class MenuController extends StateNotifier<MenuState> {
     required MealType mealType,
     required DateTime scheduledFor,
     String? notes,
+    String? photoPath,
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
@@ -60,6 +63,7 @@ class MenuController extends StateNotifier<MenuState> {
         mealType: mealType,
         scheduledFor: scheduledFor,
         notes: notes,
+        photoPath: photoPath,
       );
 
       await _repository.update(id, updatedMeal);

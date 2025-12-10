@@ -69,7 +69,11 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
 });
 
 // Selected day provider
-final selectedDayProvider = StateProvider<DateTime?>((ref) => null);
+// Selected day provider
+final selectedDayProvider = StateProvider<DateTime?>((ref) {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day);
+});
 
 // Filtered meals for selected day
 final selectedDayMealsProvider = Provider<List<Meal>>((ref) {

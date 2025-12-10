@@ -23,6 +23,7 @@ class MealRepository {
     required MealType mealType,
     required DateTime scheduledFor,
     String? notes,
+    String? photoPath,
   }) async {
     final meal = Meal(
       id: _uuid.v4(),
@@ -33,6 +34,7 @@ class MealRepository {
       scheduledFor: scheduledFor,
       createdAt: DateTime.now(),
       notes: notes,
+      photoPath: photoPath,
     );
     await _mealBox.put(meal.id, meal);
     return meal;
