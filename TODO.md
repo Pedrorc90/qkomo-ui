@@ -257,13 +257,13 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 
 ### 🔴 Alta Prioridad - Arquitectura y Patrones
 
-#### P1 - Eliminar código duplicado en StreamProviders
+#### P1 - Eliminar código duplicado en StreamProviders (Completed)
 **Ubicación:** `lib/features/capture/application/capture_providers.dart:107-224`
 **Problema:** Los providers `pendingCaptureJobsProvider`, `failedCaptureJobsProvider`, `processingCaptureJobsProvider` y `queueStatsProvider` tienen lógica casi idéntica para crear StreamControllers y escuchar cambios en Hive.
 **Propuesta:**
-- Crear un helper genérico `HiveStreamProvider<T>` que encapsule el patrón común
-- Reducir ~120 líneas de código duplicado a ~30 líneas
-- Beneficio: Menos bugs por inconsistencias, más fácil de mantener
+- [x] Crear un helper genérico `HiveStreamProvider<T>` que encapsule el patrón común
+- [x] Reducir ~120 líneas de código duplicado a ~30 líneas
+- [x] Beneficio: Menos bugs por inconsistencias, más fácil de mantener
 
 ```dart
 // Ejemplo de abstracción propuesta

@@ -1,8 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'package:qkomo_ui/core/utils/hive_stream_utils.dart';
 
 import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
@@ -33,8 +33,7 @@ final capturePermissionsProvider = Provider<CapturePermissions>((ref) {
   return CapturePermissions();
 });
 
-final captureControllerProvider =
-    StateNotifierProvider<CaptureController, CaptureState>((ref) {
+final captureControllerProvider = StateNotifierProvider<CaptureController, CaptureState>((ref) {
   final picker = ref.watch(imagePickerProvider);
   final permissions = ref.watch(capturePermissionsProvider);
   return CaptureController(picker, permissions);
@@ -53,8 +52,7 @@ final captureQueueRepositoryProvider = Provider<CaptureQueueRepository>((ref) {
   return CaptureQueueRepository(jobBox: box);
 });
 
-final captureResultRepositoryProvider =
-    Provider<CaptureResultRepository>((ref) {
+final captureResultRepositoryProvider = Provider<CaptureResultRepository>((ref) {
   final box = ref.watch(captureResultBoxProvider);
   return CaptureResultRepository(resultBox: box);
 });
@@ -90,15 +88,13 @@ final captureQueueProcessorProvider = Provider<CaptureQueueProcessor>((ref) {
 });
 
 final captureEnqueueControllerProvider =
-    StateNotifierProvider<CaptureEnqueueController, AsyncValue<CaptureJob?>>(
-        (ref) {
+    StateNotifierProvider<CaptureEnqueueController, AsyncValue<CaptureJob?>>((ref) {
   final service = ref.watch(captureQueueServiceProvider);
   return CaptureEnqueueController(service);
 });
 
 final captureQueueProcessControllerProvider =
-    StateNotifierProvider<CaptureQueueProcessController, AsyncValue<int>>(
-        (ref) {
+    StateNotifierProvider<CaptureQueueProcessController, AsyncValue<int>>((ref) {
   final processor = ref.watch(captureQueueProcessorProvider);
   final queueRepo = ref.watch(captureQueueRepositoryProvider);
   return CaptureQueueProcessController(processor, queueRepo);
@@ -107,120 +103,78 @@ final captureQueueProcessControllerProvider =
 final pendingCaptureJobsProvider = StreamProvider<List<CaptureJob>>((ref) {
   final box = ref.watch(captureJobBoxProvider);
 
-  List<CaptureJob> _buildPending() {
-    return box.values
-        .where((job) => job.status == CaptureJobStatus.pending)
-        .toList()
-      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-  }
-
-  final controller = StreamController<List<CaptureJob>>();
-  controller.add(_buildPending());
-  final sub = box.watch().listen((_) {
-    controller.add(_buildPending());
-  });
-
-  ref.onDispose(() {
-    sub.cancel();
-    controller.close();
-  });
-
-  return controller.stream;
+  return createHiveStream(
+    ref: ref,
+    box: box,
+    transformer: (box) {
+      return box.values.where((job) => job.status == CaptureJobStatus.pending).toList()
+        ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    },
+  );
 });
 
 final failedCaptureJobsProvider = StreamProvider<List<CaptureJob>>((ref) {
   final box = ref.watch(captureJobBoxProvider);
 
-  List<CaptureJob> _buildFailed() {
-    return box.values
-        .where((job) => job.status == CaptureJobStatus.failed)
-        .toList()
-      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-  }
-
-  final controller = StreamController<List<CaptureJob>>();
-  controller.add(_buildFailed());
-  final sub = box.watch().listen((_) {
-    controller.add(_buildFailed());
-  });
-
-  ref.onDispose(() {
-    sub.cancel();
-    controller.close();
-  });
-
-  return controller.stream;
+  return createHiveStream(
+    ref: ref,
+    box: box,
+    transformer: (box) {
+      return box.values.where((job) => job.status == CaptureJobStatus.failed).toList()
+        ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    },
+  );
 });
 
 final processingCaptureJobsProvider = StreamProvider<List<CaptureJob>>((ref) {
   final box = ref.watch(captureJobBoxProvider);
 
-  List<CaptureJob> _buildProcessing() {
-    return box.values
-        .where((job) => job.status == CaptureJobStatus.processing)
-        .toList()
-      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-  }
-
-  final controller = StreamController<List<CaptureJob>>();
-  controller.add(_buildProcessing());
-  final sub = box.watch().listen((_) {
-    controller.add(_buildProcessing());
-  });
-
-  ref.onDispose(() {
-    sub.cancel();
-    controller.close();
-  });
-
-  return controller.stream;
+  return createHiveStream(
+    ref: ref,
+    box: box,
+    transformer: (box) {
+      return box.values.where((job) => job.status == CaptureJobStatus.processing).toList()
+        ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    },
+  );
 });
 
 /// Provides queue statistics (pending, failed, processing counts)
 final queueStatsProvider = StreamProvider<QueueStats>((ref) {
   final box = ref.watch(captureJobBoxProvider);
 
-  QueueStats _buildStats() {
-    var pending = 0;
-    var failed = 0;
-    var processing = 0;
+  return createHiveStream(
+    ref: ref,
+    box: box,
+    transformer: (box) {
+      var pending = 0;
+      var failed = 0;
+      var processing = 0;
 
-    for (final job in box.values) {
-      switch (job.status) {
-        case CaptureJobStatus.pending:
-          pending++;
-          break;
-        case CaptureJobStatus.failed:
-          failed++;
-          break;
-        case CaptureJobStatus.processing:
-          processing++;
-          break;
-        case CaptureJobStatus.succeeded:
-          // Don't count succeeded jobs
-          break;
+      for (final job in box.values) {
+        switch (job.status) {
+          case CaptureJobStatus.pending:
+            pending++;
+            break;
+          case CaptureJobStatus.failed:
+            failed++;
+            break;
+          case CaptureJobStatus.processing:
+            processing++;
+            break;
+          case CaptureJobStatus.succeeded:
+            // Don't count succeeded jobs
+            break;
+        }
       }
-    }
 
-    return QueueStats(
-      pending: pending,
-      failed: failed,
-      processing: processing,
-    );
-  }
-
-  final controller = StreamController<QueueStats>();
-  controller.add(_buildStats());
-  final sub = box.watch().listen((_) {
-    controller.add(_buildStats());
-  });
-
-  ref.onDispose(() {
-    sub.cancel();
-    controller.close();
-  });
-
-  return controller.stream;
+      return QueueStats(
+        pending: pending,
+        failed: failed,
+        processing: processing,
+      );
+    },
+  );
 });
 
 /// Queue statistics data class
@@ -241,33 +195,26 @@ class QueueStats {
 final captureResultsProvider = StreamProvider<List<CaptureResult>>((ref) {
   final box = ref.watch(captureResultBoxProvider);
 
-  List<CaptureResult> _sorted() {
-    final items = box.values.toList();
-    items.sort((a, b) => b.savedAt.compareTo(a.savedAt));
-    return items;
-  }
-
-  final controller = StreamController<List<CaptureResult>>();
-  controller.add(_sorted());
-  final sub = box.watch().listen((_) => controller.add(_sorted()));
-
-  ref.onDispose(() {
-    sub.cancel();
-    controller.close();
-  });
-
-  return controller.stream;
+  return createHiveStream(
+    ref: ref,
+    box: box,
+    transformer: (box) {
+      final items = box.values.toList();
+      items.sort((a, b) => b.savedAt.compareTo(a.savedAt));
+      return items;
+    },
+  );
 });
 
 final textEntryControllerProvider =
-    StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>(
-        (ref) {
+    StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>((ref) {
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   return TextEntryController(resultRepo);
 });
 
-final captureReviewControllerProvider = StateNotifierProvider.family<
-    CaptureReviewController, CaptureReviewState, String>((ref, resultId) {
+final captureReviewControllerProvider =
+    StateNotifierProvider.family<CaptureReviewController, CaptureReviewState, String>(
+        (ref, resultId) {
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   final entryRepo = ref.watch(entryRepositoryProvider);
   return CaptureReviewController(
