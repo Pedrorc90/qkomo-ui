@@ -53,7 +53,6 @@ class AppTheme {
     seedColor: const Color(0xFFFF6F3C),
     brightness: Brightness.light,
     surface: const Color(0xFFF6F7FB),
-    background: const Color(0xFFF6F7FB),
   );
 
   static ThemeData get _warmTheme => _baseTheme(_warmScheme);
@@ -63,7 +62,6 @@ class AppTheme {
     seedColor: const Color(0xFF2DD4BF),
     brightness: Brightness.light,
     surface: const Color(0xFFF5FAFF),
-    background: const Color(0xFFF5FAFF),
     secondary: const Color(0xFF4E7BFF),
   );
 
@@ -74,7 +72,6 @@ class AppTheme {
     seedColor: const Color(0xFF5D5D5D), // Neutral greyish seed
     brightness: Brightness.light,
     surface: const Color(0xFFFAFAFA), // Dirty white background
-    background: const Color(0xFFFAFAFA),
     primary: const Color(0xFF2D2D2D), // Dark grey for primary actions
     onSurface: const Color(0xFF1A1A1A),
     secondary: const Color(0xFF757575),
@@ -87,7 +84,6 @@ class AppTheme {
     seedColor: const Color(0xFF3B82F6),
     brightness: Brightness.dark,
     surface: const Color(0xFF121212),
-    background: const Color(0xFF121212),
     primary: const Color(0xFF3B82F6),
     onSurface: const Color(0xFFE0E0E0),
   );
@@ -160,7 +156,7 @@ class AppTheme {
         labelStyle: baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         unselectedLabelStyle: baseText.titleMedium,
         indicator: BoxDecoration(
-          color: scheme.primary.withOpacity(0.12),
+          color: scheme.primary.withAlpha((0.12 * 255).round()),
           borderRadius: BorderRadius.circular(12),
         ),
         labelColor: scheme.primary,

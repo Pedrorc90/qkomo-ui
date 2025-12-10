@@ -101,7 +101,7 @@ class _DayCard extends StatelessWidget {
       textColor = colorScheme.onPrimaryContainer;
       borderColor = colorScheme.primary;
     } else if (isToday) {
-      backgroundColor = colorScheme.secondaryContainer.withOpacity(0.3);
+      backgroundColor = colorScheme.secondaryContainer.withAlpha((0.3 * 255).round());
       textColor = colorScheme.onSurface;
       borderColor = colorScheme.secondary;
     } else {
@@ -133,7 +133,7 @@ class _DayCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: textColor.withOpacity(0.7),
+                  color: textColor.withAlpha((0.7 * 255).round()),
                 ),
               ),
               const SizedBox(height: 4),
@@ -150,7 +150,7 @@ class _DayCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w400,
-                  color: textColor.withOpacity(0.6),
+                  color: textColor.withAlpha((0.6 * 255).round()),
                 ),
               ),
             ],

@@ -26,7 +26,7 @@ class ProfileOptionCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 26,
-                backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                backgroundColor: Theme.of(context).colorScheme.primary.withAlpha((0.15 * 255).round()),
                 child: Icon(icon, color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(width: 14),

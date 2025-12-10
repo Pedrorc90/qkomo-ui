@@ -79,7 +79,7 @@ class HistoryPage extends ConsumerWidget {
     if (stats.total == 0) return const SizedBox.shrink();
 
     return Card(
-      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
+      color: Theme.of(context).colorScheme.primaryContainer.withAlpha((0.5 * 255).round()),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -167,7 +167,7 @@ class HistoryPage extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withOpacity(0.8),
+                              color: Colors.orange.withAlpha((0.8 * 255).round()),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -184,7 +184,7 @@ class HistoryPage extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.8),
+                              color: Colors.red.withAlpha((0.8 * 255).round()),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(

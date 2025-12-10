@@ -25,15 +25,12 @@ class HybridEntryRepository implements EntryRepository {
 
     if (from != null) {
       entries = entries
-          .where((e) =>
-              e.result.savedAt.isAfter(from.subtract(const Duration(days: 1))))
+          .where((e) => e.result.savedAt.isAfter(from.subtract(const Duration(days: 1))))
           .toList();
     }
     if (to != null) {
-      entries = entries
-          .where(
-              (e) => e.result.savedAt.isBefore(to.add(const Duration(days: 1))))
-          .toList();
+      entries =
+          entries.where((e) => e.result.savedAt.isBefore(to.add(const Duration(days: 1)))).toList();
     }
 
     return entries;
@@ -54,14 +51,14 @@ class HybridEntryRepository implements EntryRepository {
     await _localRepo.saveEntry(entryToSave);
 
     // 2. Trigger sync in background (fire and forget)
-    _syncSingle(entryToSave);
+    unawaited(_syncSingle(entryToSave));
   }
 
   @override
   Future<void> deleteEntry(String id) async {
     await _localRepo.deleteEntry(id);
     // Trigger sync to propagate delete
-    sync();
+    unawaited(sync());
   }
 
   @override

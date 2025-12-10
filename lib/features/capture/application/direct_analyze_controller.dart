@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:qkomo_ui/core/services/logger_service.dart';
 import 'package:qkomo_ui/features/capture/application/backend_capture_analyzer.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
@@ -16,9 +17,10 @@ class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
   final BackendCaptureAnalyzer _analyzer;
   final CaptureResultRepository _resultRepository;
   final _uuid = const Uuid();
+  final _logger = LogService();
 
   Future<void> analyze(CaptureState captureState) async {
-    print('analyze');
+    _logger.d('analyze');
     state = const AsyncValue.loading();
     try {
       final jobId = _uuid.v4();
@@ -49,11 +51,10 @@ class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
 
       await _resultRepository.saveResult(result);
 
-      this.state = AsyncValue.data(result.jobId);
+      state = AsyncValue.data(result.jobId);
     } catch (e, st) {
-      print('Error in analyze: $e');
-      print(st);
-      this.state = AsyncValue.error(e, st);
+      _logger.e('Error in analyze', e, st);
+      state = AsyncValue.error(e, st);
     }
   }
 }

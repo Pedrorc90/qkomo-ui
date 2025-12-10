@@ -25,7 +25,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
               Icon(
                 Icons.calendar_today,
                 size: 64,
-                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.onSurfaceVariant.withAlpha((0.3 * 255).round()),
               ),
               const SizedBox(height: 16),
               Text(
@@ -63,7 +63,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
@@ -140,7 +140,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                    color: Theme.of(context).colorScheme.primaryContainer.withAlpha((0.3 * 255).round()),
                     child: InkWell(
                       onTap: () {
                         showDialog(

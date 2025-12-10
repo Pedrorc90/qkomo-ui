@@ -2,99 +2,38 @@
 
 This file tracks pending implementation tasks for the qkomo-ui Flutter mobile app.
 
-**Last Updated:** 2025-12-03
+**Last Updated:** 2025-12-10
 **Project Phase:** MVP - Core capture flow complete, pending review/history features
+
+## Project Milestones (from PLAN.md)
+
+- [x] **M1 – Firebase auth & profile gating:** Configure Apple/Google/email sign-in, persist ID tokens, and guard app access.
+- [x] **M2 – Capture surfaces:** Build camera, gallery import, and barcode scanner flows with Spanish-first messaging.
+- [x] **M3 – Offline queue & storage:** Queue analyze jobs locally (Hive) and persist drafts/results for offline use.
+- [x] **M4 – Analyze flow wiring:** Call backend `/v1/analyze` and `/v1/analyze/barcode`, show progress, and reconcile queued items.
+  - Pendiente: probar contra backend real con token Firebase y correr `flutter analyze`/`flutter test`.
+- [x] **M5 – Review & edit UI:** Let users edit ingredient/allergen lists and confirm before saving.
+- [x] **M6 – Today & History tabs:** Implement log views backed by local storage, ready for future sync.
+- [ ] **M7 – Sync-ready architecture:** Abstract data layer for easy switch to online/offline hybrid when backend exposes entry APIs.
+- [ ] **M8 – Mobile QA:** Add widget/state tests plus smoke tests for capture → review → save.
+- [ ] **Infra – Flutter tooling:** Instalar `unzip`, regenerar Dart/Flutter SDK, ejecutar `flutter pub get`, `dart format`, `flutter analyze` y `flutter test`. (Partially covered by Technical Debt tasks)
 
 ---
 
 ## High Priority - MVP Completion
 
-
-
-
-
 ### M7 - Sync-Ready Architecture
 **Status:** In Progress
 **Goal:** Prepare data layer for cloud sync once backend entries API is available
 
-#### Repository Abstraction
-- [x] Define `EntryRepository` interface
-  - [x] `Future<List<Entry>> getEntries({DateTime? from, DateTime? to})`
-  - [x] `Future<Entry> getEntryById(String id)`
-  - [x] `Future<void> saveEntry(Entry entry)`
-  - [x] `Future<void> deleteEntry(String id)`
-  - [x] `Future<SyncStatus> syncPending()`
-- [x] Implement `LocalEntryRepository` (Hive-based)
-  - [x] Wraps existing `CaptureResultRepository`
-  - [x] Adds sync metadata (syncStatus, lastSyncedAt)
-  - [x] Tracks local-only vs. cloud-synced entries
-- [x] Implement `RemoteEntryRepository` (backend API)
-  - [x] Calls `/v1/entries` endpoints (when B6 is complete)
-  - [x] Uses Dio client with Firebase auth
-  - [x] Handles pagination
-  - [x] Handles date range queries
-- [x] Implement `HybridEntryRepository` (orchestrator)
-  - [x] Write-through: save locally first, queue for sync
-  - [x] Read-through: check local cache, fall back to remote
-  - [x] Sync pending entries to backend
-  - [x] Handle conflicts (last-write-wins or user prompt)
-
-**Files created:**
-- `lib/features/entry/domain/entry_repository.dart` (interface)
-- `lib/features/entry/data/local_entry_repository.dart`
-- `lib/features/entry/data/remote_entry_repository.dart`
-- `lib/features/entry/data/hybrid_entry_repository.dart`
-- `lib/features/entry/domain/entry.dart` (domain model)
-- `lib/features/entry/domain/sync_status.dart` (enum: pending, synced, failed)
-
 #### Sync Metadata & Conflict Resolution
-- [x] Add sync fields to `CaptureResult` or new `Entry` model
-  - [x] `syncStatus` (pending, synced, conflict, failed)
-  - [x] `lastSyncedAt` timestamp
-  - [ ] `cloudVersion` (for conflict detection)
-  - [ ] `pendingChanges` (track local edits)
+- [ ] `cloudVersion` (for conflict detection)
+- [ ] `pendingChanges` (track local edits)
 - [ ] Implement conflict resolution strategy
-  - [x] Last-write-wins (default, simple)
   - [ ] User prompt to choose version (advanced)
   - [ ] Merge changes intelligently (complex)
-- [x] Add sync queue similar to capture queue
-  - [x] Queue entries for upload when created/edited
-  - [x] Process queue when online
-  - [ ] Retry failed syncs with exponential backoff
-  - [ ] Mark conflicts for user resolution
-
-**Files created:**
-- `lib/features/sync/application/sync_service.dart`
-
-#### Background Sync Worker
-- [x] Implement background sync service
-  - [x] Use `workmanager` package for Android/iOS background tasks
-  - [x] Schedule periodic sync (e.g., every 30 minutes when online)
-  - [x] Trigger sync on connectivity change
-  - [x] Show sync status in UI (syncing, last synced time)
-- [x] Add sync settings
-  - [x] Enable/disable auto-sync
-  - [ ] Sync only on Wi-Fi vs. any connection
-  - [ ] Sync frequency preference
-  - [x] Manual sync trigger button
-
-**Files created:**
-- `lib/features/sync/application/background_sync_worker.dart`
-- `lib/features/settings/presentation/sync_settings_page.dart`
-
-#### Migration Plan
-- [x] Create migration script for existing Hive data
-  - [x] Add sync metadata to existing `CaptureResult` entries
-  - [x] Set initial `syncStatus` to `pending`
-  - [x] Preserve existing data integrity
-- [x] Add feature flag for cloud sync
-  - [x] Allow gradual rollout
-  - [x] Fall back to local-only if backend unavailable
-  - [x] Environment variable: `ENABLE_CLOUD_SYNC`
-
-**Dependencies:**
-- **Backend B6** (Entries & History API) must be complete
-- **Backend B5** (Analysis persistence) must be complete for B6
+- [ ] Retry failed syncs with exponential backoff
+- [ ] Mark conflicts for user resolution
 
 ---
 
@@ -309,6 +248,193 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
   - [ ] Environment-specific Firebase projects
   - [ ] Environment-specific backend URLs
   - [ ] Build flavors for different environments
+
+---
+
+## Propuestas de Mejora - Análisis Técnico (2025-12-10)
+
+Las siguientes propuestas surgen del análisis del código actual y buscan mejorar la calidad, mantenibilidad y rendimiento de la aplicación.
+
+### 🔴 Alta Prioridad - Arquitectura y Patrones
+
+#### P1 - Eliminar código duplicado en StreamProviders
+**Ubicación:** `lib/features/capture/application/capture_providers.dart:107-224`
+**Problema:** Los providers `pendingCaptureJobsProvider`, `failedCaptureJobsProvider`, `processingCaptureJobsProvider` y `queueStatsProvider` tienen lógica casi idéntica para crear StreamControllers y escuchar cambios en Hive.
+**Propuesta:**
+- Crear un helper genérico `HiveStreamProvider<T>` que encapsule el patrón común
+- Reducir ~120 líneas de código duplicado a ~30 líneas
+- Beneficio: Menos bugs por inconsistencias, más fácil de mantener
+
+```dart
+// Ejemplo de abstracción propuesta
+StreamProvider<List<T>> createFilteredHiveStreamProvider<T>(
+  Box<T> box,
+  bool Function(T) filter,
+  int Function(T, T)? comparator,
+)
+```
+
+#### P2 - Usar Freezed consistentemente para modelos de dominio
+**Ubicación:** `lib/features/capture/domain/capture_result.dart`, `lib/features/entry/domain/entry.dart`
+**Problema:** Algunos modelos usan `copyWith` manual mientras que otros usan Freezed. `CaptureResult` y `Entry` tienen implementaciones manuales propensas a errores.
+**Propuesta:**
+- Migrar `CaptureResult` y `Entry` a Freezed
+- Beneficio: Generación automática de `==`, `hashCode`, `toString()`, `copyWith`, y serialización JSON
+- Reducción de código boilerplate ~50%
+
+#### P3 - Evitar uso de `dynamic` en CaptureReviewPage (Completed)
+**Ubicación:** `lib/features/capture/presentation/review/capture_review_page.dart:76-131`
+**Problema:** Los parámetros `state` y `controller` están tipados como `dynamic`, perdiendo type-safety.
+**Propuesta:**
+- [x] Tipar correctamente: `CaptureReviewState state, CaptureReviewController controller`
+- [x] Beneficio: Detección de errores en tiempo de compilación
+
+#### P4 - Implementar logging estructurado en lugar de `print()` (Completed)
+**Ubicación:** `lib/features/capture/application/capture_queue_processor.dart:46-56,93-94`
+**Problema:** Se usa `print()` para logging, lo cual no es apropiado para producción.
+**Propuesta:**
+- [x] Implementar un servicio de logging con niveles (debug, info, warning, error)
+- [x] Integrar con Firebase Crashlytics para errores en producción
+- [x] Usar `debugPrint` o `logger` package para desarrollo
+- [x] Beneficio: Mejor debugging y monitoreo en producción
+
+### 🟡 Media Prioridad - Mejoras de Código
+
+#### P5 - Extraer constantes mágicas a configuración (Completed)
+**Ubicación:** Múltiples archivos
+**Problema:** Valores hardcodeados dispersos:
+- `Duration(seconds: 30)` para timeouts en Dio (`dio_provider.dart:18`)
+- `Duration(days: 7)` para TTL de jobs (`capture_queue_processor.dart:20`)
+- `3` max retry attempts (`capture_queue_processor.dart:21`)
+- `30000ms` cap para backoff (`capture_queue_processor.dart:77`)
+**Propuesta:**
+- [x] Crear `lib/config/app_constants.dart` con todas las constantes
+- [x] Permitir override vía variables de entorno para testing
+- [x] Beneficio: Configuración centralizada y fácil de ajustar
+
+#### P6 - Mejorar manejo de errores en HybridEntryRepository
+**Ubicación:** `lib/features/entry/data/hybrid_entry_repository.dart:103-108`
+**Problema:** El catch silencia errores con un TODO comment, sin logging apropiado ni notificación al usuario.
+**Propuesta:**
+- Implementar `Result<T>` pattern o `Either<Failure, Success>`
+- Propagar errores de sync al usuario cuando sea relevante
+- Agregar logging estructurado
+- Beneficio: Mejor experiencia de usuario y debugging
+
+#### P7 - Implementar rate limiting para sync automático
+**Ubicación:** `lib/features/sync/application/sync_service.dart:46-61`
+**Problema:** Cada cambio de conectividad dispara sync, potencialmente causando muchas requests.
+**Propuesta:**
+- Implementar debouncing/throttling (ej: máximo 1 sync cada 30 segundos)
+- Agregar backoff exponencial cuando hay errores consecutivos
+- Beneficio: Reducción de carga en backend y batería del dispositivo
+
+#### P8 - Separar widgets en archivos más pequeños
+**Ubicación:** `lib/features/capture/presentation/capture_page.dart` (315 líneas)
+**Problema:** El archivo contiene `CapturePage` y `_CaptureOptionCard` en el mismo archivo, violando single-responsibility.
+**Propuesta:**
+- Extraer `_CaptureOptionCard` a `widgets/capture_option_card.dart`
+- Beneficio: Mejor organización, widgets reutilizables
+
+### 🟢 Baja Prioridad - Optimizaciones
+
+#### P9 - Optimizar queries de Hive con índices
+**Ubicación:** `lib/features/capture/application/capture_providers.dart`
+**Problema:** Los providers filtran datos iterando sobre todos los valores del box cada vez.
+**Propuesta:**
+- Mantener índices secundarios en memoria para filtros frecuentes (por status, por fecha)
+- Usar `box.listenable()` con `ValueListenableBuilder` en lugar de StreamController manual
+- Beneficio: Mejor rendimiento con grandes volúmenes de datos
+
+#### P10 - Implementar caché de imágenes
+**Ubicación:** `lib/features/capture/presentation/review/widgets/photo_viewer.dart`
+**Problema:** No hay estrategia visible de caché de imágenes.
+**Propuesta:**
+- Usar `cached_network_image` para imágenes remotas
+- Implementar LRU cache para imágenes locales procesadas
+- Beneficio: Mejor rendimiento y experiencia de usuario
+
+#### P11 - Expandir configuración de analysis_options.yaml (Completed)
+**Ubicación:** `analysis_options.yaml`
+**Problema:** Solo tiene 2 reglas de linting activas.
+**Propuesta:**
+- [x] Habilitar reglas adicionales de flutter_lints:
+  ```yaml
+  linter:
+    rules:
+      avoid_print: true
+      avoid_type_to_string: true
+      cancel_subscriptions: true
+      close_sinks: true
+      prefer_const_constructors: true
+      prefer_const_declarations: true
+      prefer_final_fields: true
+      prefer_final_locals: true
+      unawaited_futures: true
+      unnecessary_await_in_return: true
+  ```
+- Beneficio: Detección temprana de problemas comunes
+
+#### P12 - Añadir documentación de código público
+**Ubicación:** Múltiples archivos (repositories, controllers, services)
+**Problema:** Falta documentación en clases y métodos públicos de la capa de dominio y aplicación.
+**Propuesta:**
+- Documentar todas las clases públicas con `///` dartdoc
+- Agregar ejemplos de uso donde sea apropiado
+- Beneficio: Mejor mantenibilidad y onboarding
+
+### 🔵 Mejoras de Testing
+
+#### P13 - Aumentar cobertura de tests unitarios
+**Estado actual:** 13 archivos de test
+**Propuesta:**
+- [ ] Tests para `AuthController` (sign in flows, error handling)
+- [ ] Tests para `CaptureController` (state transitions, error states)
+- [ ] Tests para `HistoryController` (filtering, search)
+- [ ] Tests para `DirectAnalyzeController`
+- Meta: 80% cobertura en capa de aplicación
+
+#### P14 - Implementar tests de widget
+**Propuesta:**
+- [ ] `CapturePage` - renderizado de opciones, navegación
+- [ ] `CaptureReviewPage` - edición de ingredientes, guardado
+- [ ] `HistoryPage` - filtros, agrupación, empty states
+- [ ] `SignInPage` - formularios, validación
+- Meta: Cobertura de flujos críticos de usuario
+
+#### P15 - Configurar CI/CD con GitHub Actions
+**Propuesta:**
+- Workflow para `flutter analyze` y `flutter test` en cada PR
+- Build automático de APK/IPA para releases
+- Publicación automática a Firebase App Distribution
+
+### 📋 Resumen de Impacto
+
+| Propuesta | Esfuerzo | Impacto | Riesgo |
+|-----------|----------|---------|--------|
+| P1 - Eliminar código duplicado | Medio | Alto | Bajo |
+| P2 - Freezed para modelos | Medio | Alto | Bajo |
+| P3 - Eliminar `dynamic` | Bajo | Medio | Bajo |
+| P4 - Logging estructurado | Medio | Alto | Bajo |
+| P5 - Constantes centralizadas | Bajo | Medio | Bajo |
+| P6 - Manejo de errores | Medio | Alto | Medio |
+| P7 - Rate limiting sync | Bajo | Medio | Bajo |
+| P8 - Separar widgets | Bajo | Bajo | Bajo |
+| P9 - Optimizar Hive queries | Alto | Medio | Medio |
+| P10 - Caché de imágenes | Medio | Medio | Bajo |
+| P11 - Linting estricto | Bajo | Medio | Bajo |
+| P12 - Documentación | Alto | Medio | Bajo |
+| P13 - Tests unitarios | Alto | Alto | Bajo |
+| P14 - Tests de widget | Alto | Alto | Bajo |
+| P15 - CI/CD | Medio | Alto | Bajo |
+
+**Recomendación de orden de implementación:**
+1. P3, P4, P5 (quick wins, bajo riesgo)
+2. P11 (habilitar linting estricto para prevenir nuevos issues)
+3. P1, P2 (refactoring de alto impacto)
+4. P6, P7 (robustez del sistema)
+5. P13, P14, P15 (testing y CI/CD)
+6. P8, P9, P10, P12 (optimizaciones y polish)
 
 ---
 

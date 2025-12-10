@@ -34,7 +34,7 @@ class UpcomingMealsSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: colorScheme.secondaryContainer.withOpacity(0.3),
+              color: colorScheme.secondaryContainer.withAlpha((0.3 * 255).round()),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -85,7 +85,7 @@ class UpcomingMealsSection extends StatelessWidget {
                           Icon(
                             Icons.event_busy,
                             size: 48,
-                            color: colorScheme.onSurfaceVariant.withOpacity(0.5),
+                            color: colorScheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
                           ),
                           const SizedBox(height: 12),
                           Text(

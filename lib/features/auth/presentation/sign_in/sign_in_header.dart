@@ -17,7 +17,7 @@ class SignInHeader extends StatelessWidget {
           style: textTheme.displayMedium?.copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: -1.0,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 12),
@@ -38,7 +38,7 @@ class SignInHeader extends StatelessWidget {
               color: Theme.of(context)
                   .colorScheme
                   .onSurfaceVariant
-                  .withOpacity(0.8),
+                  .withAlpha((0.8 * 255).round()),
               height: 1.5,
             ),
             textAlign: TextAlign.center,

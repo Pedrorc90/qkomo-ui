@@ -22,7 +22,7 @@ class EmailAuthForm extends StatelessWidget {
 
     final inputDecoration = InputDecoration(
       filled: true,
-      fillColor: scheme.surfaceVariant.withOpacity(0.3),
+      fillColor: scheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,

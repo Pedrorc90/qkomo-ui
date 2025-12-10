@@ -4,4 +4,14 @@ linter:
   rules:
     prefer_single_quotes: true
     always_use_package_imports: true
+    avoid_print: true
+    avoid_type_to_string: true
+    cancel_subscriptions: true
+    close_sinks: true
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    unawaited_futures: true
+    unnecessary_await_in_return: true
 

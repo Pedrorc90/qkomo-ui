@@ -87,7 +87,7 @@ class RecentEntriesSection extends StatelessWidget {
                           Icon(
                             Icons.inbox_outlined,
                             size: 48,
-                            color: colorScheme.onSurfaceVariant.withOpacity(0.5),
+                            color: colorScheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -211,7 +211,7 @@ class RecentEntriesSection extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withOpacity(0.3),
+                  color: colorScheme.primaryContainer.withAlpha((0.3 * 255).round()),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(

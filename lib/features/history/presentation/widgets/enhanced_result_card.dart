@@ -77,7 +77,7 @@ class EnhancedResultCard extends StatelessWidget {
                             backgroundColor: Theme.of(context)
                                 .colorScheme
                                 .errorContainer
-                                .withOpacity(0.5),
+                                .withAlpha((0.5 * 255).round()),
                             padding: EdgeInsets.zero,
                             visualDensity: VisualDensity.compact,
                           );
@@ -107,7 +107,7 @@ class EnhancedResultCard extends StatelessWidget {
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(

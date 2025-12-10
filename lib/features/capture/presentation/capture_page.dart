@@ -255,10 +255,10 @@ class _CaptureOptionCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: scheme.surface.withOpacity(0.7),
+      color: scheme.surface.withAlpha((0.7 * 255).round()),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: scheme.outlineVariant.withOpacity(0.5)),
+        side: BorderSide(color: scheme.outlineVariant.withAlpha((0.5 * 255).round())),
       ),
       child: InkWell(
         onTap: onPressed,
@@ -270,7 +270,7 @@ class _CaptureOptionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withAlpha((0.1 * 255).round()),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Icon(
@@ -303,7 +303,7 @@ class _CaptureOptionCard extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right,
-                color: scheme.onSurfaceVariant.withOpacity(0.5),
+                color: scheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
               ),
             ],
           ),

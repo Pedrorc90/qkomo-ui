@@ -82,7 +82,7 @@ class SignInButtonColumn extends StatelessWidget {
         Text(
           'Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant.withOpacity(0.7),
+                color: scheme.onSurfaceVariant.withAlpha((0.7 * 255).round()),
                 height: 1.5,
               ),
           textAlign: TextAlign.center,

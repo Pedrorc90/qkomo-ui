@@ -175,6 +175,11 @@ Enable Apple, Google, and Email/Password sign-in providers in Firebase Console a
 3. Sign in with Firebase test account
 4. Capture photo or scan barcode → job queued locally → processed when online → results stored in Hive
 
+### Task Management
+
+- When a task from `TODO.md` is completed, mark it as done `[x]` or delete it from the file.
+- Update `TODO.md` status if necessary.
+
 ### Spanish-First UX
 
 All user-facing strings must be in Spanish. This includes:

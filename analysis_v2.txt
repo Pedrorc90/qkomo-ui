@@ -1,0 +1,107 @@
+Analyzing qkomo-ui...                                           
+
+   info - Don't invoke 'print' in production code - integration_test\backend_integration_test.dart:41:9 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\backend_integration_test.dart:44:9 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\backend_integration_test.dart:112:9 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\backend_integration_test.dart:140:9 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\backend_integration_test.dart:164:9 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\backend_integration_test.dart:189:9 - avoid_print
+   info - Use 'package:' imports for files in the 'lib' directory - lib\core\http\firebase_token_interceptor.dart:4:8 - always_use_package_imports
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\auth\application\auth_controller.dart:6:8 - always_use_package_imports
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\auth\application\auth_controller.dart:7:8 - always_use_package_imports
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\auth\presentation\sign_in\email_auth_form.dart:3:8 - always_use_package_imports
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\auth\presentation\sign_in\email_auth_form.dart:25:25 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\sign_in\email_auth_form.dart:25:40 - deprecated_member_use
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\auth\presentation\sign_in\sign_in_button_column.dart:5:8 - always_use_package_imports
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\sign_in\sign_in_button_column.dart:85:48 - deprecated_member_use
+   info - 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\auth\presentation\sign_in\sign_in_header.dart:20:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\sign_in\sign_in_header.dart:41:20 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps - lib\features\auth\presentation\sign_in\sign_in_page.dart:64:18 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\features\auth\presentation\sign_in\sign_in_page.dart:66:18 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\features\auth\presentation\sign_in\sign_in_page.dart:82:26 - use_build_context_synchronously
+   info - The local variable '_buildPending' starts with an underscore - lib\features\capture\application\capture_providers.dart:110:20 - no_leading_underscores_for_local_identifiers
+   info - The local variable '_buildFailed' starts with an underscore - lib\features\capture\application\capture_providers.dart:134:20 - no_leading_underscores_for_local_identifiers
+   info - The local variable '_buildProcessing' starts with an underscore - lib\features\capture\application\capture_providers.dart:158:20 - no_leading_underscores_for_local_identifiers
+   info - The local variable '_buildStats' starts with an underscore - lib\features\capture\application\capture_providers.dart:183:14 - no_leading_underscores_for_local_identifiers
+   info - The local variable '_sorted' starts with an underscore - lib\features\capture\application\capture_providers.dart:244:23 - no_leading_underscores_for_local_identifiers
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\capture\application\capture_queue_process_controller.dart:4:8 - always_use_package_imports
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\capture\application\capture_queue_process_controller.dart:5:8 - always_use_package_imports
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\capture\application\capture_state.dart:3:8 - always_use_package_imports
+   info - Use 'package:' imports for files in the 'lib' directory - lib\features\capture\data\hive_adapters\capture_job_status_adapter.dart:3:8 - always_use_package_imports
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\capture\presentation\capture_page.dart:258:29 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\capture\presentation\capture_page.dart:261:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\capture\presentation\capture_page.dart:273:32 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\capture\presentation\capture_page.dart:306:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\capture\presentation\review\capture_review_page.dart:137:33 - deprecated_member_use
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\capture\presentation\review\widgets\allergen_toggle_list.dart:45:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\capture\presentation\review\widgets\allergen_toggle_list.dart:76:64 - deprecated_member_use
+   info - Unnecessary use of 'toList' in a spread - lib\features\capture\presentation\review\widgets\allergen_toggle_list.dart:97:12 - unnecessary_to_list_in_spreads
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\capture\presentation\review\widgets\photo_viewer.dart:61:46 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\capture\presentation\widgets\barcode_scanner_view.dart:70:27 - prefer_const_constructors
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\capture\presentation\widgets\capture_status_banner.dart:53:23 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\capture\presentation\widgets\text_entry_view.dart:229:15 - deprecated_member_use
+   info - 'stream' is deprecated and shouldn't be used. .stream will be removed in 3.0.0. As a replacement, either listen to the provider itself (AsyncValue) or .future - lib\features\history\application\history_providers.dart:95:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\history\presentation\history_page.dart:82:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\history\presentation\history_page.dart:170:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\history\presentation\history_page.dart:187:49 - deprecated_member_use
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\history\presentation\widgets\date_filter_tabs.dart:18:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\history\presentation\widgets\date_filter_tabs.dart:18:61 - deprecated_member_use
+warning - The value of the local variable 'label' isn't used - lib\features\history\presentation\widgets\date_group_header.dart:18:11 - unused_local_variable
+   info - Unnecessary use of double quotes - lib\features\history\presentation\widgets\date_group_header.dart:23:9 - prefer_single_quotes
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\history\presentation\widgets\enhanced_result_card.dart:80:34 - deprecated_member_use
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\history\presentation\widgets\enhanced_result_card.dart:110:46 - deprecated_member_use
+warning - Unused import: 'package:qkomo_ui/theme/theme_type.dart' - lib\features\home\presentation\home_page.dart:9:8 - unused_import
+warning - The value of the local variable 'authController' isn't used - lib\features\home\presentation\home_page.dart:16:11 - unused_local_variable
+warning - The value of the local variable 'themeType' isn't used - lib\features\home\presentation\home_page.dart:19:11 - unused_local_variable
+   info - 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\home\presentation\widgets\day_section.dart:36:60 - deprecated_member_use
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\home\presentation\widgets\day_section.dart:75:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\day_section.dart:75:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\day_section.dart:78:63 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\day_section.dart:90:20 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\day_section.dart:123:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\day_section.dart:146:26 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\day_section.dart:191:28 - deprecated_member_use
+   info - 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\home\presentation\widgets\home_header.dart:39:62 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\recent_entries_section.dart:39:51 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\recent_entries_section.dart:90:65 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\recent_entries_section.dart:214:55 - deprecated_member_use
+   info - 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\home\presentation\widgets\tomorrow_section.dart:32:60 - deprecated_member_use
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\home\presentation\widgets\tomorrow_section.dart:68:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\tomorrow_section.dart:68:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\tomorrow_section.dart:71:63 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\tomorrow_section.dart:83:20 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\tomorrow_section.dart:113:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\tomorrow_section.dart:129:22 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\upcoming_meals_section.dart:37:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\upcoming_meals_section.dart:88:65 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\widgets\user_summary_card.dart:20:57 - deprecated_member_use
+   info - The imported package 'path' isn't a dependency of the importing package - lib\features\menu\application\image_picker_service.dart:4:8 - depend_on_referenced_packages
+   info - The local variable '_sorted' starts with an underscore - lib\features\menu\application\menu_providers.dart:35:14 - no_leading_underscores_for_local_identifiers
+   info - Use 'const' with the constructor to improve performance - lib\features\menu\data\preset_recipes.dart:20:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\menu\data\preset_recipes.dart:35:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\menu\data\preset_recipes.dart:47:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\menu\data\preset_recipes.dart:62:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\menu\data\preset_recipes.dart:77:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\menu\data\preset_recipes.dart:92:5 - prefer_const_constructors
+   info - Missing an 'await' for the 'Future' computed by this expression - lib\features\menu\presentation\widgets\meal_card.dart:101:63 - unawaited_futures
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\menu\presentation\widgets\meal_form_dialog.dart:283:19 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\menu\presentation\widgets\selected_day_meals_section.dart:28:71 - deprecated_member_use
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\menu\presentation\widgets\selected_day_meals_section.dart:66:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\menu\presentation\widgets\selected_day_meals_section.dart:66:69 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\menu\presentation\widgets\selected_day_meals_section.dart:143:75 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\menu\presentation\widgets\weekly_calendar_widget.dart:104:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\menu\presentation\widgets\weekly_calendar_widget.dart:136:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\menu\presentation\widgets\weekly_calendar_widget.dart:153:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\profile\presentation\widgets\profile_option_card.dart:29:72 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\settings\presentation\sync_settings_page.dart:13:14 - prefer_const_constructors
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\theme\app_theme.dart:56:5 - deprecated_member_use
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\theme\app_theme.dart:66:5 - deprecated_member_use
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\theme\app_theme.dart:77:5 - deprecated_member_use
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\theme\app_theme.dart:90:5 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\theme\app_theme.dart:163:33 - deprecated_member_use
+warning - The value of the local variable 'entry' isn't used - test\features\entry\data\hybrid_entry_repository_test.dart:128:13 - unused_local_variable
+   info - The import of 'package:hive/hive.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hive_flutter/hive_flutter.dart' - test\features\entry\data\local_entry_repository_test.dart:2:8 - unnecessary_import
+   info - Missing an 'await' for the 'Future' computed by this expression - test\features\entry\data\local_entry_repository_test.dart:96:7 - unawaited_futures
+   info - Don't invoke 'print' in production code - test\generate_logo_test.dart:59:7 - avoid_print
+   info - Don't invoke 'print' in production code - test\generate_logo_test.dart:71:7 - avoid_print
+
