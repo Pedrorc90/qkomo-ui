@@ -1,53 +1,23 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
+
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 
+part 'entry.freezed.dart';
 part 'entry.g.dart';
 
-@HiveType(typeId: 8)
-class Entry {
-  Entry({
-    required this.id,
-    required this.result,
-    this.syncStatus = SyncStatus.pending,
-    required this.lastModifiedAt,
-    this.lastSyncedAt,
-    this.isDeleted = false,
-  });
+@freezed
+class Entry with _$Entry {
+  @HiveType(typeId: 8, adapterName: 'EntryAdapter')
+  const factory Entry({
+    @HiveField(0) required String id,
+    @HiveField(1) required CaptureResult result,
+    @HiveField(2) @Default(SyncStatus.pending) SyncStatus syncStatus,
+    @HiveField(3) required DateTime lastModifiedAt,
+    @HiveField(4) DateTime? lastSyncedAt,
+    @HiveField(5) @Default(false) bool isDeleted,
+  }) = _Entry;
 
-  @HiveField(0)
-  final String id;
-
-  @HiveField(1)
-  final CaptureResult result;
-
-  @HiveField(2)
-  final SyncStatus syncStatus;
-
-  @HiveField(3)
-  final DateTime lastModifiedAt;
-
-  @HiveField(4)
-  final DateTime? lastSyncedAt;
-
-  @HiveField(5)
-  final bool isDeleted;
-
-  Entry copyWith({
-    String? id,
-    CaptureResult? result,
-    SyncStatus? syncStatus,
-    DateTime? lastModifiedAt,
-    DateTime? lastSyncedAt,
-    bool? isDeleted,
-  }) {
-    return Entry(
-      id: id ?? this.id,
-      result: result ?? this.result,
-      syncStatus: syncStatus ?? this.syncStatus,
-      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
-      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
-      isDeleted: isDeleted ?? this.isDeleted,
-    );
-  }
+  factory Entry.fromJson(Map<String, dynamic> json) => _$EntryFromJson(json);
 }

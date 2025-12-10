@@ -6,17 +6,17 @@ part of 'entry.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class EntryAdapter extends TypeAdapter<Entry> {
+class EntryAdapter extends TypeAdapter<_$EntryImpl> {
   @override
   final int typeId = 8;
 
   @override
-  Entry read(BinaryReader reader) {
+  _$EntryImpl read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Entry(
+    return _$EntryImpl(
       id: fields[0] as String,
       result: fields[1] as CaptureResult,
       syncStatus: fields[2] as SyncStatus,
@@ -27,7 +27,7 @@ class EntryAdapter extends TypeAdapter<Entry> {
   }
 
   @override
-  void write(BinaryWriter writer, Entry obj) {
+  void write(BinaryWriter writer, _$EntryImpl obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -54,3 +54,37 @@ class EntryAdapter extends TypeAdapter<Entry> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$EntryImpl _$$EntryImplFromJson(Map<String, dynamic> json) => _$EntryImpl(
+      id: json['id'] as String,
+      result: CaptureResult.fromJson(json['result'] as Map<String, dynamic>),
+      syncStatus:
+          $enumDecodeNullable(_$SyncStatusEnumMap, json['syncStatus']) ??
+              SyncStatus.pending,
+      lastModifiedAt: DateTime.parse(json['lastModifiedAt'] as String),
+      lastSyncedAt: json['lastSyncedAt'] == null
+          ? null
+          : DateTime.parse(json['lastSyncedAt'] as String),
+      isDeleted: json['isDeleted'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$$EntryImplToJson(_$EntryImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'result': instance.result,
+      'syncStatus': _$SyncStatusEnumMap[instance.syncStatus]!,
+      'lastModifiedAt': instance.lastModifiedAt.toIso8601String(),
+      'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
+      'isDeleted': instance.isDeleted,
+    };
+
+const _$SyncStatusEnumMap = {
+  SyncStatus.synced: 'synced',
+  SyncStatus.pending: 'pending',
+  SyncStatus.failed: 'failed',
+  SyncStatus.conflict: 'conflict',
+};

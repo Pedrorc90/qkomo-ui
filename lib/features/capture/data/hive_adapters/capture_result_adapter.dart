@@ -22,13 +22,16 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
       title: fields[5] as String?,
       mealType: fields[6] != null ? MealType.values[fields[6] as int] : null,
       isManualEntry: fields[7] as bool? ?? false,
+      isReviewed: fields[8] as bool? ?? false,
+      reviewedAt: fields[9] as DateTime?,
+      userEdited: fields[10] as bool? ?? false,
     );
   }
 
   @override
   void write(BinaryWriter writer, CaptureResult obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.jobId)
       ..writeByte(1)
@@ -44,6 +47,12 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
       ..writeByte(6)
       ..write(obj.mealType?.index)
       ..writeByte(7)
-      ..write(obj.isManualEntry);
+      ..write(obj.isManualEntry)
+      ..writeByte(8)
+      ..write(obj.isReviewed)
+      ..writeByte(9)
+      ..write(obj.reviewedAt)
+      ..writeByte(10)
+      ..write(obj.userEdited);
   }
 }
