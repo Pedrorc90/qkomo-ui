@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_page.dart';
 import 'package:qkomo_ui/features/home/presentation/home_page.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
+import 'package:qkomo_ui/features/profile/presentation/profile_page.dart';
 
 import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 
@@ -25,11 +26,12 @@ class RootShell extends ConsumerWidget {
             HomePage(),
             CapturePage(),
             WeeklyMenuPage(),
+            ProfilePage(),
           ],
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Material(
           elevation: 3,
           borderRadius: BorderRadius.circular(20),
@@ -64,6 +66,11 @@ class RootShell extends ConsumerWidget {
                   NavigationDestination(
                     icon: Icon(Icons.calendar_today, size: 24),
                     selectedIcon: Icon(Icons.calendar_month, size: 32),
+                    label: '',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.person_outline, size: 24),
+                    selectedIcon: Icon(Icons.person, size: 32),
                     label: '',
                   ),
                 ],
