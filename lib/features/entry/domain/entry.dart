@@ -17,6 +17,8 @@ class Entry with _$Entry {
     @HiveField(3) required DateTime lastModifiedAt,
     @HiveField(4) DateTime? lastSyncedAt,
     @HiveField(5) @Default(false) bool isDeleted,
+    @HiveField(6) int? cloudVersion,
+    @HiveField(7) Map<String, dynamic>? pendingChanges,
   }) = _Entry;
 
   factory Entry.fromJson(Map<String, dynamic> json) => _$EntryFromJson(json);

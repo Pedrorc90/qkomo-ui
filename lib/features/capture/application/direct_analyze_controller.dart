@@ -31,6 +31,7 @@ class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
           id: jobId,
           type: CaptureJobType.image,
           imagePath: captureState.imageFile!.path,
+          captureMode: captureState.mode,
           createdAt: DateTime.now(),
         );
       } else if (captureState.scannedBarcode != null) {
@@ -38,6 +39,7 @@ class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
           id: jobId,
           type: CaptureJobType.barcode,
           barcode: captureState.scannedBarcode,
+          captureMode: captureState.mode,
           createdAt: DateTime.now(),
         );
       } else {

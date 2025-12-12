@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_job_status.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 
 class CaptureJobAdapter extends TypeAdapter<CaptureJob> {
   @override
@@ -19,6 +20,7 @@ class CaptureJobAdapter extends TypeAdapter<CaptureJob> {
       type: CaptureJobType.values[fields[1] as int],
       imagePath: fields[2] as String?,
       barcode: fields[3] as String?,
+      captureMode: fields[9] != null ? CaptureMode.values[fields[9] as int] : null,
       createdAt: fields[4] as DateTime,
       updatedAt: fields[5] as DateTime?,
       status: CaptureJobStatus.values[fields[6] as int],
@@ -30,7 +32,7 @@ class CaptureJobAdapter extends TypeAdapter<CaptureJob> {
   @override
   void write(BinaryWriter writer, CaptureJob obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -48,6 +50,8 @@ class CaptureJobAdapter extends TypeAdapter<CaptureJob> {
       ..writeByte(7)
       ..write(obj.attempts)
       ..writeByte(8)
-      ..write(obj.lastError);
+      ..write(obj.lastError)
+      ..writeByte(9)
+      ..write(obj.captureMode?.index);
   }
 }

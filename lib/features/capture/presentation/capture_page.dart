@@ -189,22 +189,23 @@ class _CapturePageState extends ConsumerState<CapturePage> {
     final mode = state.mode;
     if (mode == null) return const SizedBox.shrink();
 
-    return Column(
-      children: [
-        CaptureStatusBanner(
-          mode: mode,
-          hasImage: state.imageFile != null,
-          message: state.message,
-          error: state.error,
-        ),
-        Expanded(
-          child: _buildModeContent(mode),
-        ),
-        if (mode != CaptureMode.text && (state.imageFile != null || state.scannedBarcode != null))
-          CaptureQueueAction(
-            state: state,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CaptureStatusBanner(
+            mode: mode,
+            hasImage: state.imageFile != null,
+            message: state.message,
+            error: state.error,
           ),
-      ],
+          _buildModeContent(mode),
+          if (mode != CaptureMode.text && (state.imageFile != null || state.scannedBarcode != null))
+            CaptureQueueAction(
+              state: state,
+            ),
+        ],
+      ),
     );
   }
 
@@ -217,11 +218,13 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         return CameraCaptureView(
           state: captureState,
           onCapture: controller.captureWithCamera,
+          scrollable: false,
         );
       case CaptureMode.gallery:
         return GalleryImportView(
           state: captureState,
           onImport: controller.importFromGallery,
+          scrollable: false,
         );
       case CaptureMode.barcode:
         return BarcodeScannerView(

@@ -31,10 +31,6 @@ import 'package:qkomo_ui/features/entry/domain/entry.dart' as _i4;
 /// See the documentation for Mockito's code generation for more information.
 class MockLocalEntryRepository extends _i1.Mock
     implements _i2.LocalEntryRepository {
-  MockLocalEntryRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   _i3.Future<void> saveEntry(_i4.Entry? entry) => (super.noSuchMethod(
         Invocation.method(
@@ -46,10 +42,13 @@ class MockLocalEntryRepository extends _i1.Mock
       ) as _i3.Future<void>);
 
   @override
-  _i4.Entry? getEntryById(String? id) => (super.noSuchMethod(Invocation.method(
-        #getEntryById,
-        [id],
-      )) as _i4.Entry?);
+  _i4.Entry? getEntryById(String? id) => (super.noSuchMethod(
+        Invocation.method(
+          #getEntryById,
+          [id],
+        ),
+        returnValueForMissingStub: null,
+      ) as _i4.Entry?);
 
   @override
   _i3.Future<void> deleteEntry(String? id) => (super.noSuchMethod(
@@ -68,6 +67,7 @@ class MockLocalEntryRepository extends _i1.Mock
           [],
         ),
         returnValue: <_i4.Entry>[],
+        returnValueForMissingStub: <_i4.Entry>[],
       ) as List<_i4.Entry>);
 
   @override
@@ -77,6 +77,7 @@ class MockLocalEntryRepository extends _i1.Mock
           [],
         ),
         returnValue: <_i4.Entry>[],
+        returnValueForMissingStub: <_i4.Entry>[],
       ) as List<_i4.Entry>);
 
   @override
@@ -86,6 +87,7 @@ class MockLocalEntryRepository extends _i1.Mock
           [],
         ),
         returnValue: _i3.Stream<List<_i4.Entry>>.empty(),
+        returnValueForMissingStub: _i3.Stream<List<_i4.Entry>>.empty(),
       ) as _i3.Stream<List<_i4.Entry>>);
 
   @override
@@ -105,10 +107,6 @@ class MockLocalEntryRepository extends _i1.Mock
 /// See the documentation for Mockito's code generation for more information.
 class MockRemoteEntryRepository extends _i1.Mock
     implements _i6.RemoteEntryRepository {
-  MockRemoteEntryRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   _i3.Future<List<_i4.Entry>> fetchEntries({
     DateTime? from,
@@ -124,6 +122,8 @@ class MockRemoteEntryRepository extends _i1.Mock
           },
         ),
         returnValue: _i3.Future<List<_i4.Entry>>.value(<_i4.Entry>[]),
+        returnValueForMissingStub:
+            _i3.Future<List<_i4.Entry>>.value(<_i4.Entry>[]),
       ) as _i3.Future<List<_i4.Entry>>);
 
   @override

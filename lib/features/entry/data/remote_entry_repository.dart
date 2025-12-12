@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class RemoteEntryRepository {
   RemoteEntryRepository({required Dio dio}) : _dio = dio;
@@ -99,11 +102,39 @@ class RemoteEntryRepository {
   }
 
   /// Convert JSON from API to Entry
+  /// Convert JSON from API to Entry
   Entry _entryFromJson(Map<String, dynamic> json) {
-    // TODO: This is a placeholder - actual implementation depends on backend API response format
-    // For now, throw an error to indicate this needs backend coordination
-    throw UnimplementedError(
-      'Entry deserialization from backend requires B5/B6 API specification',
+    // UnimplementedError removed - implementing logic
+    final resultJson = json['result'] as Map<String, dynamic>;
+
+    // Parse MealType safely
+    MealType? mealType;
+    if (resultJson['mealType'] != null) {
+      final idx = resultJson['mealType'] as int;
+      if (idx >= 0 && idx < MealType.values.length) {
+        mealType = MealType.values[idx];
+      }
+    }
+
+    final result = CaptureResult(
+      jobId: resultJson['jobId'] as String,
+      title: resultJson['title'] as String?,
+      ingredients: (resultJson['ingredients'] as List<dynamic>?)?.cast<String>() ?? [],
+      allergens: (resultJson['allergens'] as List<dynamic>?)?.cast<String>() ?? [],
+      savedAt: DateTime.tryParse(resultJson['savedAt'] as String) ?? DateTime.now(),
+      notes: resultJson['notes'] as String?,
+      mealType: mealType,
+      isManualEntry: resultJson['isManualEntry'] as bool? ?? false,
+    );
+
+    return Entry(
+      id: json['id'] as String,
+      result: result,
+      lastModifiedAt: DateTime.tryParse(json['lastModifiedAt'] as String) ?? DateTime.now(),
+      isDeleted: json['isDeleted'] as bool? ?? false,
+      syncStatus: SyncStatus.synced,
+      lastSyncedAt: DateTime.now(), // Freshly fetched
+      cloudVersion: json['version'] as int?,
     );
   }
 }

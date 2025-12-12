@@ -1,3 +1,3 @@
 class FeatureFlags {
-  static const bool enableCloudSync = false;
+  static bool enableCloudSync = false;
 }

@@ -23,13 +23,15 @@ class EntryAdapter extends TypeAdapter<_$EntryImpl> {
       lastModifiedAt: fields[3] as DateTime,
       lastSyncedAt: fields[4] as DateTime?,
       isDeleted: fields[5] as bool,
+      cloudVersion: fields[6] as int?,
+      pendingChanges: (fields[7] as Map?)?.cast<String, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, _$EntryImpl obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +43,11 @@ class EntryAdapter extends TypeAdapter<_$EntryImpl> {
       ..writeByte(4)
       ..write(obj.lastSyncedAt)
       ..writeByte(5)
-      ..write(obj.isDeleted);
+      ..write(obj.isDeleted)
+      ..writeByte(6)
+      ..write(obj.cloudVersion)
+      ..writeByte(7)
+      ..write(obj.pendingChanges);
   }
 
   @override
@@ -70,6 +76,8 @@ _$EntryImpl _$$EntryImplFromJson(Map<String, dynamic> json) => _$EntryImpl(
           ? null
           : DateTime.parse(json['lastSyncedAt'] as String),
       isDeleted: json['isDeleted'] as bool? ?? false,
+      cloudVersion: (json['cloudVersion'] as num?)?.toInt(),
+      pendingChanges: json['pendingChanges'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$EntryImplToJson(_$EntryImpl instance) =>
@@ -80,6 +88,8 @@ Map<String, dynamic> _$$EntryImplToJson(_$EntryImpl instance) =>
       'lastModifiedAt': instance.lastModifiedAt.toIso8601String(),
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'isDeleted': instance.isDeleted,
+      'cloudVersion': instance.cloudVersion,
+      'pendingChanges': instance.pendingChanges,
     };
 
 const _$SyncStatusEnumMap = {

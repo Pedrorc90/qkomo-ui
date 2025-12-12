@@ -225,7 +225,7 @@ final captureReviewControllerProvider =
 });
 
 final directAnalyzeControllerProvider =
-    StateNotifierProvider<DirectAnalyzeController, AsyncValue<String?>>((ref) {
+    StateNotifierProvider.autoDispose<DirectAnalyzeController, AsyncValue<String?>>((ref) {
   final analyzer = ref.watch(captureAnalyzerProvider);
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   return DirectAnalyzeController(analyzer, resultRepo);

@@ -9,13 +9,24 @@ class CameraCaptureView extends StatelessWidget {
     super.key,
     required this.state,
     required this.onCapture,
+    this.scrollable = true,
   });
 
   final CaptureState state;
   final Future<void> Function() onCapture;
+  final bool scrollable;
 
   @override
   Widget build(BuildContext context) {
+    if (scrollable) {
+      return SingleChildScrollView(
+        child: _buildContent(context),
+      );
+    }
+    return _buildContent(context);
+  }
+
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -31,8 +42,7 @@ class CameraCaptureView extends StatelessWidget {
           FilledButton.icon(
             onPressed: state.isProcessing ? null : onCapture,
             icon: const Icon(Icons.camera_alt),
-            label: Text(
-                state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
+            label: Text(state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
           ),
           if (!kIsWeb)
             Padding(

@@ -3,18 +3,10 @@
 This file tracks pending implementation tasks for the qkomo-ui Flutter mobile app.
 
 **Last Updated:** 2025-12-10
-**Project Phase:** MVP - Core capture flow complete, pending review/history features
+**Project Phase:** MVP - Features complete (Sync, History, Capture). Pending QA (M8).
 
 ## Project Milestones (from PLAN.md)
 
-- [x] **M1 – Firebase auth & profile gating:** Configure Apple/Google/email sign-in, persist ID tokens, and guard app access.
-- [x] **M2 – Capture surfaces:** Build camera, gallery import, and barcode scanner flows with Spanish-first messaging.
-- [x] **M3 – Offline queue & storage:** Queue analyze jobs locally (Hive) and persist drafts/results for offline use.
-- [x] **M4 – Analyze flow wiring:** Call backend `/v1/analyze` and `/v1/analyze/barcode`, show progress, and reconcile queued items.
-  - Pendiente: probar contra backend real con token Firebase y correr `flutter analyze`/`flutter test`.
-- [x] **M5 – Review & edit UI:** Let users edit ingredient/allergen lists and confirm before saving.
-- [x] **M6 – Today & History tabs:** Implement log views backed by local storage, ready for future sync.
-- [ ] **M7 – Sync-ready architecture:** Abstract data layer for easy switch to online/offline hybrid when backend exposes entry APIs.
 - [ ] **M8 – Mobile QA:** Add widget/state tests plus smoke tests for capture → review → save.
 - [ ] **Infra – Flutter tooling:** Instalar `unzip`, regenerar Dart/Flutter SDK, ejecutar `flutter pub get`, `dart format`, `flutter analyze` y `flutter test`. (Partially covered by Technical Debt tasks)
 
@@ -22,18 +14,6 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ## High Priority - MVP Completion
 
-### M7 - Sync-Ready Architecture
-**Status:** In Progress
-**Goal:** Prepare data layer for cloud sync once backend entries API is available
-
-#### Sync Metadata & Conflict Resolution
-- [ ] `cloudVersion` (for conflict detection)
-- [ ] `pendingChanges` (track local edits)
-- [ ] Implement conflict resolution strategy
-  - [ ] User prompt to choose version (advanced)
-  - [ ] Merge changes intelligently (complex)
-- [ ] Retry failed syncs with exponential backoff
-- [ ] Mark conflicts for user resolution
 
 ---
 
@@ -257,60 +237,11 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 
 ### 🔴 Alta Prioridad - Arquitectura y Patrones
 
-#### P1 - Eliminar código duplicado en StreamProviders (Completed)
-**Ubicación:** `lib/features/capture/application/capture_providers.dart:107-224`
-**Problema:** Los providers `pendingCaptureJobsProvider`, `failedCaptureJobsProvider`, `processingCaptureJobsProvider` y `queueStatsProvider` tienen lógica casi idéntica para crear StreamControllers y escuchar cambios en Hive.
-**Propuesta:**
-- [x] Crear un helper genérico `HiveStreamProvider<T>` que encapsule el patrón común
-- [x] Reducir ~120 líneas de código duplicado a ~30 líneas
-- [x] Beneficio: Menos bugs por inconsistencias, más fácil de mantener
 
-```dart
-// Ejemplo de abstracción propuesta
-StreamProvider<List<T>> createFilteredHiveStreamProvider<T>(
-  Box<T> box,
-  bool Function(T) filter,
-  int Function(T, T)? comparator,
-)
-```
 
-#### P2 - Usar Freezed consistentemente para modelos de dominio
-**Ubicación:** `lib/features/capture/domain/capture_result.dart`, `lib/features/entry/domain/entry.dart`
-**Problema:** Algunos modelos usan `copyWith` manual mientras que otros usan Freezed. `CaptureResult` y `Entry` tienen implementaciones manuales propensas a errores.
-**Propuesta:**
-- Migrar `CaptureResult` y `Entry` a Freezed
-- Beneficio: Generación automática de `==`, `hashCode`, `toString()`, `copyWith`, y serialización JSON
-- Reducción de código boilerplate ~50%
-
-#### P3 - Evitar uso de `dynamic` en CaptureReviewPage (Completed)
-**Ubicación:** `lib/features/capture/presentation/review/capture_review_page.dart:76-131`
-**Problema:** Los parámetros `state` y `controller` están tipados como `dynamic`, perdiendo type-safety.
-**Propuesta:**
-- [x] Tipar correctamente: `CaptureReviewState state, CaptureReviewController controller`
-- [x] Beneficio: Detección de errores en tiempo de compilación
-
-#### P4 - Implementar logging estructurado en lugar de `print()` (Completed)
-**Ubicación:** `lib/features/capture/application/capture_queue_processor.dart:46-56,93-94`
-**Problema:** Se usa `print()` para logging, lo cual no es apropiado para producción.
-**Propuesta:**
-- [x] Implementar un servicio de logging con niveles (debug, info, warning, error)
-- [x] Integrar con Firebase Crashlytics para errores en producción
-- [x] Usar `debugPrint` o `logger` package para desarrollo
-- [x] Beneficio: Mejor debugging y monitoreo en producción
 
 ### 🟡 Media Prioridad - Mejoras de Código
 
-#### P5 - Extraer constantes mágicas a configuración (Completed)
-**Ubicación:** Múltiples archivos
-**Problema:** Valores hardcodeados dispersos:
-- `Duration(seconds: 30)` para timeouts en Dio (`dio_provider.dart:18`)
-- `Duration(days: 7)` para TTL de jobs (`capture_queue_processor.dart:20`)
-- `3` max retry attempts (`capture_queue_processor.dart:21`)
-- `30000ms` cap para backoff (`capture_queue_processor.dart:77`)
-**Propuesta:**
-- [x] Crear `lib/config/app_constants.dart` con todas las constantes
-- [x] Permitir override vía variables de entorno para testing
-- [x] Beneficio: Configuración centralizada y fácil de ajustar
 
 #### P6 - Mejorar manejo de errores en HybridEntryRepository
 **Ubicación:** `lib/features/entry/data/hybrid_entry_repository.dart:103-108`
@@ -354,26 +285,6 @@ StreamProvider<List<T>> createFilteredHiveStreamProvider<T>(
 - Implementar LRU cache para imágenes locales procesadas
 - Beneficio: Mejor rendimiento y experiencia de usuario
 
-#### P11 - Expandir configuración de analysis_options.yaml (Completed)
-**Ubicación:** `analysis_options.yaml`
-**Problema:** Solo tiene 2 reglas de linting activas.
-**Propuesta:**
-- [x] Habilitar reglas adicionales de flutter_lints:
-  ```yaml
-  linter:
-    rules:
-      avoid_print: true
-      avoid_type_to_string: true
-      cancel_subscriptions: true
-      close_sinks: true
-      prefer_const_constructors: true
-      prefer_const_declarations: true
-      prefer_final_fields: true
-      prefer_final_locals: true
-      unawaited_futures: true
-      unnecessary_await_in_return: true
-  ```
-- Beneficio: Detección temprana de problemas comunes
 
 #### P12 - Añadir documentación de código público
 **Ubicación:** Múltiples archivos (repositories, controllers, services)

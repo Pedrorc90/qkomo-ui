@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -29,6 +30,9 @@ class SyncService {
 
   SyncStatus _currentStatus = SyncStatus.idle;
   DateTime? _lastSyncTime;
+
+  int _continuousFailures = 0;
+  Timer? _retryTimer;
 
   /// Stream of sync status changes
   Stream<SyncStatus> get syncStatusStream => _syncStatusController.stream;
@@ -66,6 +70,7 @@ class SyncService {
     if (!FeatureFlags.enableCloudSync) return;
     if (_currentStatus == SyncStatus.syncing) return;
 
+    // specific status for UI
     _updateStatus(SyncStatus.syncing);
 
     try {
@@ -73,15 +78,38 @@ class SyncService {
       _lastSyncTime = DateTime.now();
       _lastSyncTimeController.add(_lastSyncTime);
       _updateStatus(SyncStatus.success);
+
+      // Reset failure count on success
+      _continuousFailures = 0;
+      _retryTimer?.cancel();
     } catch (e) {
       debugPrint('Sync failed: $e');
       _updateStatus(SyncStatus.error);
-      // Don't rethrow for auto-sync, but UI might want to know
+
+      // Schedule retry with backoff
+      _continuousFailures++;
+      _scheduleRetry();
     } finally {
       // Reset to idle after a delay
       await Future.delayed(const Duration(seconds: 2));
-      _updateStatus(SyncStatus.idle);
+      // Only set to idle if we aren't already syncing again (rare race condition)
+      if (_currentStatus != SyncStatus.syncing) {
+        _updateStatus(SyncStatus.idle);
+      }
     }
+  }
+
+  void _scheduleRetry() {
+    _retryTimer?.cancel();
+
+    // Exponential backoff: 30s, 60s, 120s... max 1 hour
+    final delaySeconds = min(30 * pow(2, _continuousFailures - 1).toInt(), 3600);
+    debugPrint('Scheduling sync retry in $delaySeconds seconds (attempt $_continuousFailures)');
+
+    _retryTimer = Timer(Duration(seconds: delaySeconds), () {
+      debugPrint('Retrying sync...');
+      _triggerAutoSync();
+    });
   }
 
   /// Trigger automatic sync (fire and forget)
@@ -106,5 +134,6 @@ class SyncService {
     _connectivitySubscription?.cancel();
     _syncStatusController.close();
     _lastSyncTimeController.close();
+    _retryTimer?.cancel();
   }
 }

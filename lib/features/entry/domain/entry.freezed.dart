@@ -32,6 +32,11 @@ mixin _$Entry {
   DateTime? get lastSyncedAt => throw _privateConstructorUsedError;
   @HiveField(5)
   bool get isDeleted => throw _privateConstructorUsedError;
+  @HiveField(6)
+  int? get cloudVersion => throw _privateConstructorUsedError;
+  @HiveField(7)
+  Map<String, dynamic>? get pendingChanges =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,7 +54,9 @@ abstract class $EntryCopyWith<$Res> {
       @HiveField(2) SyncStatus syncStatus,
       @HiveField(3) DateTime lastModifiedAt,
       @HiveField(4) DateTime? lastSyncedAt,
-      @HiveField(5) bool isDeleted});
+      @HiveField(5) bool isDeleted,
+      @HiveField(6) int? cloudVersion,
+      @HiveField(7) Map<String, dynamic>? pendingChanges});
 
   $CaptureResultCopyWith<$Res> get result;
 }
@@ -73,6 +80,8 @@ class _$EntryCopyWithImpl<$Res, $Val extends Entry>
     Object? lastModifiedAt = null,
     Object? lastSyncedAt = freezed,
     Object? isDeleted = null,
+    Object? cloudVersion = freezed,
+    Object? pendingChanges = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -99,6 +108,14 @@ class _$EntryCopyWithImpl<$Res, $Val extends Entry>
           ? _value.isDeleted
           : isDeleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      cloudVersion: freezed == cloudVersion
+          ? _value.cloudVersion
+          : cloudVersion // ignore: cast_nullable_to_non_nullable
+              as int?,
+      pendingChanges: freezed == pendingChanges
+          ? _value.pendingChanges
+          : pendingChanges // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
     ) as $Val);
   }
 
@@ -124,7 +141,9 @@ abstract class _$$EntryImplCopyWith<$Res> implements $EntryCopyWith<$Res> {
       @HiveField(2) SyncStatus syncStatus,
       @HiveField(3) DateTime lastModifiedAt,
       @HiveField(4) DateTime? lastSyncedAt,
-      @HiveField(5) bool isDeleted});
+      @HiveField(5) bool isDeleted,
+      @HiveField(6) int? cloudVersion,
+      @HiveField(7) Map<String, dynamic>? pendingChanges});
 
   @override
   $CaptureResultCopyWith<$Res> get result;
@@ -147,6 +166,8 @@ class __$$EntryImplCopyWithImpl<$Res>
     Object? lastModifiedAt = null,
     Object? lastSyncedAt = freezed,
     Object? isDeleted = null,
+    Object? cloudVersion = freezed,
+    Object? pendingChanges = freezed,
   }) {
     return _then(_$EntryImpl(
       id: null == id
@@ -173,6 +194,14 @@ class __$$EntryImplCopyWithImpl<$Res>
           ? _value.isDeleted
           : isDeleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      cloudVersion: freezed == cloudVersion
+          ? _value.cloudVersion
+          : cloudVersion // ignore: cast_nullable_to_non_nullable
+              as int?,
+      pendingChanges: freezed == pendingChanges
+          ? _value._pendingChanges
+          : pendingChanges // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
     ));
   }
 }
@@ -187,7 +216,10 @@ class _$EntryImpl implements _Entry {
       @HiveField(2) this.syncStatus = SyncStatus.pending,
       @HiveField(3) required this.lastModifiedAt,
       @HiveField(4) this.lastSyncedAt,
-      @HiveField(5) this.isDeleted = false});
+      @HiveField(5) this.isDeleted = false,
+      @HiveField(6) this.cloudVersion,
+      @HiveField(7) final Map<String, dynamic>? pendingChanges})
+      : _pendingChanges = pendingChanges;
 
   factory _$EntryImpl.fromJson(Map<String, dynamic> json) =>
       _$$EntryImplFromJson(json);
@@ -212,10 +244,23 @@ class _$EntryImpl implements _Entry {
   @JsonKey()
   @HiveField(5)
   final bool isDeleted;
+  @override
+  @HiveField(6)
+  final int? cloudVersion;
+  final Map<String, dynamic>? _pendingChanges;
+  @override
+  @HiveField(7)
+  Map<String, dynamic>? get pendingChanges {
+    final value = _pendingChanges;
+    if (value == null) return null;
+    if (_pendingChanges is EqualUnmodifiableMapView) return _pendingChanges;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
 
   @override
   String toString() {
-    return 'Entry(id: $id, result: $result, syncStatus: $syncStatus, lastModifiedAt: $lastModifiedAt, lastSyncedAt: $lastSyncedAt, isDeleted: $isDeleted)';
+    return 'Entry(id: $id, result: $result, syncStatus: $syncStatus, lastModifiedAt: $lastModifiedAt, lastSyncedAt: $lastSyncedAt, isDeleted: $isDeleted, cloudVersion: $cloudVersion, pendingChanges: $pendingChanges)';
   }
 
   @override
@@ -232,13 +277,25 @@ class _$EntryImpl implements _Entry {
             (identical(other.lastSyncedAt, lastSyncedAt) ||
                 other.lastSyncedAt == lastSyncedAt) &&
             (identical(other.isDeleted, isDeleted) ||
-                other.isDeleted == isDeleted));
+                other.isDeleted == isDeleted) &&
+            (identical(other.cloudVersion, cloudVersion) ||
+                other.cloudVersion == cloudVersion) &&
+            const DeepCollectionEquality()
+                .equals(other._pendingChanges, _pendingChanges));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, result, syncStatus,
-      lastModifiedAt, lastSyncedAt, isDeleted);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      result,
+      syncStatus,
+      lastModifiedAt,
+      lastSyncedAt,
+      isDeleted,
+      cloudVersion,
+      const DeepCollectionEquality().hash(_pendingChanges));
 
   @JsonKey(ignore: true)
   @override
@@ -261,7 +318,9 @@ abstract class _Entry implements Entry {
       @HiveField(2) final SyncStatus syncStatus,
       @HiveField(3) required final DateTime lastModifiedAt,
       @HiveField(4) final DateTime? lastSyncedAt,
-      @HiveField(5) final bool isDeleted}) = _$EntryImpl;
+      @HiveField(5) final bool isDeleted,
+      @HiveField(6) final int? cloudVersion,
+      @HiveField(7) final Map<String, dynamic>? pendingChanges}) = _$EntryImpl;
 
   factory _Entry.fromJson(Map<String, dynamic> json) = _$EntryImpl.fromJson;
 
@@ -283,6 +342,12 @@ abstract class _Entry implements Entry {
   @override
   @HiveField(5)
   bool get isDeleted;
+  @override
+  @HiveField(6)
+  int? get cloudVersion;
+  @override
+  @HiveField(7)
+  Map<String, dynamic>? get pendingChanges;
   @override
   @JsonKey(ignore: true)
   _$$EntryImplCopyWith<_$EntryImpl> get copyWith =>

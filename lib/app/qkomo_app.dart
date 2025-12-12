@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/home/presentation/home_page.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 import 'package:qkomo_ui/app/auth_gate.dart';
+import 'package:qkomo_ui/core/http/retry_notification_widget.dart';
 
 class QkomoApp extends ConsumerWidget {
   const QkomoApp({super.key});
@@ -16,6 +17,11 @@ class QkomoApp extends ConsumerWidget {
       title: 'qkomo',
       debugShowCheckedModeBanner: false,
       theme: theme,
+      builder: (context, child) {
+        return RetryNotificationWidget(
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       home: const AuthGate(child: HomePage()),
     );
   }

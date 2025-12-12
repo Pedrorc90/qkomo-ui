@@ -34,13 +34,16 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
 
   late MealType _selectedMealType;
   String? _photoPath;
+  bool _showForm = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedMealType = widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
+    _selectedMealType =
+        widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
 
     if (widget.existingMeal != null) {
+      _showForm = true; // Show form when editing existing meal
       _nameController.text = widget.existingMeal!.name;
       _notesController.text = widget.existingMeal!.notes ?? '';
       _photoPath = widget.existingMeal!.photoPath;
@@ -123,6 +126,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
 
     if (selected != null) {
       setState(() {
+        _showForm = true; // Show form when recipe is selected
         _nameController.text = selected.name;
         _selectedMealType = selected.suggestedMealType;
         _photoPath = selected.photoPath;
@@ -143,8 +147,10 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveMeal() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients =
-        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
+    final ingredients = _ingredientControllers
+        .map((c) => c.text.trim())
+        .where((text) => text.isNotEmpty)
+        .toList();
 
     if (ingredients.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -162,7 +168,9 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     } else {
@@ -171,7 +179,9 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     }
@@ -188,7 +198,9 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
       title: Text(
-        widget.existingMeal != null ? 'Editar ${_selectedMealType.displayName}' : 'Agregar comida',
+        widget.existingMeal != null
+            ? 'Editar ${_selectedMealType.displayName}'
+            : 'Agregar comida',
       ),
       content: SizedBox(
         width: double.maxFinite,
@@ -222,7 +234,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                             ? Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.camera_alt, size: 40, color: Colors.grey[400]),
+                                  Icon(Icons.camera_alt,
+                                      size: 40, color: Colors.grey[400]),
                                   const SizedBox(height: 8),
                                   Text(
                                     'Añadir foto',
@@ -249,7 +262,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                             backgroundColor: Colors.black54,
                             radius: 16,
                             child: IconButton(
-                              icon: const Icon(Icons.close, size: 16, color: Colors.white),
+                              icon: const Icon(Icons.close,
+                                  size: 16, color: Colors.white),
                               onPressed: () {
                                 setState(() {
                                   _photoPath = null;
@@ -264,103 +278,129 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                 ),
                 const SizedBox(height: 16),
 
-                // Preset Recipe Button (only for new meals)
-                if (widget.existingMeal == null)
+                // Action Buttons (only for new meals)
+                if (widget.existingMeal == null && !_showForm)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: _showPresetRecipes,
-                        icon: const Icon(Icons.restaurant_menu),
-                        label: const Text('Usar receta preconfigurada'),
-                      ),
-                    ),
-                  ),
-
-                // Meal Type Selector
-                DropdownButtonFormField<MealType>(
-                  value: _selectedMealType,
-                  decoration: const InputDecoration(
-                    labelText: 'Tipo de comida',
-                  ),
-                  items: MealType.values.map((type) {
-                    return DropdownMenuItem(
-                      value: type,
-                      child: Text(type.displayName),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedMealType = value;
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre de la comida',
-                    hintText: 'Ej: Ensalada César',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'El nombre es obligatorio';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Ingredientes',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                ..._ingredientControllers.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final controller = entry.value;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
                       children: [
                         Expanded(
-                          child: TextFormField(
-                            controller: controller,
-                            decoration: InputDecoration(
-                              hintText: 'Ingrediente ${index + 1}',
+                          child: OutlinedButton.icon(
+                            onPressed: _showPresetRecipes,
+                            icon: const Icon(Icons.restaurant_menu),
+                            label: const Text('Mi lista'),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
                           ),
                         ),
-                        if (_ingredientControllers.length > 1)
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle_outline),
-                            onPressed: () => _removeIngredient(index),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: FilledButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                _showForm = true;
+                              });
+                            },
+                            icon: const Icon(Icons.add),
+                            label: const Text('Añadir'),
+                            style: FilledButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
                           ),
+                        ),
                       ],
                     ),
-                  );
-                }),
-                TextButton.icon(
-                  onPressed: _addIngredient,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Agregar ingrediente'),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _notesController,
-                  decoration: const InputDecoration(
-                    labelText: 'Notas (opcional)',
-                    hintText: 'Ej: Sin cebolla',
                   ),
-                  maxLines: 2,
-                ),
+
+                // Form content (shown when editing or when user clicks "Añadir")
+                if (_showForm) ...[
+                  // Meal Type Selector
+                  DropdownButtonFormField<MealType>(
+                    initialValue: _selectedMealType,
+                    decoration: const InputDecoration(
+                      labelText: 'Tipo de comida',
+                    ),
+                    items: MealType.values.map((type) {
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Text(type.displayName),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedMealType = value;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nombre de la comida',
+                      hintText: 'Ej: Ensalada César',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'El nombre es obligatorio';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Ingredientes',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  ..._ingredientControllers.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final controller = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: controller,
+                              decoration: InputDecoration(
+                                hintText: 'Ingrediente ${index + 1}',
+                              ),
+                            ),
+                          ),
+                          if (_ingredientControllers.length > 1)
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle_outline),
+                              onPressed: () => _removeIngredient(index),
+                            ),
+                        ],
+                      ),
+                    );
+                  }),
+                  TextButton.icon(
+                    onPressed: _addIngredient,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Agregar ingrediente'),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _notesController,
+                    decoration: const InputDecoration(
+                      labelText: 'Notas (opcional)',
+                      hintText: 'Ej: Sin cebolla',
+                    ),
+                    maxLines: 2,
+                  ),
+                ], // End of _showForm
+
                 if (menuState.errorMessage != null) ...[
                   const SizedBox(height: 16),
                   Text(
                     menuState.errorMessage!,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                 ],
               ],
@@ -370,7 +410,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: menuState.isLoading ? null : () => Navigator.of(context).pop(),
+          onPressed:
+              menuState.isLoading ? null : () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
         FilledButton(

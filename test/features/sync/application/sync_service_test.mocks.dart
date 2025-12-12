@@ -31,14 +31,11 @@ import 'package:qkomo_ui/features/entry/domain/entry.dart' as _i4;
 /// See the documentation for Mockito's code generation for more information.
 class MockHybridEntryRepository extends _i1.Mock
     implements _i2.HybridEntryRepository {
-  MockHybridEntryRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   bool get enableCloudSync => (super.noSuchMethod(
         Invocation.getter(#enableCloudSync),
         returnValue: false,
+        returnValueForMissingStub: false,
       ) as bool);
 
   @override
@@ -56,6 +53,8 @@ class MockHybridEntryRepository extends _i1.Mock
           },
         ),
         returnValue: _i3.Future<List<_i4.Entry>>.value(<_i4.Entry>[]),
+        returnValueForMissingStub:
+            _i3.Future<List<_i4.Entry>>.value(<_i4.Entry>[]),
       ) as _i3.Future<List<_i4.Entry>>);
 
   @override
@@ -65,6 +64,7 @@ class MockHybridEntryRepository extends _i1.Mock
           [id],
         ),
         returnValue: _i3.Future<_i4.Entry?>.value(),
+        returnValueForMissingStub: _i3.Future<_i4.Entry?>.value(),
       ) as _i3.Future<_i4.Entry?>);
 
   @override
@@ -94,6 +94,7 @@ class MockHybridEntryRepository extends _i1.Mock
           [],
         ),
         returnValue: _i3.Stream<List<_i4.Entry>>.empty(),
+        returnValueForMissingStub: _i3.Stream<List<_i4.Entry>>.empty(),
       ) as _i3.Stream<List<_i4.Entry>>);
 
   @override
@@ -113,6 +114,7 @@ class MockHybridEntryRepository extends _i1.Mock
           [],
         ),
         returnValue: _i3.Future<int>.value(0),
+        returnValueForMissingStub: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
 }
 
@@ -120,15 +122,13 @@ class MockHybridEntryRepository extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockConnectivity extends _i1.Mock implements _i5.Connectivity {
-  MockConnectivity() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   _i3.Stream<List<_i6.ConnectivityResult>> get onConnectivityChanged =>
       (super.noSuchMethod(
         Invocation.getter(#onConnectivityChanged),
         returnValue: _i3.Stream<List<_i6.ConnectivityResult>>.empty(),
+        returnValueForMissingStub:
+            _i3.Stream<List<_i6.ConnectivityResult>>.empty(),
       ) as _i3.Stream<List<_i6.ConnectivityResult>>);
 
   @override
@@ -140,5 +140,8 @@ class MockConnectivity extends _i1.Mock implements _i5.Connectivity {
         ),
         returnValue: _i3.Future<List<_i6.ConnectivityResult>>.value(
             <_i6.ConnectivityResult>[]),
+        returnValueForMissingStub:
+            _i3.Future<List<_i6.ConnectivityResult>>.value(
+                <_i6.ConnectivityResult>[]),
       ) as _i3.Future<List<_i6.ConnectivityResult>>);
 }

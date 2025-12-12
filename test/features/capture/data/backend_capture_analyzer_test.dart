@@ -13,28 +13,27 @@ void main() {
         analysisId: 'analysis-123',
         type: 'meal',
         photoId: 'photo-123',
-        ingredients: [
-          IngredientDto(
-            name: 'Harina de trigo',
-            allergens: ['gluten'],
-            confidence: 0.95,
-          ),
-          IngredientDto(
-            name: 'Azúcar',
-            allergens: [],
-            confidence: 0.90,
-          ),
-        ],
-        warnings: ['Contiene gluten'],
+        identification: IdentificationDto(
+          dishName: 'Cake',
+          detectedIngredients: ['Flour', 'Sugar'],
+        ),
+        nutrition: NutritionDto(
+          calories: 100,
+        ),
+        medicalAlerts: MedicalAlertsDto(),
+        suitableFor: SuitableForDto(),
+        allergens: ['gluten'],
+        improvementSuggestions: ['Eat less'],
       );
 
       expect(dto.analysisId, equals('analysis-123'));
       expect(dto.type, equals('meal'));
       expect(dto.photoId, equals('photo-123'));
-      expect(dto.ingredients, hasLength(2));
-      expect(dto.ingredients[0].name, equals('Harina de trigo'));
-      expect(dto.ingredients[0].allergens, contains('gluten'));
-      expect(dto.warnings, hasLength(1));
+      expect(dto.identification.dishName, equals('Cake'));
+      expect(dto.identification.detectedIngredients, hasLength(2));
+      expect(dto.identification.detectedIngredients[0], equals('Flour'));
+      expect(dto.allergens, contains('gluten'));
+      expect(dto.improvementSuggestions, contains('Eat less'));
     });
 
     test('CaptureJob should be created for image type', () {
@@ -65,28 +64,15 @@ void main() {
       expect(job.status, equals(CaptureJobStatus.pending));
     });
 
-    test('IngredientDto should handle allergens correctly', () {
-      final ingredient = IngredientDto(
-        name: 'Leche',
-        allergens: ['lactosa', 'proteína de leche'],
-        confidence: 0.88,
+    test('IdentificationDto should handle ingredients correctly', () {
+      final identification = IdentificationDto(
+        dishName: 'Soup',
+        detectedIngredients: ['Water', 'Salt'],
       );
 
-      expect(ingredient.name, equals('Leche'));
-      expect(ingredient.allergens, hasLength(2));
-      expect(
-          ingredient.allergens, containsAll(['lactosa', 'proteína de leche']));
-      expect(ingredient.confidence, equals(0.88));
-    });
-
-    test('IngredientDto should handle empty allergens', () {
-      final ingredient = IngredientDto(
-        name: 'Agua',
-        allergens: [],
-        confidence: 1.0,
-      );
-
-      expect(ingredient.allergens, isEmpty);
+      expect(identification.dishName, equals('Soup'));
+      expect(identification.detectedIngredients, hasLength(2));
+      expect(identification.detectedIngredients, containsAll(['Water', 'Salt']));
     });
   });
 
