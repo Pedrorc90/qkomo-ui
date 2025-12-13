@@ -5,8 +5,6 @@ import 'package:qkomo_ui/core/services/logger_service.dart';
 import 'package:qkomo_ui/features/capture/application/backend_capture_analyzer.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
 
 class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
   DirectAnalyzeController(
@@ -23,32 +21,14 @@ class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
     _logger.d('analyze');
     state = const AsyncValue.loading();
     try {
-      final jobId = _uuid.v4();
-      late CaptureJob job;
-
-      if (captureState.imageFile != null) {
-        job = CaptureJob(
-          id: jobId,
-          type: CaptureJobType.image,
-          imagePath: captureState.imageFile!.path,
-          captureMode: captureState.mode,
-          createdAt: DateTime.now(),
-        );
-      } else if (captureState.scannedBarcode != null) {
-        job = CaptureJob(
-          id: jobId,
-          type: CaptureJobType.barcode,
-          barcode: captureState.scannedBarcode,
-          captureMode: captureState.mode,
-          createdAt: DateTime.now(),
-        );
-      } else {
-        throw Exception('No hay imagen ni código para analizar');
+      if (captureState.mode == null) {
+        throw Exception('Modo de captura no seleccionado');
       }
 
       final result = await _analyzer.analyze(
-        job,
+        mode: captureState.mode!,
         file: captureState.imageFile,
+        barcode: captureState.scannedBarcode,
       );
 
       await _resultRepository.saveResult(result);

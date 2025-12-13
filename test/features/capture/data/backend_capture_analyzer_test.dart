@@ -1,9 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:qkomo_ui/features/capture/data/models/analyze_response_dto.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job_status.dart';
 
 void main() {
   group('BackendCaptureAnalyzer - Data Models', () {
@@ -34,34 +31,6 @@ void main() {
       expect(dto.identification.detectedIngredients[0], equals('Flour'));
       expect(dto.allergens, contains('gluten'));
       expect(dto.improvementSuggestions, contains('Eat less'));
-    });
-
-    test('CaptureJob should be created for image type', () {
-      final job = CaptureJob(
-        id: 'job-1',
-        type: CaptureJobType.image,
-        imagePath: '/path/to/image.jpg',
-        createdAt: DateTime.now(),
-        status: CaptureJobStatus.pending,
-      );
-
-      expect(job.type, equals(CaptureJobType.image));
-      expect(job.imagePath, equals('/path/to/image.jpg'));
-      expect(job.status, equals(CaptureJobStatus.pending));
-    });
-
-    test('CaptureJob should be created for barcode type', () {
-      final job = CaptureJob(
-        id: 'job-2',
-        type: CaptureJobType.barcode,
-        barcode: '1234567890123',
-        createdAt: DateTime.now(),
-        status: CaptureJobStatus.pending,
-      );
-
-      expect(job.type, equals(CaptureJobType.barcode));
-      expect(job.barcode, equals('1234567890123'));
-      expect(job.status, equals(CaptureJobStatus.pending));
     });
 
     test('IdentificationDto should handle ingredients correctly', () {

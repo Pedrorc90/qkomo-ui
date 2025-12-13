@@ -7,12 +7,9 @@ import 'package:qkomo_ui/theme/theme_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/barcode_scanner_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_view.dart';
-import 'package:qkomo_ui/features/capture/presentation/widgets/capture_queue_action.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/capture_status_banner.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/gallery_import_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/text_entry_view.dart';
@@ -26,7 +23,6 @@ class CapturePage extends ConsumerStatefulWidget {
 
 class _CapturePageState extends ConsumerState<CapturePage> {
   ProviderSubscription<CaptureState>? _captureSubscription;
-  ProviderSubscription<AsyncValue<CaptureJob?>>? _enqueueSubscription;
   ProviderSubscription<AsyncValue<String?>>? _analyzeSubscription;
 
   @override
@@ -44,25 +40,6 @@ class _CapturePageState extends ConsumerState<CapturePage> {
           _showSnackBar(next.message!);
           controller.clearMessage();
         }
-      },
-    );
-
-    _enqueueSubscription = ref.listenManual<AsyncValue<CaptureJob?>>(
-      captureEnqueueControllerProvider,
-      (previous, next) {
-        next.when(
-          data: (job) {
-            if (job != null) {
-              final isImage = job.type == CaptureJobType.image;
-              _showSnackBar(
-                isImage ? 'Foto guardada en cola offline' : 'Código guardado en cola offline',
-              );
-            }
-          },
-          error: (error, _) =>
-              _showSnackBar('No se pudo encolar la captura: $error', isError: true),
-          loading: () {},
-        );
       },
     );
 
@@ -85,7 +62,6 @@ class _CapturePageState extends ConsumerState<CapturePage> {
   @override
   void dispose() {
     _captureSubscription?.close();
-    _enqueueSubscription?.close();
     _analyzeSubscription?.close();
     super.dispose();
   }
@@ -204,10 +180,6 @@ class _CapturePageState extends ConsumerState<CapturePage> {
             error: state.error,
           ),
           _buildModeContent(mode),
-          if (mode != CaptureMode.text && (state.imageFile != null || state.scannedBarcode != null))
-            CaptureQueueAction(
-              state: state,
-            ),
         ],
       ),
     );
@@ -216,24 +188,35 @@ class _CapturePageState extends ConsumerState<CapturePage> {
   Widget _buildModeContent(CaptureMode mode) {
     final captureState = ref.watch(captureControllerProvider);
     final controller = ref.read(captureControllerProvider.notifier);
+    final analyzeController = ref.read(directAnalyzeControllerProvider.notifier);
+
+    Future<void> analyze() async {
+      await analyzeController.analyze(captureState);
+      if (mounted) {
+        controller.clearMode();
+      }
+    }
 
     switch (mode) {
       case CaptureMode.camera:
         return CameraCaptureView(
           state: captureState,
           onCapture: controller.captureWithCamera,
+          onAnalyze: analyze,
           scrollable: false,
         );
       case CaptureMode.gallery:
         return GalleryImportView(
           state: captureState,
           onImport: controller.importFromGallery,
+          onAnalyze: analyze,
           scrollable: false,
         );
       case CaptureMode.barcode:
         return BarcodeScannerView(
           state: captureState,
           onBarcodeScanned: controller.onBarcodeScanned,
+          onAnalyze: analyze,
         );
       case CaptureMode.text:
         return const TextEntryView();

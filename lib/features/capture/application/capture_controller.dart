@@ -6,8 +6,7 @@ import 'package:qkomo_ui/features/capture/application/capture_permissions.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 
 class CaptureController extends StateNotifier<CaptureState> {
-  CaptureController(this._imagePicker, this._permissions)
-      : super(CaptureState.initial());
+  CaptureController(this._imagePicker, this._permissions) : super(CaptureState.initial());
 
   final ImagePicker _imagePicker;
   final CapturePermissions _permissions;
@@ -48,8 +47,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.camera,
@@ -89,8 +87,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.gallery,
@@ -142,15 +139,13 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
   }
 
   void onBarcodeScanned(String barcode) {
     state = state.copyWith(
       scannedBarcode: barcode,
       isProcessing: false,
-      message: 'Código guardado en cola offline',
     );
   }
 }

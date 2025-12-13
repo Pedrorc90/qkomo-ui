@@ -9,11 +9,13 @@ class CameraCaptureView extends StatelessWidget {
     super.key,
     required this.state,
     required this.onCapture,
+    required this.onAnalyze,
     this.scrollable = true,
   });
 
   final CaptureState state;
   final Future<void> Function() onCapture;
+  final Future<void> Function() onAnalyze;
   final bool scrollable;
 
   @override
@@ -44,6 +46,15 @@ class CameraCaptureView extends StatelessWidget {
             icon: const Icon(Icons.camera_alt),
             label: Text(state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
           ),
+          if (state.imageFile != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: FilledButton.icon(
+                onPressed: state.isProcessing ? null : onAnalyze,
+                icon: const Icon(Icons.analytics),
+                label: Text(state.isProcessing ? 'Analizando...' : 'Analizar foto'),
+              ),
+            ),
           if (!kIsWeb)
             Padding(
               padding: const EdgeInsets.only(top: 8),

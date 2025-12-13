@@ -9,10 +9,12 @@ class BarcodeScannerView extends StatefulWidget {
     super.key,
     required this.state,
     required this.onBarcodeScanned,
+    required this.onAnalyze,
   });
 
   final CaptureState state;
   final void Function(String barcode) onBarcodeScanned;
+  final Future<void> Function() onAnalyze;
 
   @override
   State<BarcodeScannerView> createState() => _BarcodeScannerViewState();
@@ -87,7 +89,13 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
                   ),
           ),
           const SizedBox(height: 16),
-          if (widget.state.scannedBarcode != null)
+          if (widget.state.scannedBarcode != null) ...[
+            FilledButton.icon(
+              onPressed: widget.state.isProcessing ? null : widget.onAnalyze,
+              icon: const Icon(Icons.analytics),
+              label: Text(widget.state.isProcessing ? 'Analizando...' : 'Analizar código'),
+            ),
+            const SizedBox(height: 12),
             FilledButton(
               onPressed: widget.state.isProcessing
                   ? null
@@ -98,6 +106,7 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
                     },
               child: const Text('Escanear otro código'),
             ),
+          ],
           if (!kIsWeb)
             Padding(
               padding: const EdgeInsets.only(top: 8),

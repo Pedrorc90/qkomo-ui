@@ -4,8 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:qkomo_ui/features/capture/data/capture_api_client.dart';
 import 'package:qkomo_ui/features/capture/data/models/analyze_response_dto.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_analyzer.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_job_type.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 
@@ -16,31 +14,38 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
   final CaptureApiClient _apiClient;
 
   @override
-  Future<CaptureResult> analyze(CaptureJob job, {XFile? file}) async {
-    switch (job.type) {
-      case CaptureJobType.image:
-        final imageFile = file ?? (job.imagePath != null ? XFile(job.imagePath!) : null);
+  Future<CaptureResult> analyze({
+    required CaptureMode mode,
+    XFile? file,
+    String? barcode,
+  }) async {
+    final jobId = (switch (mode) {
+      CaptureMode.barcode => barcode ?? 'unknown',
+      _ => file?.name ?? 'unknown',
+    });
 
-        if (imageFile == null) {
-          throw Exception('Falta la ruta de la imagen para este trabajo.');
-        }
-        final analysisType = _getAnalysisType(job.captureMode);
-        final response = await _apiClient.analyzeImage(
-          file: imageFile,
-          type: analysisType,
-        );
-        return _toResult(job, response);
-      case CaptureJobType.barcode:
-        if (job.barcode == null || job.barcode!.isEmpty) {
-          throw Exception('Falta el código de barras para este trabajo.');
-        }
-        final response = await _apiClient.analyzeBarcode(job.barcode!);
-        return _toResult(job, response);
+    if (mode == CaptureMode.barcode) {
+      if (barcode == null || barcode.isEmpty) {
+        throw Exception('Falta el código de barras.');
+      }
+      final response = await _apiClient.analyzeBarcode(barcode);
+      return _toResult(jobId, mode, response, barcode: barcode);
+    } else {
+      // Photo or Gallery
+      if (file == null) {
+        throw Exception('Falta la imagen para el análisis.');
+      }
+      final analysisType = _getAnalysisType(mode);
+      final response = await _apiClient.analyzeImage(
+        file: file,
+        type: analysisType,
+      );
+      return _toResult(jobId, mode, response, file: file);
     }
   }
 
   /// Maps CaptureMode to the analysis type string expected by the API
-  String _getAnalysisType(CaptureMode? mode) {
+  String _getAnalysisType(CaptureMode mode) {
     switch (mode) {
       case CaptureMode.camera:
         return 'photo';
@@ -49,12 +54,17 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
       case CaptureMode.barcode:
         return 'barcode';
       case CaptureMode.text:
-      case null:
         return 'meal'; // Default fallback
     }
   }
 
-  CaptureResult _toResult(CaptureJob job, AnalyzeResponseDto dto) {
+  CaptureResult _toResult(
+    String jobId,
+    CaptureMode mode,
+    AnalyzeResponseDto dto, {
+    XFile? file,
+    String? barcode,
+  }) {
     if (kDebugMode) {
       print('[BackendCaptureAnalyzer] Procesando respuesta del backend:');
       print('  - analysisId: ${dto.analysisId}');
@@ -66,13 +76,15 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     }
 
     final title = dto.identification.dishName ??
-        (switch (job.type) {
-          CaptureJobType.barcode => 'Producto código ${job.barcode}',
-          CaptureJobType.image => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura ${job.id}',
+        (switch (mode) {
+          CaptureMode.barcode => 'Producto código $barcode',
+          CaptureMode.camera => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura',
+          CaptureMode.gallery => 'Imagen importada',
+          CaptureMode.text => 'Texto manual',
         });
 
     final result = CaptureResult(
-      jobId: job.id,
+      jobId: dto.analysisId ?? jobId, // Use backend ID if available, else local
       savedAt: DateTime.now(),
       title: title,
       ingredients: dto.identification.detectedIngredients,

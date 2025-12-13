@@ -1,4 +1,0 @@
-enum CaptureJobType {
-  image,
-  barcode,
-}

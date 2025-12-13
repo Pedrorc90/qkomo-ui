@@ -8,11 +8,13 @@ class GalleryImportView extends StatelessWidget {
     super.key,
     required this.state,
     required this.onImport,
+    required this.onAnalyze,
     this.scrollable = true,
   });
 
   final CaptureState state;
   final Future<void> Function() onImport;
+  final Future<void> Function() onAnalyze;
   final bool scrollable;
 
   @override
@@ -43,6 +45,15 @@ class GalleryImportView extends StatelessWidget {
             icon: const Icon(Icons.photo_library_outlined),
             label: Text(state.isProcessing ? 'Abriendo galería...' : 'Elegir desde galería'),
           ),
+          if (state.imageFile != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: FilledButton.icon(
+                onPressed: state.isProcessing ? null : onAnalyze,
+                icon: const Icon(Icons.analytics),
+                label: Text(state.isProcessing ? 'Analizando...' : 'Analizar imagen'),
+              ),
+            ),
           if (state.isProcessing)
             const Padding(
               padding: EdgeInsets.only(top: 16),
