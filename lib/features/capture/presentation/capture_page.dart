@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
+import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
@@ -118,7 +119,10 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () => controller.clearMode(),
                       )
-                    : null,
+                    : IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => ref.read(bottomNavIndexProvider.notifier).state = 1,
+                      ),
               ),
               Expanded(
                 child: captureState.mode == null

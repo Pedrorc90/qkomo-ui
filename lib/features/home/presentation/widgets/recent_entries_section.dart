@@ -20,6 +20,10 @@ class RecentEntriesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    final limitedToday = todayEntries.take(4).toList();
+    final remainingSlots = 4 - limitedToday.length;
+    final limitedYesterday = yesterdayEntries.take(remainingSlots).toList();
+
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
@@ -106,16 +110,16 @@ class RecentEntriesSection extends StatelessWidget {
                     _buildDaySubsection(
                       context,
                       'Hoy',
-                      todayEntries,
+                      limitedToday,
                       colorScheme,
                     ),
-                    if (yesterdayEntries.isNotEmpty) const SizedBox(height: 16),
+                    if (limitedYesterday.isNotEmpty) const SizedBox(height: 16),
                   ],
-                  if (yesterdayEntries.isNotEmpty)
+                  if (limitedYesterday.isNotEmpty)
                     _buildDaySubsection(
                       context,
                       'Ayer',
-                      yesterdayEntries,
+                      limitedYesterday,
                       colorScheme,
                     ),
                 ],

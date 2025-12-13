@@ -18,6 +18,10 @@ class UpcomingMealsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    final limitedToday = todayMeals.take(4).toList();
+    final remainingSlots = 4 - limitedToday.length;
+    final limitedTomorrow = tomorrowMeals.take(remainingSlots).toList();
+
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
@@ -104,16 +108,16 @@ class UpcomingMealsSection extends StatelessWidget {
                     _buildDaySubsection(
                       context,
                       'Hoy',
-                      todayMeals,
+                      limitedToday,
                       colorScheme,
                     ),
-                    if (tomorrowMeals.isNotEmpty) const SizedBox(height: 16),
+                    if (limitedTomorrow.isNotEmpty) const SizedBox(height: 16),
                   ],
-                  if (tomorrowMeals.isNotEmpty)
+                  if (limitedTomorrow.isNotEmpty)
                     _buildDaySubsection(
                       context,
                       'Mañana',
-                      tomorrowMeals,
+                      limitedTomorrow,
                       colorScheme,
                     ),
                 ],

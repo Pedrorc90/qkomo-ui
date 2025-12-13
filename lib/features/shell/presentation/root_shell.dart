@@ -14,6 +14,9 @@ class RootShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final index = ref.watch(bottomNavIndexProvider);
+    // When showing Capture (index 3), visual tab remains on Home (1)
+    // or we could decide behavior. For now, defaulting to 1 prevents crashes.
+    final navBarIndex = index > 2 ? 1 : index;
 
     return Scaffold(
       extendBody: true,
@@ -23,15 +26,15 @@ class RootShell extends ConsumerWidget {
         child: IndexedStack(
           index: index,
           children: const [
-            HomePage(),
-            CapturePage(),
             WeeklyMenuPage(),
+            HomePage(),
             ProfilePage(),
+            CapturePage(),
           ],
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
         child: Material(
           elevation: 3,
           borderRadius: BorderRadius.circular(20),
@@ -46,7 +49,7 @@ class RootShell extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: NavigationBar(
-                selectedIndex: index,
+                selectedIndex: navBarIndex,
                 height: 65,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
                 indicatorColor: Colors.transparent,
@@ -54,22 +57,17 @@ class RootShell extends ConsumerWidget {
                     ref.read(bottomNavIndexProvider.notifier).state = value,
                 destinations: const [
                   NavigationDestination(
+                    icon: Icon(Icons.calendar_month_outlined, size: 24),
+                    selectedIcon: Icon(Icons.calendar_month, size: 32),
+                    label: '',
+                  ),
+                  NavigationDestination(
                     icon: Icon(Icons.home_outlined, size: 24),
                     selectedIcon: Icon(Icons.home_rounded, size: 32),
                     label: '',
                   ),
                   NavigationDestination(
-                    icon: Icon(Icons.add_circle_outline, size: 24),
-                    selectedIcon: Icon(Icons.add_circle, size: 32),
-                    label: '',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.calendar_today, size: 24),
-                    selectedIcon: Icon(Icons.calendar_month, size: 32),
-                    label: '',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.person_outline, size: 24),
+                    icon: Icon(Icons.person_2_outlined, size: 24),
                     selectedIcon: Icon(Icons.person, size: 32),
                     label: '',
                   ),

@@ -5,8 +5,8 @@ import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_content.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_header.dart';
+import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
-import 'package:qkomo_ui/theme/theme_type.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -19,6 +19,12 @@ class HomePage extends ConsumerWidget {
     final themeType = ref.watch(themeTypeProvider);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ref.read(bottomNavIndexProvider.notifier).state = 3;
+        },
+        child: const Icon(Icons.add_a_photo, size: 28),
+      ),
       body: Container(
         decoration: BoxDecoration(gradient: gradient),
         child: SafeArea(
