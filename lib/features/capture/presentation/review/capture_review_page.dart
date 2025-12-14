@@ -19,7 +19,8 @@ class CaptureReviewPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(captureReviewControllerProvider(resultId));
-    final controller = ref.read(captureReviewControllerProvider(resultId).notifier);
+    final controller =
+        ref.read(captureReviewControllerProvider(resultId).notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -37,8 +38,9 @@ class CaptureReviewPage extends ConsumerWidget {
       body: state.result == null
           ? _buildLoading(context, state.error)
           : _buildContent(context, ref, state, controller),
-      bottomNavigationBar:
-          state.result != null ? _buildBottomBar(context, state, controller) : null,
+      bottomNavigationBar: state.result != null
+          ? _buildBottomBar(context, state, controller)
+          : null,
     );
   }
 
@@ -126,8 +128,8 @@ class CaptureReviewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBottomBar(
-      BuildContext context, CaptureReviewState state, CaptureReviewController controller) {
+  Widget _buildBottomBar(BuildContext context, CaptureReviewState state,
+      CaptureReviewController controller) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -175,7 +177,8 @@ class CaptureReviewPage extends ConsumerWidget {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: state.isSaving ? null : () => Navigator.pop(context),
+                    onPressed:
+                        state.isSaving ? null : () => Navigator.pop(context),
                     child: const Text('Cancelar'),
                   ),
                 ),
@@ -183,7 +186,9 @@ class CaptureReviewPage extends ConsumerWidget {
                 Expanded(
                   flex: 2,
                   child: FilledButton(
-                    onPressed: state.isSaving ? null : () => _saveReview(context, controller),
+                    onPressed: state.isSaving
+                        ? null
+                        : () => _saveReview(context, controller),
                     child: state.isSaving
                         ? const SizedBox(
                             width: 20,
@@ -201,7 +206,8 @@ class CaptureReviewPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _saveReview(BuildContext context, CaptureReviewController controller) async {
+  Future<void> _saveReview(
+      BuildContext context, CaptureReviewController controller) async {
     final success = await controller.saveReview();
     if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -214,7 +220,8 @@ class CaptureReviewPage extends ConsumerWidget {
     }
   }
 
-  void _showDiscardDialog(BuildContext context, CaptureReviewController controller) {
+  void _showDiscardDialog(
+      BuildContext context, CaptureReviewController controller) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

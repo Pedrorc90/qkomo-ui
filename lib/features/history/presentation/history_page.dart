@@ -101,7 +101,8 @@ class HistoryPage extends ConsumerWidget {
             for (final entry in entries) {
               widgets.add(
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Stack(
                     children: [
                       EnhancedResultCard(
@@ -110,7 +111,8 @@ class HistoryPage extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CaptureReviewPage(resultId: entry.id),
+                              builder: (context) =>
+                                  CaptureReviewPage(resultId: entry.id),
                             ),
                           );
                         },
@@ -122,7 +124,8 @@ class HistoryPage extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withAlpha((0.8 * 255).round()),
+                              color:
+                                  Colors.orange.withAlpha((0.8 * 255).round()),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -185,7 +188,8 @@ class HistoryPage extends ConsumerWidget {
     } else {
       switch (state.dateFilter) {
         case DateFilter.today:
-          message = 'Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!';
+          message =
+              'Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!';
           icon = Icons.camera_alt_outlined;
           break;
         case DateFilter.thisWeek:

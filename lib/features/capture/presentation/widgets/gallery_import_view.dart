@@ -43,7 +43,9 @@ class GalleryImportView extends StatelessWidget {
           FilledButton.icon(
             onPressed: state.isProcessing ? null : onImport,
             icon: const Icon(Icons.photo_library_outlined),
-            label: Text(state.isProcessing ? 'Abriendo galería...' : 'Elegir desde galería'),
+            label: Text(state.isProcessing
+                ? 'Abriendo galería...'
+                : 'Elegir desde galería'),
           ),
           if (state.imageFile != null)
             Padding(
@@ -51,7 +53,8 @@ class GalleryImportView extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: state.isProcessing ? null : onAnalyze,
                 icon: const Icon(Icons.analytics),
-                label: Text(state.isProcessing ? 'Analizando...' : 'Analizar imagen'),
+                label: Text(
+                    state.isProcessing ? 'Analizando...' : 'Analizar imagen'),
               ),
             ),
           if (state.isProcessing)

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:qkomo_ui/features/capture/presentation/capture_page.dart';
 import 'package:qkomo_ui/features/home/presentation/home_page.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/profile_page.dart';
@@ -14,9 +13,6 @@ class RootShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final index = ref.watch(bottomNavIndexProvider);
-    // When showing Capture (index 3), visual tab remains on Home (1)
-    // or we could decide behavior. For now, defaulting to 1 prevents crashes.
-    final navBarIndex = index > 2 ? 1 : index;
 
     return Scaffold(
       extendBody: true,
@@ -29,7 +25,6 @@ class RootShell extends ConsumerWidget {
             WeeklyMenuPage(),
             HomePage(),
             ProfilePage(),
-            CapturePage(),
           ],
         ),
       ),
@@ -49,7 +44,7 @@ class RootShell extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: NavigationBar(
-                selectedIndex: navBarIndex,
+                selectedIndex: index,
                 height: 65,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
                 indicatorColor: Colors.transparent,

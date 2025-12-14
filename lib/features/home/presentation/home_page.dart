@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_content.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_header.dart';
-import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 class HomePage extends ConsumerWidget {
@@ -21,7 +21,20 @@ class HomePage extends ConsumerWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ref.read(bottomNavIndexProvider.notifier).state = 3;
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            enableDrag: true,
+            isDismissible: true,
+            backgroundColor: Colors.transparent,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) => SizedBox(
+              height: MediaQuery.of(context).size.height * 0.92,
+              child: const CaptureBottomSheet(),
+            ),
+          );
         },
         child: const Icon(Icons.add_a_photo, size: 28),
       ),

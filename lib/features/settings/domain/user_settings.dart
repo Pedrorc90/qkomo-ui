@@ -15,7 +15,8 @@ class UserSettings with _$UserSettings {
     @HiveField(4) @Default(true) bool enableDailyReminders,
   }) = _UserSettings;
 
-  factory UserSettings.fromJson(Map<String, dynamic> json) => _$UserSettingsFromJson(json);
+  factory UserSettings.fromJson(Map<String, dynamic> json) =>
+      _$UserSettingsFromJson(json);
 }
 
 @HiveType(typeId: 21)

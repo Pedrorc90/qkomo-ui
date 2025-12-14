@@ -51,8 +51,8 @@ class SyncService {
     if (!FeatureFlags.enableCloudSync) return;
 
     // Listen for connectivity changes
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
+    _connectivitySubscription = _connectivity.onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
       if (results.contains(ConnectivityResult.mobile) ||
           results.contains(ConnectivityResult.wifi) ||
           results.contains(ConnectivityResult.ethernet)) {
@@ -103,8 +103,10 @@ class SyncService {
     _retryTimer?.cancel();
 
     // Exponential backoff: 30s, 60s, 120s... max 1 hour
-    final delaySeconds = min(30 * pow(2, _continuousFailures - 1).toInt(), 3600);
-    debugPrint('Scheduling sync retry in $delaySeconds seconds (attempt $_continuousFailures)');
+    final delaySeconds =
+        min(30 * pow(2, _continuousFailures - 1).toInt(), 3600);
+    debugPrint(
+        'Scheduling sync retry in $delaySeconds seconds (attempt $_continuousFailures)');
 
     _retryTimer = Timer(Duration(seconds: delaySeconds), () {
       debugPrint('Retrying sync...');

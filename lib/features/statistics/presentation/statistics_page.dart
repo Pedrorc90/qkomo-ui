@@ -19,11 +19,13 @@ class StatisticsPage extends ConsumerWidget {
         data: (data) {
           if (data.totalEntries == 0) {
             return const Center(
-              child: Text('No hay datos suficientes para mostrar estadísticas.'),
+              child:
+                  Text('No hay datos suficientes para mostrar estadísticas.'),
             );
           }
           return RefreshIndicator(
-            onRefresh: () => ref.read(statisticsControllerProvider.notifier).refresh(),
+            onRefresh: () =>
+                ref.read(statisticsControllerProvider.notifier).refresh(),
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(

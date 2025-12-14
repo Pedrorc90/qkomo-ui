@@ -44,7 +44,8 @@ class CameraCaptureView extends StatelessWidget {
           FilledButton.icon(
             onPressed: state.isProcessing ? null : onCapture,
             icon: const Icon(Icons.camera_alt),
-            label: Text(state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
+            label: Text(
+                state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara'),
           ),
           if (state.imageFile != null)
             Padding(
@@ -52,7 +53,8 @@ class CameraCaptureView extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: state.isProcessing ? null : onAnalyze,
                 icon: const Icon(Icons.analytics),
-                label: Text(state.isProcessing ? 'Analizando...' : 'Analizar foto'),
+                label: Text(
+                    state.isProcessing ? 'Analizando...' : 'Analizar foto'),
               ),
             ),
           if (!kIsWeb)

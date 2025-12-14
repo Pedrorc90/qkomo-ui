@@ -51,7 +51,8 @@ class SyncSettingsPage extends ConsumerWidget {
               return ListTile(
                 title: const Text('Sync Status'),
                 subtitle: pendingCount.when(
-                  data: (count) => Text(count > 0 ? '$count items pending sync' : 'All synced'),
+                  data: (count) => Text(
+                      count > 0 ? '$count items pending sync' : 'All synced'),
                   loading: () => const Text('Checking status...'),
                   error: (e, _) => const Text('Error checking status'),
                 ),

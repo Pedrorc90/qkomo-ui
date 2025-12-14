@@ -23,7 +23,8 @@ void callbackDispatcher() {
         await Hive.initFlutter();
 
         // Register adapters if needed (check if they are already registered)
-        if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(CaptureResultAdapter());
+        if (!Hive.isAdapterRegistered(0))
+          Hive.registerAdapter(CaptureResultAdapter());
         if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(EntryAdapter());
         // Add other adapters as needed...
 
@@ -32,7 +33,8 @@ void callbackDispatcher() {
 
         // Setup repositories
         final localRepo = LocalEntryRepository(entryBox: entryBox);
-        final remoteRepo = RemoteEntryRepository(dio: Dio()); // Configure Dio as needed
+        final remoteRepo =
+            RemoteEntryRepository(dio: Dio()); // Configure Dio as needed
         final hybridRepo = HybridEntryRepository(
           localRepo: localRepo,
           remoteRepo: remoteRepo,

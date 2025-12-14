@@ -26,29 +26,33 @@ class ThemeSelectionPage extends ConsumerWidget {
                       label: 'Cálido',
                       isSelected: currentTheme == AppThemeType.warm,
                       color: const Color(0xFFFF6F3C), // Seed color from Warm
-                      onTap: () => ref.read(themeTypeProvider.notifier).state = AppThemeType.warm,
+                      onTap: () => ref.read(themeTypeProvider.notifier).state =
+                          AppThemeType.warm,
                     ),
                     const Divider(),
                     _ThemeOption(
                       label: 'Fresco',
                       isSelected: currentTheme == AppThemeType.fresh,
                       color: const Color(0xFF2DD4BF), // Seed color from Fresh
-                      onTap: () => ref.read(themeTypeProvider.notifier).state = AppThemeType.fresh,
+                      onTap: () => ref.read(themeTypeProvider.notifier).state =
+                          AppThemeType.fresh,
                     ),
                     const Divider(),
                     _ThemeOption(
                       label: 'Off-White',
                       isSelected: currentTheme == AppThemeType.offWhite,
-                      color: const Color(0xFF5D5D5D), // Seed color from OffWhite
-                      onTap: () =>
-                          ref.read(themeTypeProvider.notifier).state = AppThemeType.offWhite,
+                      color:
+                          const Color(0xFF5D5D5D), // Seed color from OffWhite
+                      onTap: () => ref.read(themeTypeProvider.notifier).state =
+                          AppThemeType.offWhite,
                     ),
                     const Divider(),
                     _ThemeOption(
                       label: 'Oscuro',
                       isSelected: currentTheme == AppThemeType.dark,
                       color: const Color(0xFF3B82F6), // Seed color from Dark
-                      onTap: () => ref.read(themeTypeProvider.notifier).state = AppThemeType.dark,
+                      onTap: () => ref.read(themeTypeProvider.notifier).state =
+                          AppThemeType.dark,
                     ),
                   ],
                 ),
@@ -96,7 +100,8 @@ class _ThemeOption extends StatelessWidget {
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
               ),
             ),

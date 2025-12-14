@@ -93,7 +93,9 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
             FilledButton.icon(
               onPressed: widget.state.isProcessing ? null : widget.onAnalyze,
               icon: const Icon(Icons.analytics),
-              label: Text(widget.state.isProcessing ? 'Analizando...' : 'Analizar código'),
+              label: Text(widget.state.isProcessing
+                  ? 'Analizando...'
+                  : 'Analizar código'),
             ),
             const SizedBox(height: 12),
             FilledButton(

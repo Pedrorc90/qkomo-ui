@@ -16,7 +16,8 @@ class MockAuthController extends Mock implements AuthController {
   Future<void> signInWithApple() async {}
 
   @override
-  Future<void> signInWithEmail(String email, String password, {bool register = false}) async {}
+  Future<void> signInWithEmail(String email, String password,
+      {bool register = false}) async {}
 }
 
 void main() {
@@ -31,8 +32,8 @@ void main() {
       ProviderScope(
         overrides: [
           authControllerProvider.overrideWithValue(mockAuthController),
-          appGradientProvider
-              .overrideWithValue(const LinearGradient(colors: [Colors.white, Colors.white])),
+          appGradientProvider.overrideWithValue(
+              const LinearGradient(colors: [Colors.white, Colors.white])),
         ],
         child: const MaterialApp(
           home: SignInPage(),
@@ -52,13 +53,14 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
-  testWidgets('Tapping Email button opens dialog and calls signInWithEmail', (tester) async {
+  testWidgets('Tapping Email button opens dialog and calls signInWithEmail',
+      (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           authControllerProvider.overrideWithValue(mockAuthController),
-          appGradientProvider
-              .overrideWithValue(const LinearGradient(colors: [Colors.white, Colors.white])),
+          appGradientProvider.overrideWithValue(
+              const LinearGradient(colors: [Colors.white, Colors.white])),
         ],
         child: const MaterialApp(
           home: SignInPage(),
@@ -76,7 +78,8 @@ void main() {
     expect(find.text('Contraseña'), findsOneWidget);
 
     // Enter credentials
-    await tester.enterText(find.nm_widget_by_key(const Key('email_field')), 'test@example.com');
+    await tester.enterText(
+        find.nm_widget_by_key(const Key('email_field')), 'test@example.com');
     // Wait, I don't know the keys. searching by type or label is safer if I didn't verify keys.
     // I'll use input type or label.
 

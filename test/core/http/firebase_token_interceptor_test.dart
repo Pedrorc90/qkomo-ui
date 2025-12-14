@@ -76,7 +76,8 @@ void main() {
       final response = await dio.get('/test');
 
       // Verify header was added
-      expect(response.requestOptions.headers['Authorization'], 'Bearer cached-token');
+      expect(response.requestOptions.headers['Authorization'],
+          'Bearer cached-token');
     });
 
     test('Falls back to FirebaseAuth when store is empty', () async {
@@ -102,7 +103,8 @@ void main() {
       final response = await dio.get('/test');
 
       // Verify header
-      expect(response.requestOptions.headers['Authorization'], 'Bearer fresh-token');
+      expect(response.requestOptions.headers['Authorization'],
+          'Bearer fresh-token');
 
       // Verify it was cached
       expect(fakeStore.token, 'fresh-token');
@@ -118,7 +120,8 @@ class ResponseBox {
   final int statusCode;
   final Map<String, dynamic> headers;
 
-  ResponseBox({required this.data, required this.statusCode, required this.headers});
+  ResponseBox(
+      {required this.data, required this.statusCode, required this.headers});
 }
 
 class _MockAdapter implements HttpClientAdapter {

@@ -78,7 +78,8 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     final title = dto.identification.dishName ??
         (switch (mode) {
           CaptureMode.barcode => 'Producto código $barcode',
-          CaptureMode.camera => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura',
+          CaptureMode.camera =>
+            dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura',
           CaptureMode.gallery => 'Imagen importada',
           CaptureMode.text => 'Texto manual',
         });

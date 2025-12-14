@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
-import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
@@ -14,14 +12,14 @@ import 'package:qkomo_ui/features/capture/presentation/widgets/capture_status_ba
 import 'package:qkomo_ui/features/capture/presentation/widgets/gallery_import_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/text_entry_view.dart';
 
-class CapturePage extends ConsumerStatefulWidget {
-  const CapturePage({super.key});
+class CaptureBottomSheet extends ConsumerStatefulWidget {
+  const CaptureBottomSheet({super.key});
 
   @override
-  ConsumerState<CapturePage> createState() => _CapturePageState();
+  ConsumerState<CaptureBottomSheet> createState() => _CaptureBottomSheetState();
 }
 
-class _CapturePageState extends ConsumerState<CapturePage> {
+class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
   ProviderSubscription<CaptureState>? _captureSubscription;
   ProviderSubscription<AsyncValue<String?>>? _analyzeSubscription;
 
@@ -49,10 +47,11 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         next.when(
           data: (jobId) {
             if (jobId != null) {
-              _showSnackBar('Análisis completado. ID: $jobId');
+              _showSnackBar('Análisis completado');
             }
           },
-          error: (error, _) => _showSnackBar('Error al analizar: $error', isError: true),
+          error: (error, _) =>
+              _showSnackBar('Error al analizar: $error', isError: true),
           loading: () {},
         );
       },
@@ -82,23 +81,50 @@ class _CapturePageState extends ConsumerState<CapturePage> {
     final controller = ref.read(captureControllerProvider.notifier);
     final gradient = ref.watch(appGradientProvider);
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(gradient: gradient),
+    final hasActiveCapture =
+        captureState.imageFile != null || captureState.scannedBarcode != null;
+
+    return PopScope(
+      canPop: !hasActiveCapture,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        final shouldClose = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('¿Descartar captura?'),
+            content: const Text('Perderás la imagen o información capturada.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Descartar'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldClose == true && context.mounted) {
+          Navigator.pop(context);
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
         child: SafeArea(
           child: Column(
             children: [
-              // Qkomo NavBar
-              QkomoNavBar(
-                leading: captureState.mode != null
-                    ? IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: () => controller.clearMode(),
-                      )
-                    : IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => ref.read(bottomNavIndexProvider.notifier).state = 1,
-                      ),
+              const _DragHandle(),
+              _ModalHeader(
+                showBack: captureState.mode != null,
+                onBack: () => controller.clearMode(),
+                onClose: () => Navigator.of(context).pop(),
+                mode: captureState.mode,
               ),
               Expanded(
                 child: captureState.mode == null
@@ -112,7 +138,8 @@ class _CapturePageState extends ConsumerState<CapturePage> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, CaptureController controller) {
+  Widget _buildActionButtons(
+      BuildContext context, CaptureController controller) {
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -188,12 +215,18 @@ class _CapturePageState extends ConsumerState<CapturePage> {
   Widget _buildModeContent(CaptureMode mode) {
     final captureState = ref.watch(captureControllerProvider);
     final controller = ref.read(captureControllerProvider.notifier);
-    final analyzeController = ref.read(directAnalyzeControllerProvider.notifier);
+    final analyzeController =
+        ref.read(directAnalyzeControllerProvider.notifier);
 
     Future<void> analyze() async {
       await analyzeController.analyze(captureState);
       if (mounted) {
-        controller.clearMode();
+        _showSnackBar('Análisis completado');
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        });
       }
     }
 
@@ -224,6 +257,83 @@ class _CapturePageState extends ConsumerState<CapturePage> {
   }
 }
 
+class _DragHandle extends StatelessWidget {
+  const _DragHandle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.only(top: 12, bottom: 8),
+        width: 40,
+        height: 4,
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
+    );
+  }
+}
+
+class _ModalHeader extends StatelessWidget {
+  const _ModalHeader({
+    required this.showBack,
+    required this.onBack,
+    required this.onClose,
+    this.mode,
+  });
+
+  final bool showBack;
+  final VoidCallback onBack;
+  final VoidCallback onClose;
+  final CaptureMode? mode;
+
+  String _getTitle() {
+    if (mode == null) return 'Registrar comida';
+
+    switch (mode!) {
+      case CaptureMode.camera:
+        return 'Cámara';
+      case CaptureMode.gallery:
+        return 'Galería';
+      case CaptureMode.barcode:
+        return 'Código de barras';
+      case CaptureMode.text:
+        return 'Escribir ingredientes';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          if (showBack)
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: onBack,
+            )
+          else
+            const SizedBox(width: 48),
+          Expanded(
+            child: Text(
+              _getTitle(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: onClose,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _CaptureOptionCard extends StatelessWidget {
   const _CaptureOptionCard({
     required this.icon,
@@ -248,7 +358,8 @@ class _CaptureOptionCard extends StatelessWidget {
       color: scheme.surface.withAlpha((0.7 * 255).round()),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: scheme.outlineVariant.withAlpha((0.5 * 255).round())),
+        side: BorderSide(
+            color: scheme.outlineVariant.withAlpha((0.5 * 255).round())),
       ),
       child: InkWell(
         onTap: onPressed,

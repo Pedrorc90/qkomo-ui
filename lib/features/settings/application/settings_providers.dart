@@ -7,7 +7,8 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
 });
 
 final userSettingsProvider =
-    StateNotifierProvider<UserSettingsNotifier, AsyncValue<UserSettings>>((ref) {
+    StateNotifierProvider<UserSettingsNotifier, AsyncValue<UserSettings>>(
+        (ref) {
   final repository = ref.watch(settingsRepositoryProvider);
   return UserSettingsNotifier(repository);
 });
@@ -64,14 +65,16 @@ class UserSettingsNotifier extends StateNotifier<AsyncValue<UserSettings>> {
       } else {
         currentList.add(restriction);
       }
-      await updateSettings(currentSettings.copyWith(dietaryRestrictions: currentList));
+      await updateSettings(
+          currentSettings.copyWith(dietaryRestrictions: currentList));
     }
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     final currentSettings = state.valueOrNull;
     if (currentSettings != null) {
-      await updateSettings(currentSettings.copyWith(enableNotifications: enabled));
+      await updateSettings(
+          currentSettings.copyWith(enableNotifications: enabled));
     }
   }
 }

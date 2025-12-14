@@ -41,7 +41,8 @@ void main() {
 
       expect(identification.dishName, equals('Soup'));
       expect(identification.detectedIngredients, hasLength(2));
-      expect(identification.detectedIngredients, containsAll(['Water', 'Salt']));
+      expect(
+          identification.detectedIngredients, containsAll(['Water', 'Salt']));
     });
   });
 

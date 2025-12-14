@@ -10,7 +10,8 @@ import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 
 import 'hybrid_entry_repository_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<LocalEntryRepository>(), MockSpec<RemoteEntryRepository>()])
+@GenerateNiceMocks(
+    [MockSpec<LocalEntryRepository>(), MockSpec<RemoteEntryRepository>()])
 void main() {
   late HybridEntryRepository repository;
   late MockLocalEntryRepository mockLocalRepo;
@@ -45,7 +46,8 @@ void main() {
     test('should fetch remote entries and save them locally if new', () async {
       // Arrange
       when(mockLocalRepo.getAllEntries()).thenReturn([]);
-      when(mockRemoteRepo.fetchEntries(from: anyNamed('from'))).thenAnswer((_) async => [tEntry]);
+      when(mockRemoteRepo.fetchEntries(from: anyNamed('from')))
+          .thenAnswer((_) async => [tEntry]);
       when(mockLocalRepo.getEntryById(tEntryId)).thenReturn(null);
 
       // Act
@@ -56,7 +58,8 @@ void main() {
       verify(mockLocalRepo.saveEntry(tEntry));
     });
 
-    test('should detect conflict when local entry has pending changes', () async {
+    test('should detect conflict when local entry has pending changes',
+        () async {
       // Arrange
       final tRemoteEntry = tEntry.copyWith(
         cloudVersion: 2,
@@ -76,11 +79,12 @@ void main() {
       await repository.sync();
 
       // Assert
-      verify(mockLocalRepo.saveEntry(argThat(
-          predicate<Entry>((e) => e.syncStatus == SyncStatus.conflict && e.id == tEntryId))));
+      verify(mockLocalRepo.saveEntry(argThat(predicate<Entry>(
+          (e) => e.syncStatus == SyncStatus.conflict && e.id == tEntryId))));
     });
 
-    test('should overwrite local entry if synced/clean and remote is newer', () async {
+    test('should overwrite local entry if synced/clean and remote is newer',
+        () async {
       // Arrange
       final tRemoteEntry = tEntry.copyWith(cloudVersion: 2);
       final tLocalEntry = tEntry.copyWith(syncStatus: SyncStatus.synced);
@@ -101,7 +105,8 @@ void main() {
       // Arrange
       final tPendingEntry = tEntry.copyWith(syncStatus: SyncStatus.pending);
       when(mockLocalRepo.getAllEntries()).thenReturn([]);
-      when(mockRemoteRepo.fetchEntries(from: anyNamed('from'))).thenAnswer((_) async => []);
+      when(mockRemoteRepo.fetchEntries(from: anyNamed('from')))
+          .thenAnswer((_) async => []);
       when(mockLocalRepo.getPendingEntries()).thenReturn([tPendingEntry]);
 
       // Act
@@ -109,8 +114,8 @@ void main() {
 
       // Assert
       verify(mockRemoteRepo.pushEntry(tPendingEntry));
-      verify(mockLocalRepo
-          .saveEntry(argThat(predicate<Entry>((e) => e.syncStatus == SyncStatus.synced))));
+      verify(mockLocalRepo.saveEntry(
+          argThat(predicate<Entry>((e) => e.syncStatus == SyncStatus.synced))));
     });
   });
 }

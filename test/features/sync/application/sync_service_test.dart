@@ -10,7 +10,8 @@ import 'package:qkomo_ui/features/sync/application/sync_service.dart';
 
 import 'sync_service_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<HybridEntryRepository>(), MockSpec<Connectivity>()])
+@GenerateNiceMocks(
+    [MockSpec<HybridEntryRepository>(), MockSpec<Connectivity>()])
 void main() {
   late SyncService service;
   late MockHybridEntryRepository mockRepo;

@@ -33,18 +33,24 @@ class AllergensPage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 color: isSelected
-                    ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
+                    ? Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .withOpacity(0.3)
                     : null,
                 margin: const EdgeInsets.only(bottom: 8),
                 child: SwitchListTile(
                   value: isSelected,
                   onChanged: (value) {
-                    ref.read(userSettingsProvider.notifier).toggleAllergen(allergen);
+                    ref
+                        .read(userSettingsProvider.notifier)
+                        .toggleAllergen(allergen);
                   },
                   title: Text(
                     allergen.displayName,
                     style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
                   secondary: Icon(

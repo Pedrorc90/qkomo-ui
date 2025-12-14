@@ -26,7 +26,8 @@ final capturePermissionsProvider = Provider<CapturePermissions>((ref) {
   return CapturePermissions();
 });
 
-final captureControllerProvider = StateNotifierProvider<CaptureController, CaptureState>((ref) {
+final captureControllerProvider =
+    StateNotifierProvider<CaptureController, CaptureState>((ref) {
   final picker = ref.watch(imagePickerProvider);
   final permissions = ref.watch(capturePermissionsProvider);
   return CaptureController(picker, permissions);
@@ -36,7 +37,8 @@ final captureResultBoxProvider = Provider<Box<CaptureResult>>((ref) {
   return Hive.box<CaptureResult>(HiveBoxes.captureResults);
 });
 
-final captureResultRepositoryProvider = Provider<CaptureResultRepository>((ref) {
+final captureResultRepositoryProvider =
+    Provider<CaptureResultRepository>((ref) {
   final box = ref.watch(captureResultBoxProvider);
   return CaptureResultRepository(resultBox: box);
 });
@@ -66,14 +68,14 @@ final captureResultsProvider = StreamProvider<List<CaptureResult>>((ref) {
 });
 
 final textEntryControllerProvider =
-    StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>((ref) {
+    StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>(
+        (ref) {
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   return TextEntryController(resultRepo);
 });
 
-final captureReviewControllerProvider =
-    StateNotifierProvider.family<CaptureReviewController, CaptureReviewState, String>(
-        (ref, resultId) {
+final captureReviewControllerProvider = StateNotifierProvider.family<
+    CaptureReviewController, CaptureReviewState, String>((ref, resultId) {
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   final entryRepo = ref.watch(entryRepositoryProvider);
   return CaptureReviewController(
@@ -83,8 +85,8 @@ final captureReviewControllerProvider =
   );
 });
 
-final directAnalyzeControllerProvider =
-    StateNotifierProvider.autoDispose<DirectAnalyzeController, AsyncValue<String?>>((ref) {
+final directAnalyzeControllerProvider = StateNotifierProvider.autoDispose<
+    DirectAnalyzeController, AsyncValue<String?>>((ref) {
   final analyzer = ref.watch(captureAnalyzerProvider);
   final resultRepo = ref.watch(captureResultRepositoryProvider);
   return DirectAnalyzeController(analyzer, resultRepo);

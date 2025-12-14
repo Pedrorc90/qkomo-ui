@@ -41,7 +41,8 @@ class MealRepository {
   }
 
   List<Meal> allSorted() {
-    final items = _mealBox.values.where((meal) => meal.userId == _userId).toList();
+    final items =
+        _mealBox.values.where((meal) => meal.userId == _userId).toList();
     items.sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
     return items;
   }
@@ -50,7 +51,8 @@ class MealRepository {
     final weekEnd = weekStart.add(const Duration(days: 7));
     return _mealBox.values.where((meal) {
       return meal.userId == _userId &&
-          meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
+          meal.scheduledFor
+              .isAfter(weekStart.subtract(const Duration(days: 1))) &&
           meal.scheduledFor.isBefore(weekEnd);
     }).toList()
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));

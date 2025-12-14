@@ -44,7 +44,8 @@ class WeeklyCalendarWidget extends ConsumerWidget {
                 itemCount: 7,
                 itemBuilder: (context, index) {
                   final date = weekStart.add(Duration(days: index));
-                  final normalizedDate = DateTime(date.year, date.month, date.day);
+                  final normalizedDate =
+                      DateTime(date.year, date.month, date.day);
                   final isSelected = selectedDay != null &&
                       normalizedDate.year == selectedDay.year &&
                       normalizedDate.month == selectedDay.month &&
@@ -58,7 +59,8 @@ class WeeklyCalendarWidget extends ConsumerWidget {
                     isSelected: isSelected,
                     isToday: isToday,
                     onTap: () {
-                      ref.read(selectedDayProvider.notifier).state = normalizedDate;
+                      ref.read(selectedDayProvider.notifier).state =
+                          normalizedDate;
                     },
                   );
                 },
@@ -101,7 +103,8 @@ class _DayCard extends StatelessWidget {
       textColor = colorScheme.onPrimaryContainer;
       borderColor = colorScheme.primary;
     } else if (isToday) {
-      backgroundColor = colorScheme.secondaryContainer.withAlpha((0.3 * 255).round());
+      backgroundColor =
+          colorScheme.secondaryContainer.withAlpha((0.3 * 255).round());
       textColor = colorScheme.onSurface;
       borderColor = colorScheme.secondary;
     } else {

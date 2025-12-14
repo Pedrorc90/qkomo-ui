@@ -119,9 +119,12 @@ class RemoteEntryRepository {
     final result = CaptureResult(
       jobId: resultJson['jobId'] as String,
       title: resultJson['title'] as String?,
-      ingredients: (resultJson['ingredients'] as List<dynamic>?)?.cast<String>() ?? [],
-      allergens: (resultJson['allergens'] as List<dynamic>?)?.cast<String>() ?? [],
-      savedAt: DateTime.tryParse(resultJson['savedAt'] as String) ?? DateTime.now(),
+      ingredients:
+          (resultJson['ingredients'] as List<dynamic>?)?.cast<String>() ?? [],
+      allergens:
+          (resultJson['allergens'] as List<dynamic>?)?.cast<String>() ?? [],
+      savedAt:
+          DateTime.tryParse(resultJson['savedAt'] as String) ?? DateTime.now(),
       notes: resultJson['notes'] as String?,
       mealType: mealType,
       isManualEntry: resultJson['isManualEntry'] as bool? ?? false,
@@ -130,7 +133,8 @@ class RemoteEntryRepository {
     return Entry(
       id: json['id'] as String,
       result: result,
-      lastModifiedAt: DateTime.tryParse(json['lastModifiedAt'] as String) ?? DateTime.now(),
+      lastModifiedAt:
+          DateTime.tryParse(json['lastModifiedAt'] as String) ?? DateTime.now(),
       isDeleted: json['isDeleted'] as bool? ?? false,
       syncStatus: SyncStatus.synced,
       lastSyncedAt: DateTime.now(), // Freshly fetched

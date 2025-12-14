@@ -65,10 +65,16 @@ class _EmptyStateCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 4),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withAlpha((0.3 * 255).round()),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.withAlpha((0.5 * 255).round()),
+          color: Theme.of(context)
+              .colorScheme
+              .outlineVariant
+              .withAlpha((0.5 * 255).round()),
         ),
       ),
       child: Center(

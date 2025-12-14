@@ -25,12 +25,15 @@ class HybridEntryRepository implements EntryRepository {
 
     if (from != null) {
       entries = entries
-          .where((e) => e.result.savedAt.isAfter(from.subtract(const Duration(days: 1))))
+          .where((e) =>
+              e.result.savedAt.isAfter(from.subtract(const Duration(days: 1))))
           .toList();
     }
     if (to != null) {
-      entries =
-          entries.where((e) => e.result.savedAt.isBefore(to.add(const Duration(days: 1)))).toList();
+      entries = entries
+          .where(
+              (e) => e.result.savedAt.isBefore(to.add(const Duration(days: 1))))
+          .toList();
     }
 
     return entries;

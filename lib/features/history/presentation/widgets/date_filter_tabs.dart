@@ -15,7 +15,10 @@ class DateFilterTabs extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withAlpha((0.3 * 255).round()),
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(4),

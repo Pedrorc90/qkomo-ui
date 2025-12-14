@@ -103,7 +103,8 @@ class ProfilePage extends ConsumerWidget {
               onTap: () {
                 Navigator.of(
                   context,
-                ).push(MaterialPageRoute(builder: (context) => const ThemeSelectionPage()));
+                ).push(MaterialPageRoute(
+                    builder: (context) => const ThemeSelectionPage()));
               },
             ),
             const SizedBox(height: 24),
@@ -148,7 +149,9 @@ class _NotificationOption extends ConsumerWidget {
         ),
         value: enabled,
         onChanged: (value) {
-          ref.read(userSettingsProvider.notifier).setNotificationsEnabled(value);
+          ref
+              .read(userSettingsProvider.notifier)
+              .setNotificationsEnabled(value);
         },
       ),
     );
