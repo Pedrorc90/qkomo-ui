@@ -33,28 +33,72 @@ class GalleryImportView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
+          Text(
             'Selecciona una foto de tu galería para analizarla.',
-            style: TextStyle(fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
           const SizedBox(height: 16),
-          PickedImagePreview(file: state.imageFile),
+          GestureDetector(
+            onTap: state.imageFile == null ? onImport : null,
+            child: Stack(
+              children: [
+                PickedImagePreview(file: state.imageFile),
+                if (state.imageFile == null)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.black.withAlpha((0.2 * 255).round()),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image_outlined,
+                              size: 48,
+                              color: Colors.white
+                                  .withAlpha((0.7 * 255).round()),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Abre la galería para comenzar',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Colors.white
+                                        .withAlpha((0.7 * 255).round()),
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
           const SizedBox(height: 16),
-          FilledButton.icon(
+          _ImportButton(
+            isProcessing: state.isProcessing,
             onPressed: state.isProcessing ? null : onImport,
-            icon: const Icon(Icons.photo_library_outlined),
-            label: Text(state.isProcessing
+            label: state.isProcessing
                 ? 'Abriendo galería...'
-                : 'Elegir desde galería'),
+                : 'Elegir desde galería',
           ),
           if (state.imageFile != null)
             Padding(
               padding: const EdgeInsets.only(top: 12),
-              child: FilledButton.icon(
+              child: _AnalyzeButton(
+                isProcessing: state.isProcessing,
                 onPressed: state.isProcessing ? null : onAnalyze,
-                icon: const Icon(Icons.analytics),
-                label: Text(
-                    state.isProcessing ? 'Analizando...' : 'Analizar imagen'),
+                label: state.isProcessing
+                    ? 'Analizando...'
+                    : 'Analizar imagen',
               ),
             ),
           if (state.isProcessing)
@@ -63,6 +107,130 @@ class GalleryImportView extends StatelessWidget {
               child: Center(child: CircularProgressIndicator()),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _ImportButton extends StatefulWidget {
+  const _ImportButton({
+    required this.isProcessing,
+    required this.onPressed,
+    required this.label,
+  });
+
+  final bool isProcessing;
+  final VoidCallback? onPressed;
+  final String label;
+
+  @override
+  State<_ImportButton> createState() => _ImportButtonState();
+}
+
+class _ImportButtonState extends State<_ImportButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: Tween<double>(begin: 1.0, end: 0.98).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      ),
+      child: FilledButton.icon(
+        onPressed: widget.onPressed,
+        onLongPress: null,
+        icon: const Icon(Icons.photo_library_outlined),
+        label: Text(widget.label),
+      ),
+    );
+  }
+}
+
+class _AnalyzeButton extends StatefulWidget {
+  const _AnalyzeButton({
+    required this.isProcessing,
+    required this.onPressed,
+    required this.label,
+  });
+
+  final bool isProcessing;
+  final VoidCallback? onPressed;
+  final String label;
+
+  @override
+  State<_AnalyzeButton> createState() => _AnalyzeButtonState();
+}
+
+class _AnalyzeButtonState extends State<_AnalyzeButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+  }
+
+  @override
+  void didUpdateWidget(_AnalyzeButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isProcessing && !oldWidget.isProcessing) {
+      _controller.repeat(reverse: true);
+    } else if (!widget.isProcessing && oldWidget.isProcessing) {
+      _controller.stop();
+      _controller.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.6, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      ),
+      child: FilledButton.icon(
+        onPressed: widget.onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+        ),
+        icon: widget.isProcessing
+            ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation(
+                    Theme.of(context).colorScheme.onSecondary,
+                  ),
+                ),
+              )
+            : const Icon(Icons.analytics),
+        label: Text(widget.label),
       ),
     );
   }

@@ -13,7 +13,12 @@ import 'package:qkomo_ui/features/capture/presentation/widgets/gallery_import_vi
 import 'package:qkomo_ui/features/capture/presentation/widgets/text_entry_view.dart';
 
 class CaptureBottomSheet extends ConsumerStatefulWidget {
-  const CaptureBottomSheet({super.key});
+  const CaptureBottomSheet({
+    super.key,
+    this.scrollController,
+  });
+
+  final ScrollController? scrollController;
 
   @override
   ConsumerState<CaptureBottomSheet> createState() => _CaptureBottomSheetState();
@@ -116,23 +121,29 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
           gradient: gradient,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const _DragHandle(),
-              _ModalHeader(
-                showBack: captureState.mode != null,
-                onBack: () => controller.clearMode(),
-                onClose: () => Navigator.of(context).pop(),
-                mode: captureState.mode,
-              ),
-              Expanded(
-                child: captureState.mode == null
-                    ? _buildActionButtons(context, controller)
-                    : _buildSelectedModeView(captureState),
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            const _DragHandle(),
+            _ModalHeader(
+              showBack: captureState.mode != null,
+              onBack: () => controller.clearMode(),
+              onClose: () => Navigator.of(context).pop(),
+              mode: captureState.mode,
+            ),
+            Expanded(
+              child: widget.scrollController != null
+                  ? SingleChildScrollView(
+                      controller: widget.scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      child: captureState.mode == null
+                          ? _buildActionButtons(context, controller)
+                          : _buildSelectedModeView(captureState),
+                    )
+                  : (captureState.mode == null
+                      ? _buildActionButtons(context, controller)
+                      : _buildSelectedModeView(captureState)),
+            ),
+          ],
         ),
       ),
     );
@@ -140,54 +151,54 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
 
   Widget _buildActionButtons(
       BuildContext context, CaptureController controller) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              '¿Cómo quieres registrar tu comida?',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 48),
-            _CaptureOptionCard(
-              icon: Icons.camera_alt_outlined,
-              label: 'Cámara',
-              description: 'Tomar una foto ahora',
-              color: Colors.blue,
-              onPressed: () => controller.setMode(CaptureMode.camera),
-            ),
-            const SizedBox(height: 16),
-            _CaptureOptionCard(
-              icon: Icons.photo_library_outlined,
-              label: 'Galería',
-              description: 'Elegir de tus fotos',
-              color: Colors.green,
-              onPressed: () => controller.setMode(CaptureMode.gallery),
-            ),
-            const SizedBox(height: 16),
-            _CaptureOptionCard(
-              icon: Icons.qr_code_2_outlined,
-              label: 'Código de barras',
-              description: 'Escanear código o QR',
-              color: Colors.purple,
-              onPressed: () => controller.setMode(CaptureMode.barcode),
-            ),
-            const SizedBox(height: 16),
-            _CaptureOptionCard(
-              icon: Icons.edit_note_outlined,
-              label: 'Texto',
-              description: 'Escribir ingredientes',
-              color: Colors.orange,
-              onPressed: () => controller.setMode(CaptureMode.text),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            '¿Cómo quieres registrar tu comida?',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          _CaptureOptionCard(
+            icon: Icons.camera_alt_outlined,
+            label: 'Cámara',
+            description: 'Tomar una foto',
+            color: Colors.blue,
+            onPressed: () => controller.setMode(CaptureMode.camera),
+          ),
+          const SizedBox(height: 12),
+          _CaptureOptionCard(
+            icon: Icons.photo_library_outlined,
+            label: 'Galería',
+            description: 'Elegir de tus fotos',
+            color: Colors.green,
+            onPressed: () => controller.setMode(CaptureMode.gallery),
+          ),
+          const SizedBox(height: 12),
+          _CaptureOptionCard(
+            icon: Icons.qr_code_2_outlined,
+            label: 'Código QR',
+            description: 'Escanear código',
+            color: Colors.purple,
+            onPressed: () => controller.setMode(CaptureMode.barcode),
+          ),
+          const SizedBox(height: 12),
+          _CaptureOptionCard(
+            icon: Icons.edit_note_outlined,
+            label: 'Texto',
+            description: 'Escribir ingredientes',
+            color: Colors.orange,
+            onPressed: () => controller.setMode(CaptureMode.text),
+          ),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }
@@ -334,7 +345,7 @@ class _ModalHeader extends StatelessWidget {
   }
 }
 
-class _CaptureOptionCard extends StatelessWidget {
+class _CaptureOptionCard extends StatefulWidget {
   const _CaptureOptionCard({
     required this.icon,
     required this.label,
@@ -350,63 +361,103 @@ class _CaptureOptionCard extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
+  State<_CaptureOptionCard> createState() => _CaptureOptionCardState();
+}
+
+class _CaptureOptionCardState extends State<_CaptureOptionCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    return Card(
-      elevation: 0,
-      color: scheme.surface.withAlpha((0.7 * 255).round()),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: BorderSide(
-            color: scheme.outlineVariant.withAlpha((0.5 * 255).round())),
-      ),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(24),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: color.withAlpha((0.1 * 255).round()),
-                  borderRadius: BorderRadius.circular(20),
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: Card(
+        elevation: 0,
+        color: scheme.surfaceContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: scheme.outlineVariant.withAlpha((0.3 * 255).round()),
+          ),
+        ),
+        child: InkWell(
+          onTap: () {
+            _controller.forward().then((_) {
+              _controller.reverse();
+              widget.onPressed();
+            });
+          },
+          onTapDown: (_) => _controller.forward(),
+          onTapUp: (_) => _controller.reverse(),
+          onTapCancel: () => _controller.reverse(),
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: widget.color.withAlpha((0.12 * 255).round()),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    widget.icon,
+                    size: 24,
+                    color: widget.color,
+                  ),
                 ),
-                child: Icon(
-                  icon,
-                  size: 32,
-                  color: color,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.label,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.description,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      description,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
-                    ),
-                  ],
+                Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: scheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
                 ),
-              ),
-              Icon(
-                Icons.chevron_right,
-                color: scheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

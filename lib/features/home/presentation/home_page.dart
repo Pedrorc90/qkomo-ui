@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
+import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_content.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_header.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
@@ -17,6 +18,8 @@ class HomePage extends ConsumerWidget {
     final user = ref.watch(firebaseAuthProvider).currentUser;
     final gradient = ref.watch(appGradientProvider);
     final themeType = ref.watch(themeTypeProvider);
+    final streakDays = ref.watch(streakDaysProvider);
+    final weeklyEntries = ref.watch(weeklyEntriesProvider);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -30,9 +33,15 @@ class HomePage extends ConsumerWidget {
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            builder: (context) => SizedBox(
-              height: MediaQuery.of(context).size.height * 0.92,
-              child: const CaptureBottomSheet(),
+            builder: (context) => DraggableScrollableSheet(
+              initialChildSize: 0.45,
+              minChildSize: 0.3,
+              maxChildSize: 0.92,
+              snap: true,
+              snapSizes: const [0.45, 0.92],
+              builder: (context, scrollController) => CaptureBottomSheet(
+                scrollController: scrollController,
+              ),
             ),
           );
         },
@@ -53,7 +62,11 @@ class HomePage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      HomeHeader(user: user),
+                      HomeHeader(
+                        user: user,
+                        streakDays: streakDays,
+                        totalEntries: weeklyEntries,
+                      ),
                       const SizedBox(height: 16),
                       HomeContent(user: user),
                       const SizedBox(height: 80), // Bottom padding for FAB/Nav

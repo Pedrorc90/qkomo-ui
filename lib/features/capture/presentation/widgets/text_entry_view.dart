@@ -131,27 +131,29 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
     );
 
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(16),
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               'Registrar comida manualmente',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 24),
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Título de la comida *',
                 hintText: 'Ej: Ensalada César',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.title),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.title),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
@@ -161,12 +163,11 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
               },
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Ingredientes *',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             ..._ingredientControllers.asMap().entries.map((entry) {
@@ -181,7 +182,9 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
                         controller: controller,
                         decoration: InputDecoration(
                           hintText: 'Ingrediente ${index + 1}',
-                          border: const OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           prefixIcon: const Icon(Icons.fastfood),
                         ),
                       ),
@@ -190,7 +193,7 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
                     if (_ingredientControllers.length > 1)
                       IconButton(
                         icon: const Icon(Icons.remove_circle_outline),
-                        color: Colors.red,
+                        color: Theme.of(context).colorScheme.error,
                         onPressed: () => _removeIngredient(index),
                       ),
                   ],
@@ -205,32 +208,38 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _allergensController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Alérgenos (opcional)',
                 hintText: 'Separados por comas: gluten, lactosa',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.warning_amber),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.warning_amber),
               ),
               maxLines: 2,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _notesController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Notas adicionales (opcional)',
                 hintText: 'Cualquier observación...',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.note),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.note),
               ),
               maxLines: 3,
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<MealType>(
               value: _selectedMealType,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Tipo de comida (opcional)',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.restaurant_menu),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.restaurant_menu),
               ),
               items: MealType.values.map((type) {
                 return DropdownMenuItem(
@@ -245,24 +254,84 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
               },
             ),
             const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: textEntryState.isLoading ? null : _saveEntry,
-              icon: textEntryState.isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Icon(Icons.save),
-              label: const Text('Guardar entrada'),
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.all(16),
-              ),
+            _SaveButton(
+              isLoading: textEntryState.isLoading,
+              onPressed: _saveEntry,
             ),
+            const SizedBox(height: 8),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SaveButton extends StatefulWidget {
+  const _SaveButton({
+    required this.isLoading,
+    required this.onPressed,
+  });
+
+  final bool isLoading;
+  final VoidCallback onPressed;
+
+  @override
+  State<_SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<_SaveButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+  }
+
+  @override
+  void didUpdateWidget(_SaveButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isLoading && !oldWidget.isLoading) {
+      _controller.repeat(reverse: true);
+    } else if (!widget.isLoading && oldWidget.isLoading) {
+      _controller.stop();
+      _controller.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.7, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      ),
+      child: FilledButton.icon(
+        onPressed: widget.isLoading ? null : widget.onPressed,
+        icon: widget.isLoading
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation(
+                    Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              )
+            : const Icon(Icons.save),
+        label: const Text('Guardar entrada'),
+        style: FilledButton.styleFrom(
+          padding: const EdgeInsets.all(16),
         ),
       ),
     );
