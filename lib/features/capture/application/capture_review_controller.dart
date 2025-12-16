@@ -5,6 +5,7 @@ import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 /// State for the capture review screen
 class CaptureReviewState {
@@ -12,6 +13,8 @@ class CaptureReviewState {
     this.result,
     this.editedIngredients = const [],
     this.editedAllergens = const [],
+    this.editedMealType,
+    this.editedNotes,
     this.hasChanges = false,
     this.isSaving = false,
     this.isSaved = false,
@@ -21,6 +24,8 @@ class CaptureReviewState {
   final CaptureResult? result;
   final List<String> editedIngredients;
   final List<String> editedAllergens;
+  final MealType? editedMealType;
+  final String? editedNotes;
   final bool hasChanges;
   final bool isSaving;
   final bool isSaved;
@@ -30,6 +35,8 @@ class CaptureReviewState {
     CaptureResult? result,
     List<String>? editedIngredients,
     List<String>? editedAllergens,
+    MealType? editedMealType,
+    String? editedNotes,
     bool? hasChanges,
     bool? isSaving,
     bool? isSaved,
@@ -39,6 +46,8 @@ class CaptureReviewState {
       result: result ?? this.result,
       editedIngredients: editedIngredients ?? this.editedIngredients,
       editedAllergens: editedAllergens ?? this.editedAllergens,
+      editedMealType: editedMealType ?? this.editedMealType,
+      editedNotes: editedNotes ?? this.editedNotes,
       hasChanges: hasChanges ?? this.hasChanges,
       isSaving: isSaving ?? this.isSaving,
       isSaved: isSaved ?? this.isSaved,
@@ -79,6 +88,8 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
         result: result,
         editedIngredients: List.from(result.ingredients),
         editedAllergens: List.from(result.allergens),
+        editedMealType: result.mealType,
+        editedNotes: result.notes,
       );
     } catch (e) {
       state = state.copyWith(
@@ -97,7 +108,12 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
     final newIngredients = [...state.editedIngredients, trimmed];
     state = state.copyWith(
       editedIngredients: newIngredients,
-      hasChanges: _hasChanges(newIngredients, state.editedAllergens),
+      hasChanges: _hasChanges(
+        newIngredients,
+        state.editedAllergens,
+        mealType: state.editedMealType,
+        notes: state.editedNotes,
+      ),
     );
   }
 
@@ -108,7 +124,12 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
 
     state = state.copyWith(
       editedIngredients: newIngredients,
-      hasChanges: _hasChanges(newIngredients, state.editedAllergens),
+      hasChanges: _hasChanges(
+        newIngredients,
+        state.editedAllergens,
+        mealType: state.editedMealType,
+        notes: state.editedNotes,
+      ),
     );
   }
 
@@ -126,7 +147,12 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
 
     state = state.copyWith(
       editedIngredients: newIngredients,
-      hasChanges: _hasChanges(newIngredients, state.editedAllergens),
+      hasChanges: _hasChanges(
+        newIngredients,
+        state.editedAllergens,
+        mealType: state.editedMealType,
+        notes: state.editedNotes,
+      ),
     );
   }
 
@@ -138,27 +164,70 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
 
     state = state.copyWith(
       editedAllergens: newAllergens,
-      hasChanges: _hasChanges(state.editedIngredients, newAllergens),
+      hasChanges: _hasChanges(
+        state.editedIngredients,
+        newAllergens,
+        mealType: state.editedMealType,
+        notes: state.editedNotes,
+      ),
+    );
+  }
+
+  /// Set the meal type
+  void setMealType(MealType? mealType) {
+    state = state.copyWith(
+      editedMealType: mealType,
+      hasChanges: _hasChanges(
+        state.editedIngredients,
+        state.editedAllergens,
+        mealType: mealType,
+        notes: state.editedNotes,
+      ),
+    );
+  }
+
+  /// Set notes
+  void setNotes(String? notes) {
+    state = state.copyWith(
+      editedNotes: notes,
+      hasChanges: _hasChanges(
+        state.editedIngredients,
+        state.editedAllergens,
+        mealType: state.editedMealType,
+        notes: notes,
+      ),
     );
   }
 
   /// Check if there are changes compared to original result
-  bool _hasChanges(List<String> ingredients, List<String> allergens) {
+  bool _hasChanges(
+    List<String> ingredients,
+    List<String> allergens, {
+    MealType? mealType,
+    String? notes,
+  }) {
     if (state.result == null) return false;
 
     final originalIngredients = state.result!.ingredients;
     final originalAllergens = state.result!.allergens;
 
+    // Check ingredients
     if (ingredients.length != originalIngredients.length) return true;
-    if (allergens.length != originalAllergens.length) return true;
-
     for (var i = 0; i < ingredients.length; i++) {
       if (ingredients[i] != originalIngredients[i]) return true;
     }
 
+    // Check allergens
+    if (allergens.length != originalAllergens.length) return true;
     for (var i = 0; i < allergens.length; i++) {
       if (allergens[i] != originalAllergens[i]) return true;
     }
+
+    // Check meal type
+    if (mealType != state.result!.mealType) return true;
+
+    // Check notes
+    if (notes != state.result!.notes) return true;
 
     return false;
   }
@@ -167,6 +236,9 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
   String? _validateEdits() {
     if (state.editedIngredients.isEmpty) {
       return 'Agrega al menos un ingrediente antes de guardar.';
+    }
+    if (state.editedMealType == null) {
+      return 'Selecciona el tipo de comida antes de guardar.';
     }
     return null;
   }
@@ -190,6 +262,8 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
       final updatedResult = state.result!.copyWith(
         ingredients: state.editedIngredients,
         allergens: state.editedAllergens,
+        mealType: state.editedMealType,
+        notes: state.editedNotes,
         isReviewed: true,
         reviewedAt: DateTime.now(),
         userEdited: state.hasChanges,
@@ -230,6 +304,8 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
       state = state.copyWith(
         editedIngredients: List.from(state.result!.ingredients),
         editedAllergens: List.from(state.result!.allergens),
+        editedMealType: state.result!.mealType,
+        editedNotes: state.result!.notes,
         hasChanges: false,
         error: null,
       );

@@ -8,9 +8,11 @@ class IngredientListEditor extends StatefulWidget {
     required this.onAdd,
     required this.onRemove,
     required this.onUpdate,
+    this.originalIngredients = const [],
   });
 
   final List<String> ingredients;
+  final List<String> originalIngredients;
   final Function(String) onAdd;
   final Function(String) onRemove;
   final Function(String oldValue, String newValue) onUpdate;
@@ -79,27 +81,42 @@ class _IngredientListEditorState extends State<IngredientListEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Ingredientes',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+        // Header with count
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Ingredientes',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
+            ),
+            Text(
+              '${widget.ingredients.length} ingredientes',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
 
         // Ingredient chips
         if (widget.ingredients.isEmpty)
           Card(
+            color: scheme.surfaceContainerHighest,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   Icon(
                     Icons.info_outline,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: scheme.primary,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -117,18 +134,43 @@ class _IngredientListEditorState extends State<IngredientListEditor> {
             spacing: 8,
             runSpacing: 8,
             children: widget.ingredients.map((ingredient) {
+              final isAIDetected =
+                  widget.originalIngredients.contains(ingredient);
+
               return Chip(
-                label: Text(ingredient),
-                onDeleted: () => widget.onRemove(ingredient),
-                deleteIcon: const Icon(Icons.close, size: 18),
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Badge of origin
+                    if (isAIDetected)
+                      Icon(
+                        Icons.auto_awesome,
+                        size: 14,
+                        color: scheme.primary,
+                      )
+                    else
+                      Icon(
+                        Icons.edit,
+                        size: 14,
+                        color: scheme.tertiary,
+                      ),
+                    const SizedBox(width: 6),
+                    Text(ingredient),
+                  ],
+                ),
                 avatar: GestureDetector(
                   onTap: () => _showEditDialog(ingredient),
                   child: Icon(
-                    Icons.edit,
+                    Icons.edit_outlined,
                     size: 16,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: scheme.primary,
                   ),
                 ),
+                onDeleted: () => widget.onRemove(ingredient),
+                deleteIcon: const Icon(Icons.close, size: 18),
+                backgroundColor: isAIDetected
+                    ? scheme.primaryContainer.withValues(alpha: 0.3)
+                    : scheme.surfaceContainerHighest,
               );
             }).toList(),
           ),
@@ -160,10 +202,10 @@ class _IngredientListEditorState extends State<IngredientListEditor> {
 
         const SizedBox(height: 8),
         Text(
-          'Toca el ícono de editar para modificar, o el ícono X para eliminar',
+          'Detectados por IA (⨯): Añadidos manualmente (✎)',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: scheme.onSurfaceVariant,
+          ),
         ),
       ],
     );

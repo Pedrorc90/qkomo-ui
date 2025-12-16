@@ -6,6 +6,17 @@ import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 import 'package:qkomo_ui/features/history/application/history_controller.dart';
 
+/// Statistics for a date group
+class DateGroupStats {
+  final int mealCount;
+  final int ingredientCount;
+
+  const DateGroupStats({
+    required this.mealCount,
+    required this.ingredientCount,
+  });
+}
+
 /// Provider for history controller
 final historyControllerProvider =
     StateNotifierProvider<HistoryController, HistoryState>((ref) {
@@ -94,3 +105,43 @@ final groupedResultsProvider =
 final resultsStreamProvider = StreamProvider<List<Entry>>((ref) {
   return ref.watch(entriesStreamProvider.stream);
 });
+
+/// Provider for counting entries by date filter
+final filterCountsProvider = Provider<Map<DateFilter, int>>((ref) {
+  final entriesAsync = ref.watch(entriesStreamProvider);
+  final allEntries = entriesAsync.value ?? [];
+
+  return {
+    DateFilter.today: allEntries
+        .where((e) => DateGroupingHelper.isToday(e.result.savedAt))
+        .length,
+    DateFilter.thisWeek: allEntries
+        .where((e) => DateGroupingHelper.isThisWeek(e.result.savedAt))
+        .length,
+    DateFilter.all: allEntries.length,
+  };
+});
+
+/// Provider for statistics of each date group
+final dateGroupStatsProvider =
+    Provider<Map<DateGroup, DateGroupStats>>((ref) {
+  final groupedEntries = ref.watch(groupedEntriesProvider);
+
+  return {
+    for (final group in DateGroup.values)
+      group: _calculateStatsForGroup(groupedEntries[group] ?? []),
+  };
+});
+
+/// Calculate statistics for a group of entries
+DateGroupStats _calculateStatsForGroup(List<Entry> entries) {
+  final ingredientSet = <String>{};
+  for (final entry in entries) {
+    ingredientSet.addAll(entry.result.ingredients);
+  }
+
+  return DateGroupStats(
+    mealCount: entries.length,
+    ingredientCount: ingredientSet.length,
+  );
+}

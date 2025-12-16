@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import 'package:qkomo_ui/theme/app_colors.dart';
+import 'package:qkomo_ui/theme/app_typography.dart';
+import 'package:qkomo_ui/theme/design_tokens.dart';
 import 'package:qkomo_ui/theme/theme_type.dart';
 
 class AppTheme {
@@ -22,76 +24,64 @@ class AppTheme {
   static LinearGradient gradient(AppThemeType type) {
     switch (type) {
       case AppThemeType.warm:
-        return const LinearGradient(
-          colors: [Color(0xFFFFF0E5), Color(0xFFF3F5FF)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
+        return AppColors.gradientWarm;
       case AppThemeType.fresh:
-        return const LinearGradient(
-          colors: [Color(0xFFE7FFF7), Color(0xFFE1ECFF)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
+        return AppColors.gradientFresh;
       case AppThemeType.offWhite:
-        return const LinearGradient(
-          colors: [Color(0xFFFBFBFB), Color(0xFFEAEAEA)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
+        return AppColors.gradientOffWhite;
       case AppThemeType.dark:
-        return const LinearGradient(
-          colors: [Color(0xFF1A1A1A), Color(0xFF2C2C2C)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
+        return AppColors.gradientDark;
     }
   }
 
   // -- Warm (actual) --
+  /// Warm theme with orange/coral primary colors and inviting surfaces
   static final ColorScheme _warmScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xFFFF6F3C),
+    seedColor: AppColors.primaryMain,
     brightness: Brightness.light,
-    surface: const Color(0xFFF6F7FB),
+    surface: AppColors.warmSurface,
   );
 
   static ThemeData get _warmTheme => _baseTheme(_warmScheme);
 
   // -- Fresh alternative --
+  /// Fresh theme with teal and blue primary colors and cool surfaces
   static final ColorScheme _freshScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xFF2DD4BF),
+    seedColor: AppColors.secondaryTeal,
     brightness: Brightness.light,
-    surface: const Color(0xFFF5FAFF),
-    secondary: const Color(0xFF4E7BFF),
+    surface: AppColors.freshSurface,
+    secondary: AppColors.secondaryBlue,
   );
 
   static ThemeData get _freshTheme => _baseTheme(_freshScheme);
 
   // -- Off-White (Dirty White) --
+  /// Minimalist theme with neutral grays and clean off-white surfaces
   static final ColorScheme _offWhiteScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xFF5D5D5D), // Neutral greyish seed
+    seedColor: AppColors.neutralMediumDark,
     brightness: Brightness.light,
-    surface: const Color(0xFFFAFAFA), // Dirty white background
-    primary: const Color(0xFF2D2D2D), // Dark grey for primary actions
-    onSurface: const Color(0xFF1A1A1A),
-    secondary: const Color(0xFF757575),
+    surface: AppColors.offWhiteSurface,
+    primary: AppColors.offWhitePrimary,
+    onSurface: AppColors.neutralDark,
+    secondary: AppColors.neutralMedium,
   );
 
   static ThemeData get _offWhiteTheme => _baseTheme(_offWhiteScheme);
 
   // -- Dark --
+  /// Dark theme for night mode with blue accents on dark backgrounds
   static final ColorScheme _darkScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xFF3B82F6),
+    seedColor: AppColors.darkPrimary,
     brightness: Brightness.dark,
-    surface: const Color(0xFF121212),
-    primary: const Color(0xFF3B82F6),
-    onSurface: const Color(0xFFE0E0E0),
+    surface: AppColors.darkSurface,
+    primary: AppColors.darkPrimary,
+    onSurface: AppColors.darkOnSurface,
   );
 
   static ThemeData get _darkTheme => _baseTheme(_darkScheme);
 
   static ThemeData _baseTheme(ColorScheme scheme) {
-    final baseText = GoogleFonts.spaceGroteskTextTheme();
+    final baseText = AppTypography.baseTextTheme;
     return ThemeData(
       colorScheme: scheme,
       useMaterial3: true,
@@ -100,69 +90,95 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: scheme.onSurface,
-        elevation: 0,
+        elevation: DesignTokens.elevationNone,
         centerTitle: false,
-        titleTextStyle: baseText.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
+        titleTextStyle: AppTypography.titleLarge.copyWith(
           color: scheme.onSurface,
         ),
       ),
       cardTheme: CardThemeData(
         color: Colors.white,
         surfaceTintColor: Colors.white,
-        elevation: 2,
+        elevation: DesignTokens.elevationSm,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
+        ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          textStyle:
-              baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          padding: EdgeInsets.symmetric(
+            vertical: DesignTokens.spacingMd,
+            horizontal: DesignTokens.spacingMd,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+          ),
+          textStyle: AppTypography.titleMedium,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          side: BorderSide(color: scheme.outline),
-          textStyle:
-              baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          padding: EdgeInsets.symmetric(
+            vertical: DesignTokens.spacingMd,
+            horizontal: DesignTokens.spacingMd,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+          ),
+          side: BorderSide(
+            color: scheme.outline,
+            width: DesignTokens.borderWidthThin,
+          ),
+          textStyle: AppTypography.titleMedium,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: scheme.outlineVariant),
+          borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+          borderSide: BorderSide(
+            color: scheme.outlineVariant,
+            width: DesignTokens.borderWidthThin,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: scheme.outlineVariant),
+          borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+          borderSide: BorderSide(
+            color: scheme.outlineVariant,
+            width: DesignTokens.borderWidthThin,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: scheme.primary, width: 1.4),
+          borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+          borderSide: BorderSide(
+            color: scheme.primary,
+            width: DesignTokens.borderWidthMedium,
+          ),
         ),
-        labelStyle:
-            baseText.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+        labelStyle: AppTypography.bodyMedium.copyWith(
+          color: scheme.onSurfaceVariant,
+        ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+        ),
         backgroundColor: scheme.onSurface,
-        contentTextStyle: baseText.bodyMedium?.copyWith(color: Colors.white),
+        contentTextStyle: AppTypography.bodyMedium.copyWith(
+          color: Colors.white,
+        ),
       ),
       tabBarTheme: TabBarThemeData(
-        labelStyle: baseText.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-        unselectedLabelStyle: baseText.titleMedium,
+        labelStyle: AppTypography.titleMedium,
+        unselectedLabelStyle: AppTypography.titleMedium,
         indicator: BoxDecoration(
-          color: scheme.primary.withAlpha((0.12 * 255).round()),
-          borderRadius: BorderRadius.circular(12),
+          color: scheme.primary.withAlpha(
+            (DesignTokens.opacityFocus * 255).round(),
+          ),
+          borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
         ),
         labelColor: scheme.primary,
         unselectedLabelColor: scheme.onSurfaceVariant,

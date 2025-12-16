@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:qkomo_ui/core/widgets/allergen_badge.dart';
+import 'package:qkomo_ui/core/widgets/meal_type_chip.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class RecentEntriesSection extends StatelessWidget {
   const RecentEntriesSection({
@@ -40,7 +43,7 @@ class RecentEntriesSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: colorScheme.primaryContainer.withOpacity(0.3),
+              color: colorScheme.primaryContainer.withValues(alpha: 0.3),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -161,6 +164,7 @@ class RecentEntriesSection extends StatelessWidget {
     ColorScheme colorScheme,
   ) {
     final timeFormat = DateFormat('HH:mm');
+    final textTheme = Theme.of(context).textTheme;
 
     // Check if we should try to display an image
     bool hasImage = false;
@@ -175,6 +179,12 @@ class RecentEntriesSection extends StatelessWidget {
       // If there's any error accessing the file, just don't show the image
       hasImage = false;
     }
+
+    // Get title - prefer custom title, then first 3 ingredients
+    final titleText = entry.title ??
+        (entry.ingredients.isNotEmpty
+            ? entry.ingredients.take(3).join(', ')
+            : 'Sin ingredientes detectados');
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -225,21 +235,66 @@ class RecentEntriesSection extends StatelessWidget {
                   color: colorScheme.primary,
                 ),
               ),
-        title: Text(
-          entry.title ??
-              (entry.ingredients.isNotEmpty
-                  ? entry.ingredients.take(2).join(', ')
-                  : 'Sin ingredientes detectados'),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 14),
+        title: Row(
+          children: [
+            // Meal type chip if available
+            if (entry.mealType != null) ...[
+              MealTypeChip(
+                mealType: entry.mealType!,
+                variant: MealTypeChipVariant.iconOnly,
+              ),
+              const SizedBox(width: 8),
+            ],
+            // Title
+            Expanded(
+              child: Text(
+                titleText,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodyMedium,
+              ),
+            ),
+          ],
         ),
-        subtitle: Text(
-          timeFormat.format(entry.savedAt),
-          style: TextStyle(
-            fontSize: 12,
-            color: colorScheme.onSurfaceVariant,
-          ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 4),
+            // Time
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Meal type label if available
+                if (entry.mealType != null)
+                  Text(
+                    entry.mealType!.displayName,
+                    style: textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                // Time
+                Text(
+                  timeFormat.format(entry.savedAt),
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+            // Allergen badges if available
+            if (entry.allergens.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 4,
+                children: entry.allergens.take(2).map((allergen) {
+                  return AllergenBadge(
+                    allergen: allergen,
+                    isPersonalAlert: true,
+                  );
+                }).toList(),
+              ),
+            ],
+          ],
         ),
         trailing: Icon(
           Icons.chevron_right,

@@ -3,9 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_review_controller.dart';
-import 'package:qkomo_ui/features/capture/presentation/review/widgets/allergen_toggle_list.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/presentation/review/widgets/allergen_selector.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/ingredient_list_editor.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/photo_viewer.dart';
+import 'package:qkomo_ui/features/capture/presentation/review/widgets/nutrition_info_card.dart';
+import 'package:qkomo_ui/features/capture/presentation/review/widgets/medical_alerts_card.dart';
+import 'package:qkomo_ui/features/capture/presentation/review/widgets/improvement_suggestions_card.dart';
 
 /// Page for reviewing and editing capture results
 class CaptureReviewPage extends ConsumerWidget {
@@ -87,28 +91,34 @@ class CaptureReviewPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Photo viewer
+          // Photo viewer with metadata and meal type selector
           PhotoViewer(
             imagePath: result.jobId, // TODO: Get actual image path from job
             title: result.title,
+            capturedAt: result.savedAt,
+            estimatedPortionG: result.estimatedPortionG,
+            selectedMealType: state.editedMealType,
+            onMealTypeChanged: controller.setMealType,
           ),
 
           const SizedBox(height: 24),
 
-          // Title
-          if (result.title != null) ...[
-            Text(
-              result.title!,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 24),
+          // Nutrition info card
+          if (result.nutrition != null) ...[
+            NutritionInfoCard(nutrition: result.nutrition!),
+            const SizedBox(height: 16),
           ],
 
-          // Ingredient editor
+          // Medical alerts card
+          if (result.medicalAlerts != null) ...[
+            MedicalAlertsCard(medicalAlerts: result.medicalAlerts!),
+            const SizedBox(height: 16),
+          ],
+
+          // Ingredient editor with origin badges
           IngredientListEditor(
             ingredients: state.editedIngredients,
+            originalIngredients: result.ingredients,
             onAdd: controller.addIngredient,
             onRemove: controller.removeIngredient,
             onUpdate: controller.updateIngredient,
@@ -116,15 +126,110 @@ class CaptureReviewPage extends ConsumerWidget {
 
           const SizedBox(height: 24),
 
-          // Allergen toggles
-          AllergenToggleList(
+          // Allergen selector (replaces AllergenToggleList)
+          AllergenSelector(
             selectedAllergens: state.editedAllergens,
             onToggle: controller.toggleAllergen,
           ),
 
+          const SizedBox(height: 24),
+
+          // Notes section
+          _buildNotesSection(context, state, controller),
+
+          const SizedBox(height: 24),
+
+          // Improvement suggestions card
+          if (result.improvementSuggestions.isNotEmpty) ...[
+            ImprovementSuggestionsCard(
+              suggestions: result.improvementSuggestions,
+            ),
+            const SizedBox(height: 24),
+          ],
+
+          // Suitable for section
+          if (result.suitableFor != null) ...[
+            _buildSuitableForSection(context, result.suitableFor!),
+            const SizedBox(height: 24),
+          ],
+
           const SizedBox(height: 100), // Space for bottom bar
         ],
       ),
+    );
+  }
+
+  Widget _buildNotesSection(
+    BuildContext context,
+    CaptureReviewState state,
+    CaptureReviewController controller,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Notas adicionales',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: TextEditingController(text: state.editedNotes),
+          maxLines: 3,
+          decoration: const InputDecoration(
+            hintText: 'Agrega comentarios sobre esta comida...',
+            border: OutlineInputBorder(),
+          ),
+          onChanged: controller.setNotes,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSuitableForSection(
+    BuildContext context,
+    CaptureSuitableFor suitableFor,
+  ) {
+    final activeBadges = {
+      'Apto para niños': suitableFor.children,
+      'Bajo FODMAP': suitableFor.lowFodmap,
+      'Sin gluten': suitableFor.glutenFree,
+      'Vegetariano': suitableFor.vegetarian,
+      'Vegano': suitableFor.vegan,
+    }.entries.where((e) => e.value).map((e) => e.key).toList();
+
+    if (activeBadges.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Apto para',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: activeBadges.map((badge) {
+            return Chip(
+              label: Text(badge),
+              avatar: Icon(
+                Icons.check_circle,
+                size: 16,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .primaryContainer
+                  .withValues(alpha: 0.3),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 

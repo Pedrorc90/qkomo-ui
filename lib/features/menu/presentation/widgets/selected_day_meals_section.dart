@@ -6,6 +6,7 @@ import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_card.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/quick_actions_panel.dart';
 
 class SelectedDayMealsSection extends ConsumerWidget {
   const SelectedDayMealsSection({super.key});
@@ -106,40 +107,11 @@ class SelectedDayMealsSection extends ConsumerWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                    ),
-                  ...meals.map((meal) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                _getMealIcon(meal.mealType),
-                                size: 20,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                meal.mealType.displayName,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          MealCard(meal: meal),
-                        ],
-                      ),
-                    );
-                  }),
-                  const SizedBox(height: 8),
+                    )
+                  else
+                    ..._buildMealTypeSections(context, meals, selectedDay),
+                  const SizedBox(height: 12),
+                  // Add new meal button
                   Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -187,6 +159,9 @@ class SelectedDayMealsSection extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  // Quick actions panel
+                  QuickActionsPanel(selectedDay: selectedDay),
                 ],
               ),
             ),
@@ -207,5 +182,124 @@ class SelectedDayMealsSection extends ConsumerWidget {
       case MealType.dinner:
         return Icons.dinner_dining;
     }
+  }
+
+  Color _getMealTypeColor(BuildContext context, MealType type) {
+    final colorScheme = Theme.of(context).colorScheme;
+    switch (type) {
+      case MealType.breakfast:
+        return colorScheme.primary;
+      case MealType.lunch:
+        return colorScheme.secondary;
+      case MealType.snack:
+        return colorScheme.tertiary;
+      case MealType.dinner:
+        return colorScheme.error;
+    }
+  }
+
+  String _getMealTimeContext(MealType type) {
+    switch (type) {
+      case MealType.breakfast:
+        return '7:00 - 9:00';
+      case MealType.lunch:
+        return '12:30 - 14:30';
+      case MealType.snack:
+        return '16:00 - 17:30';
+      case MealType.dinner:
+        return '20:00 - 22:00';
+    }
+  }
+
+  List<Widget> _buildMealTypeSections(
+    BuildContext context,
+    List<dynamic> meals,
+    DateTime selectedDay,
+  ) {
+    final mealsByType = <MealType, List<dynamic>>{};
+
+    for (final meal in meals) {
+      final type = meal.mealType;
+      mealsByType.putIfAbsent(type, () => []).add(meal);
+    }
+
+    final List<Widget> sections = [];
+
+    for (final type in MealType.values) {
+      if (!mealsByType.containsKey(type)) continue;
+
+      final mealsOfType = mealsByType[type]!;
+      final typeColor = _getMealTypeColor(context, type);
+      final timeContext = _getMealTimeContext(type);
+
+      sections.add(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Meal type header with time context
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+              child: Row(
+                children: [
+                  Container(
+                    width: 4,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: typeColor,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        type.displayName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: typeColor,
+                        ),
+                      ),
+                      Text(
+                        timeContext,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Icon(
+                    _getMealIcon(type),
+                    size: 18,
+                    color: typeColor.withAlpha((0.6 * 255).round()),
+                  ),
+                ],
+              ),
+            ),
+            // Meals for this type
+            ...mealsOfType.map((meal) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: MealCard(meal: meal),
+              );
+            }),
+            // Divider between sections
+            if (mealsOfType != meals.last)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Divider(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                  thickness: 1,
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    return sections;
   }
 }

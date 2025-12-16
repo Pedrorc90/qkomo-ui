@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
@@ -40,6 +41,10 @@ class HistoryPage extends ConsumerWidget {
         ],
       ),
       body: RefreshIndicator(
+        color: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        displacement: 40,
+        strokeWidth: 3.0,
         onRefresh: () => _onRefresh(ref),
         child: CustomScrollView(
           slivers: [
@@ -229,9 +234,10 @@ class HistoryPage extends ConsumerWidget {
   }
 
   Future<void> _onRefresh(WidgetRef ref) async {
-    // Just refresh history logic if needed, or leave empty/remove.
-    // Assuming history providers auto-update, maybe just wait a bit or call a refresh method on controller?
-    // For now simple delay or no-op.
-    await Future<void>.delayed(const Duration(milliseconds: 500));
+    // Haptic feedback for better UX
+    await HapticFeedback.mediumImpact();
+
+    // Trigger refresh on the controller
+    await ref.read(historyControllerProvider.notifier).refresh();
   }
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
+import 'package:qkomo_ui/features/history/application/history_providers.dart';
+import 'package:qkomo_ui/theme/design_tokens.dart';
+import 'package:qkomo_ui/theme/app_typography.dart';
 
-/// Header for date group sections
-class DateGroupHeader extends StatelessWidget {
+/// Header for date group sections with statistics
+class DateGroupHeader extends ConsumerWidget {
   const DateGroupHeader({
     super.key,
     required this.group,
@@ -14,17 +17,53 @@ class DateGroupHeader extends StatelessWidget {
   final DateTime? date;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final label = DateGroupingHelper.getDateGroupLabel(group, date: date);
+    final stats = ref.watch(dateGroupStatsProvider)[group];
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-      child: Text(
-        "hola",
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+    return Container(
+      margin: EdgeInsets.only(
+        top: DesignTokens.spacingMd,
+        bottom: DesignTokens.spacingSm,
+      ),
+      padding: EdgeInsets.symmetric(
+        vertical: DesignTokens.spacingMd,
+        horizontal: DesignTokens.spacingMd,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer
+            .withValues(alpha: 0.1),
+        border: Border(
+          left: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 4,
+          ),
+        ),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(DesignTokens.radiusSm),
+          bottomRight: Radius.circular(DesignTokens.radiusSm),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTypography.titleSmall.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w700,
-              color: Theme.of(context).colorScheme.primary,
             ),
+          ),
+          if (stats != null && stats.mealCount > 0) ...[
+            SizedBox(height: DesignTokens.spacingXs),
+            Text(
+              '${stats.mealCount} ${stats.mealCount == 1 ? 'comida' : 'comidas'} • ${stats.ingredientCount} ${stats.ingredientCount == 1 ? 'ingrediente' : 'ingredientes'}',
+              style: AppTypography.bodySmall.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

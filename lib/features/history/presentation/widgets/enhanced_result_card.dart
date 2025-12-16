@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:qkomo_ui/core/widgets/allergen_badge.dart';
+import 'package:qkomo_ui/core/widgets/animated_card.dart';
+import 'package:qkomo_ui/core/widgets/meal_type_chip.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
+import 'package:qkomo_ui/theme/app_typography.dart';
+import 'package:qkomo_ui/theme/design_tokens.dart';
 
-/// Enhanced result card with photo, ingredients, and allergens
+/// Enhanced result card with photo, meal type, time, ingredients, allergens and review status
 class EnhancedResultCard extends StatelessWidget {
   const EnhancedResultCard({
     super.key,
@@ -12,108 +19,138 @@ class EnhancedResultCard extends StatelessWidget {
   final CaptureResult result;
   final VoidCallback onTap;
 
+  static final _timeFormat = DateFormat('HH:mm', 'es');
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Photo thumbnail (placeholder for now)
-              _buildThumbnail(context),
-              const SizedBox(width: 12),
+    return AnimatedCard(
+      onTap: onTap,
+      padding: EdgeInsets.all(DesignTokens.spacingMd),
+      elevation: 0,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Thumbnail larger (80x80dp)
+          _buildThumbnail(context),
+          SizedBox(width: DesignTokens.spacingMd),
 
-              // Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          // Main content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top row: meal type icon + title + time
+                Row(
                   children: [
-                    // Title
-                    Text(
-                      result.title ?? 'Captura ${result.jobId.substring(0, 6)}',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-
-                    // Ingredient count and top 3
-                    if (result.ingredients.isNotEmpty) ...[
-                      Text(
-                        '${result.ingredients.length} ingredientes',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
+                    if (result.mealType != null) ...[
+                      MealTypeChip(
+                        mealType: result.mealType!,
+                        variant: MealTypeChipVariant.iconOnly,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _getTopIngredients(),
-                        style: Theme.of(context).textTheme.bodySmall,
+                      SizedBox(width: DesignTokens.spacingSm),
+                    ],
+                    Expanded(
+                      child: Text(
+                        result.title ??
+                            'Captura ${result.jobId.substring(0, 6)}',
+                        style: AppTypography.titleMedium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-
-                    // Allergen badges
-                    if (result.allergens.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 4,
-                        runSpacing: 4,
-                        children: result.allergens.take(3).map((allergen) {
-                          return Chip(
-                            label: Text(
-                              allergen,
-                              style: const TextStyle(fontSize: 11),
-                            ),
-                            backgroundColor: Theme.of(context)
-                                .colorScheme
-                                .errorContainer
-                                .withAlpha((0.5 * 255).round()),
-                            padding: EdgeInsets.zero,
-                            visualDensity: VisualDensity.compact,
-                          );
-                        }).toList(),
+                    ),
+                    Text(
+                      _timeFormat.format(result.savedAt),
+                      style: AppTypography.labelSmall.copyWith(
+                        color:
+                            Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
-                    ],
+                    ),
                   ],
                 ),
-              ),
 
-              // Review status indicator
-              if (result.isReviewed)
-                const Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 20,
-                ),
-            ],
+                SizedBox(height: DesignTokens.spacingXs),
+
+                // Ingredient counter and top 3
+                if (result.ingredients.isNotEmpty) ...[
+                  Text(
+                    '${result.ingredients.length} ${result.ingredients.length == 1 ? 'ingrediente' : 'ingredientes'}',
+                    style: AppTypography.bodySmall.copyWith(
+                      color:
+                          Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  SizedBox(height: DesignTokens.spacingXs),
+
+                  // Top 3 ingredients
+                  Text(
+                    _getTopIngredients(),
+                    style: AppTypography.bodySmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+
+                // Allergen badges and reviewed status
+                if (result.allergens.isNotEmpty || result.isReviewed) ...[
+                  SizedBox(height: DesignTokens.spacingSm),
+                  Wrap(
+                    spacing: DesignTokens.spacingXs,
+                    runSpacing: DesignTokens.spacingXs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      // Maximum 2 allergens
+                      ...result.allergens.take(2).map(
+                            (allergen) => AllergenBadge(
+                              allergen: allergen,
+                              isPersonalAlert: true,
+                            ),
+                          ),
+
+                      // Reviewed indicator
+                      if (result.isReviewed) ...[
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              size: 14,
+                              color: AppColors.semanticSuccess,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              'Revisado',
+                              style: AppTypography.labelSmall.copyWith(
+                                color: AppColors.semanticSuccess,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildThumbnail(BuildContext context) {
     return Container(
-      width: 60,
-      height: 60,
+      width: 80,
+      height: 80,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
       ),
       child: Icon(
         Icons.fastfood,
         color: Theme.of(context).colorScheme.onSurfaceVariant,
-        size: 30,
+        size: 36,
       ),
     );
   }

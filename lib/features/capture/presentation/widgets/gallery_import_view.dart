@@ -28,6 +28,9 @@ class GalleryImportView extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    const borderRadius = BorderRadius.all(Radius.circular(16));
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -37,49 +40,49 @@ class GalleryImportView extends StatelessWidget {
             'Selecciona una foto de tu galería para analizarla.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: scheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 16),
           GestureDetector(
             onTap: state.imageFile == null ? onImport : null,
-            child: Stack(
-              children: [
-                PickedImagePreview(file: state.imageFile),
-                if (state.imageFile == null)
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+            child: ClipRRect(
+              borderRadius: borderRadius,
+              child: Stack(
+                children: [
+                  PickedImagePreview(file: state.imageFile),
+                  if (state.imageFile == null)
+                    Positioned.fill(
+                      child: Container(
                         color: Colors.black.withAlpha((0.2 * 255).round()),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.image_outlined,
-                              size: 48,
-                              color: Colors.white
-                                  .withAlpha((0.7 * 255).round()),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'Abre la galería para comenzar',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: Colors.white
-                                        .withAlpha((0.7 * 255).round()),
-                                  ),
-                            ),
-                          ],
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.image_outlined,
+                                size: 48,
+                                color: Colors.white
+                                    .withAlpha((0.7 * 255).round()),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Abre la galería para comenzar',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Colors.white
+                                          .withAlpha((0.7 * 255).round()),
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -90,22 +93,14 @@ class GalleryImportView extends StatelessWidget {
                 ? 'Abriendo galería...'
                 : 'Elegir desde galería',
           ),
-          if (state.imageFile != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: _AnalyzeButton(
-                isProcessing: state.isProcessing,
-                onPressed: state.isProcessing ? null : onAnalyze,
-                label: state.isProcessing
-                    ? 'Analizando...'
-                    : 'Analizar imagen',
-              ),
+          if (state.imageFile != null) ...[
+            const SizedBox(height: 12),
+            _AnalyzeButton(
+              isProcessing: state.isProcessing,
+              onPressed: state.isProcessing ? null : onAnalyze,
+              label: state.isProcessing ? 'Analizando...' : 'Analizar imagen',
             ),
-          if (state.isProcessing)
-            const Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Center(child: CircularProgressIndicator()),
-            ),
+          ],
         ],
       ),
     );

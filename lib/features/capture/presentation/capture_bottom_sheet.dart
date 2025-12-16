@@ -119,9 +119,10 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
       child: Container(
         decoration: BoxDecoration(
           gradient: gradient,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const _DragHandle(),
             _ModalHeader(
@@ -131,17 +132,13 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
               mode: captureState.mode,
             ),
             Expanded(
-              child: widget.scrollController != null
-                  ? SingleChildScrollView(
-                      controller: widget.scrollController,
-                      physics: const BouncingScrollPhysics(),
-                      child: captureState.mode == null
-                          ? _buildActionButtons(context, controller)
-                          : _buildSelectedModeView(captureState),
-                    )
-                  : (captureState.mode == null
-                      ? _buildActionButtons(context, controller)
-                      : _buildSelectedModeView(captureState)),
+              child: SingleChildScrollView(
+                controller: widget.scrollController,
+                physics: const BouncingScrollPhysics(),
+                child: captureState.mode == null
+                    ? _buildActionButtons(context, controller)
+                    : _buildSelectedModeView(captureState),
+              ),
             ),
           ],
         ),
@@ -152,7 +149,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
   Widget _buildActionButtons(
       BuildContext context, CaptureController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -165,7 +162,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
                 ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           _CaptureOptionCard(
             icon: Icons.camera_alt_outlined,
             label: 'Cámara',
@@ -173,7 +170,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             color: Colors.blue,
             onPressed: () => controller.setMode(CaptureMode.camera),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           _CaptureOptionCard(
             icon: Icons.photo_library_outlined,
             label: 'Galería',
@@ -181,7 +178,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             color: Colors.green,
             onPressed: () => controller.setMode(CaptureMode.gallery),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           _CaptureOptionCard(
             icon: Icons.qr_code_2_outlined,
             label: 'Código QR',
@@ -189,7 +186,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             color: Colors.purple,
             onPressed: () => controller.setMode(CaptureMode.barcode),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           _CaptureOptionCard(
             icon: Icons.edit_note_outlined,
             label: 'Texto',
@@ -397,7 +394,7 @@ class _CaptureOptionCardState extends State<_CaptureOptionCard>
         elevation: 0,
         color: scheme.surfaceContainer,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           side: BorderSide(
             color: scheme.outlineVariant.withAlpha((0.3 * 255).round()),
           ),
@@ -412,40 +409,39 @@ class _CaptureOptionCardState extends State<_CaptureOptionCard>
           onTapDown: (_) => _controller.forward(),
           onTapUp: (_) => _controller.reverse(),
           onTapCancel: () => _controller.reverse(),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: widget.color.withAlpha((0.12 * 255).round()),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     widget.icon,
-                    size: 24,
+                    size: 22,
                     color: widget.color,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.label,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         widget.description,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               color: scheme.onSurfaceVariant,
-                              fontSize: 12,
                             ),
                       ),
                     ],
@@ -453,7 +449,7 @@ class _CaptureOptionCardState extends State<_CaptureOptionCard>
                 ),
                 Icon(
                   Icons.chevron_right,
-                  size: 20,
+                  size: 18,
                   color: scheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
                 ),
               ],

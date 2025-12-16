@@ -13,6 +13,18 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+
+    // Parse nested objects from JSON maps if they exist
+    final nutrition = fields[12] != null
+        ? CaptureNutrition.fromJson((fields[12] as Map).cast<String, dynamic>())
+        : null;
+    final medicalAlerts = fields[13] != null
+        ? CaptureMedicalAlerts.fromJson((fields[13] as Map).cast<String, dynamic>())
+        : null;
+    final suitableFor = fields[14] != null
+        ? CaptureSuitableFor.fromJson((fields[14] as Map).cast<String, dynamic>())
+        : null;
+
     return CaptureResult(
       jobId: fields[0] as String,
       savedAt: fields[1] as DateTime,
@@ -25,13 +37,21 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
       isReviewed: fields[8] as bool? ?? false,
       reviewedAt: fields[9] as DateTime?,
       userEdited: fields[10] as bool? ?? false,
+      // New fields with backward compatibility
+      estimatedPortionG: fields[11] as int?,
+      nutrition: nutrition,
+      medicalAlerts: medicalAlerts,
+      suitableFor: suitableFor,
+      improvementSuggestions: fields[15] != null
+          ? (fields[15] as List).cast<String>()
+          : [],
     );
   }
 
   @override
   void write(BinaryWriter writer, CaptureResult obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(16) // Updated field count
       ..writeByte(0)
       ..write(obj.jobId)
       ..writeByte(1)
@@ -53,6 +73,17 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
       ..writeByte(9)
       ..write(obj.reviewedAt)
       ..writeByte(10)
-      ..write(obj.userEdited);
+      ..write(obj.userEdited)
+      // New fields
+      ..writeByte(11)
+      ..write(obj.estimatedPortionG)
+      ..writeByte(12)
+      ..write(obj.nutrition?.toJson())
+      ..writeByte(13)
+      ..write(obj.medicalAlerts?.toJson())
+      ..writeByte(14)
+      ..write(obj.suitableFor?.toJson())
+      ..writeByte(15)
+      ..write(obj.improvementSuggestions);
   }
 }

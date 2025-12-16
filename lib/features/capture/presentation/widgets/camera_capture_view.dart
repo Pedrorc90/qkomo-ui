@@ -29,6 +29,8 @@ class CameraCaptureView extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -38,7 +40,7 @@ class CameraCaptureView extends StatelessWidget {
             'Toma una foto enfocando los ingredientes o el producto.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: scheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 16),
@@ -52,29 +54,23 @@ class CameraCaptureView extends StatelessWidget {
             onPressed: state.isProcessing ? null : onCapture,
             label: state.isProcessing ? 'Abriendo cámara...' : 'Abrir cámara',
           ),
-          if (state.imageFile != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: _AnalyzeButton(
-                isProcessing: state.isProcessing,
-                onPressed: state.isProcessing ? null : onAnalyze,
-                label: state.isProcessing ? 'Analizando...' : 'Analizar foto',
-              ),
+          if (state.imageFile != null) ...[
+            const SizedBox(height: 12),
+            _AnalyzeButton(
+              isProcessing: state.isProcessing,
+              onPressed: state.isProcessing ? null : onAnalyze,
+              label: state.isProcessing ? 'Analizando...' : 'Analizar foto',
             ),
+          ],
           if (!kIsWeb)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 12),
               child: Text(
                 'Asegúrate de conceder permisos de cámara.',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: scheme.onSurfaceVariant,
                     ),
               ),
-            ),
-          if (state.isProcessing)
-            const Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
@@ -93,44 +89,48 @@ class _CameraPreviewPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.all(Radius.circular(16));
+
     return GestureDetector(
       onTap: state.imageFile == null ? onCapture : null,
-      child: Stack(
-        children: [
-          PickedImagePreview(file: state.imageFile),
-          if (state.imageFile == null)
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.black.withAlpha((0.3 * 255).round()),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.camera_alt,
-                        size: 48,
-                        color: Colors.white.withAlpha((0.7 * 255).round()),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Abre la cámara para comenzar',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white.withAlpha((0.7 * 255).round()),
-                            ),
-                      ),
-                    ],
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: Stack(
+          children: [
+            PickedImagePreview(file: state.imageFile),
+            if (state.imageFile == null)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withAlpha((0.3 * 255).round()),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.camera_alt,
+                          size: 48,
+                          color: Colors.white.withAlpha((0.7 * 255).round()),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Abre la cámara para comenzar',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.white.withAlpha((0.7 * 255).round()),
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (state.imageFile != null)
-            Positioned.fill(
-              child: _GridOverlay(),
-            ),
-        ],
+            if (state.imageFile != null)
+              Positioned.fill(
+                child: _GridOverlay(),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -140,11 +140,8 @@ class _GridOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: CustomPaint(
-          painter: _GridPainter(),
-        ),
+      child: CustomPaint(
+        painter: _GridPainter(),
       ),
     );
   }
@@ -153,28 +150,45 @@ class _GridOverlay extends StatelessWidget {
 class _GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withAlpha((0.3 * 255).round())
-      ..strokeWidth = 1;
+    // Grid lines with better visibility
+    final gridPaint = Paint()
+      ..color = Colors.white.withAlpha((0.4 * 255).round())
+      ..strokeWidth = 1.5;
 
-    // Líneas verticales
+    // Vertical lines (rule of thirds)
     final verticalDistance = size.width / 3;
     for (int i = 1; i < 3; i++) {
       canvas.drawLine(
         Offset(verticalDistance * i, 0),
         Offset(verticalDistance * i, size.height),
-        paint,
+        gridPaint,
       );
     }
 
-    // Líneas horizontales
+    // Horizontal lines (rule of thirds)
     final horizontalDistance = size.height / 3;
     for (int i = 1; i < 3; i++) {
       canvas.drawLine(
         Offset(0, horizontalDistance * i),
         Offset(size.width, horizontalDistance * i),
-        paint,
+        gridPaint,
       );
+    }
+
+    // Draw focus points at intersections
+    final focusPaint = Paint()
+      ..color = Colors.white.withAlpha((0.6 * 255).round())
+      ..strokeWidth = 2;
+
+    final intersections = [
+      Offset(verticalDistance, horizontalDistance),
+      Offset(verticalDistance * 2, horizontalDistance),
+      Offset(verticalDistance, horizontalDistance * 2),
+      Offset(verticalDistance * 2, horizontalDistance * 2),
+    ];
+
+    for (final point in intersections) {
+      canvas.drawCircle(point, 4, focusPaint);
     }
   }
 
@@ -195,10 +209,14 @@ class _CaptureButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton.icon(
-      onPressed: onPressed,
-      icon: const Icon(Icons.camera_alt),
-      label: Text(label),
+    return AnimatedOpacity(
+      opacity: isProcessing ? 0.6 : 1.0,
+      duration: const Duration(milliseconds: 200),
+      child: FilledButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(Icons.camera_alt),
+        label: Text(label),
+      ),
     );
   }
 }

@@ -46,3 +46,24 @@ final tomorrowMealsProvider = Provider<List<Meal>>((ref) {
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });
+
+// Next upcoming meal from today or tomorrow
+final nextMealProvider = Provider<Meal?>((ref) {
+  final todayMeals = ref.watch(todayMealsProvider);
+  final tomorrowMeals = ref.watch(tomorrowMealsProvider);
+
+  // If there are meals today, return the first one (regardless of time)
+  if (todayMeals.isNotEmpty) {
+    // Sort by scheduledFor and return the first
+    todayMeals.sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
+    return todayMeals.first;
+  }
+
+  // If no meals today, return first meal tomorrow
+  if (tomorrowMeals.isNotEmpty) {
+    tomorrowMeals.sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
+    return tomorrowMeals.first;
+  }
+
+  return null;
+});

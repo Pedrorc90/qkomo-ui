@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
-import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
-import 'package:qkomo_ui/features/home/application/home_providers.dart';
+import 'package:qkomo_ui/features/home/presentation/widgets/compact_weekly_calendar.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_content.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/home_header.dart';
+import 'package:qkomo_ui/theme/design_tokens.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 class HomePage extends ConsumerWidget {
@@ -14,39 +14,10 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authController = ref.read(authControllerProvider);
     final user = ref.watch(firebaseAuthProvider).currentUser;
     final gradient = ref.watch(appGradientProvider);
-    final themeType = ref.watch(themeTypeProvider);
-    final streakDays = ref.watch(streakDaysProvider);
-    final weeklyEntries = ref.watch(weeklyEntriesProvider);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            enableDrag: true,
-            isDismissible: true,
-            backgroundColor: Colors.transparent,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            builder: (context) => DraggableScrollableSheet(
-              initialChildSize: 0.45,
-              minChildSize: 0.3,
-              maxChildSize: 0.92,
-              snap: true,
-              snapSizes: const [0.45, 0.92],
-              builder: (context, scrollController) => CaptureBottomSheet(
-                scrollController: scrollController,
-              ),
-            ),
-          );
-        },
-        child: const Icon(Icons.add_a_photo, size: 28),
-      ),
       body: Container(
         decoration: BoxDecoration(gradient: gradient),
         child: SafeArea(
@@ -62,14 +33,34 @@ class HomePage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      HomeHeader(
-                        user: user,
-                        streakDays: streakDays,
-                        totalEntries: weeklyEntries,
-                      ),
-                      const SizedBox(height: 16),
+                      // Home header with next meal image or hero capture button
+                      HomeHeader(user: user),
+                      const SizedBox(height: DesignTokens.spacingLg),
+
+                      // Recent entries and upcoming meals
                       HomeContent(user: user),
-                      const SizedBox(height: 80), // Bottom padding for FAB/Nav
+
+                      const SizedBox(height: DesignTokens.spacingXl),
+
+                      // Weekly calendar section (centered and at the bottom)
+                      Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Menú Semanal',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: DesignTokens.spacingMd),
+                            const SizedBox(
+                              width: double.infinity,
+                              child: CompactWeeklyCalendar(),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 80), // Bottom padding
                     ],
                   ),
                 ),
