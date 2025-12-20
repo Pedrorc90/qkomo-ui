@@ -9,11 +9,14 @@ class FirebaseTokenInterceptor extends Interceptor {
   FirebaseTokenInterceptor({
     required SecureTokenStore tokenStore,
     required FirebaseAuth auth,
+    required Dio dioClient,
   })  : _tokenStore = tokenStore,
-        _auth = auth;
+        _auth = auth,
+        _dio = dioClient;
 
   final SecureTokenStore _tokenStore;
   final FirebaseAuth _auth;
+  final Dio _dio;
 
   @override
   Future<void> onRequest(
@@ -63,7 +66,7 @@ class FirebaseTokenInterceptor extends Interceptor {
         options.headers['Authorization'] = 'Bearer $newToken';
 
         try {
-          final response = await Dio().fetch(options);
+          final response = await _dio.fetch(options);
           handler.resolve(response);
         } catch (e) {
           handler.reject(err);

@@ -12,12 +12,14 @@ class AppTheme {
     switch (type) {
       case AppThemeType.warm:
         return _warmTheme;
-      case AppThemeType.fresh:
-        return _freshTheme;
       case AppThemeType.offWhite:
         return _offWhiteTheme;
       case AppThemeType.dark:
         return _darkTheme;
+      case AppThemeType.forest:
+        return _forestTheme;
+      case AppThemeType.indigo:
+        return _indigoTheme;
     }
   }
 
@@ -25,12 +27,14 @@ class AppTheme {
     switch (type) {
       case AppThemeType.warm:
         return AppColors.gradientWarm;
-      case AppThemeType.fresh:
-        return AppColors.gradientFresh;
       case AppThemeType.offWhite:
         return AppColors.gradientOffWhite;
       case AppThemeType.dark:
         return AppColors.gradientDark;
+      case AppThemeType.forest:
+        return AppColors.gradientForest;
+      case AppThemeType.indigo:
+        return AppColors.gradientIndigo;
     }
   }
 
@@ -43,17 +47,6 @@ class AppTheme {
   );
 
   static ThemeData get _warmTheme => _baseTheme(_warmScheme);
-
-  // -- Fresh alternative --
-  /// Fresh theme with teal and blue primary colors and cool surfaces
-  static final ColorScheme _freshScheme = ColorScheme.fromSeed(
-    seedColor: AppColors.secondaryTeal,
-    brightness: Brightness.light,
-    surface: AppColors.freshSurface,
-    secondary: AppColors.secondaryBlue,
-  );
-
-  static ThemeData get _freshTheme => _baseTheme(_freshScheme);
 
   // -- Off-White (Dirty White) --
   /// Minimalist theme with neutral grays and clean off-white surfaces
@@ -79,6 +72,28 @@ class AppTheme {
   );
 
   static ThemeData get _darkTheme => _baseTheme(_darkScheme);
+
+  // -- Forest --
+  /// Forest theme with deep green earthy colors
+  static final ColorScheme _forestScheme = ColorScheme.fromSeed(
+    seedColor: AppColors.forestPrimary,
+    brightness: Brightness.light,
+    surface: AppColors.forestSurface,
+    secondary: AppColors.forestSecondary,
+  );
+
+  static ThemeData get _forestTheme => _baseTheme(_forestScheme);
+
+  // -- Indigo --
+  /// Indigo theme with deep indigo and purple elegant colors
+  static final ColorScheme _indigoScheme = ColorScheme.fromSeed(
+    seedColor: AppColors.indigoPrimary,
+    brightness: Brightness.light,
+    surface: AppColors.indigoSurface,
+    secondary: AppColors.indigoSecondary,
+  );
+
+  static ThemeData get _indigoTheme => _baseTheme(_indigoScheme);
 
   static ThemeData _baseTheme(ColorScheme scheme) {
     final baseText = AppTypography.baseTextTheme;

@@ -33,9 +33,7 @@ mixin _$CaptureResult {
   bool get userEdited => throw _privateConstructorUsedError; // New fields
   int? get estimatedPortionG => throw _privateConstructorUsedError;
   CaptureNutrition? get nutrition => throw _privateConstructorUsedError;
-  CaptureMedicalAlerts? get medicalAlerts => throw _privateConstructorUsedError;
-  CaptureSuitableFor? get suitableFor => throw _privateConstructorUsedError;
-  List<String> get improvementSuggestions => throw _privateConstructorUsedError;
+  String? get imagePath => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -63,13 +61,9 @@ abstract class $CaptureResultCopyWith<$Res> {
       bool userEdited,
       int? estimatedPortionG,
       CaptureNutrition? nutrition,
-      CaptureMedicalAlerts? medicalAlerts,
-      CaptureSuitableFor? suitableFor,
-      List<String> improvementSuggestions});
+      String? imagePath});
 
   $CaptureNutritionCopyWith<$Res>? get nutrition;
-  $CaptureMedicalAlertsCopyWith<$Res>? get medicalAlerts;
-  $CaptureSuitableForCopyWith<$Res>? get suitableFor;
 }
 
 /// @nodoc
@@ -98,9 +92,7 @@ class _$CaptureResultCopyWithImpl<$Res, $Val extends CaptureResult>
     Object? userEdited = null,
     Object? estimatedPortionG = freezed,
     Object? nutrition = freezed,
-    Object? medicalAlerts = freezed,
-    Object? suitableFor = freezed,
-    Object? improvementSuggestions = null,
+    Object? imagePath = freezed,
   }) {
     return _then(_value.copyWith(
       jobId: null == jobId
@@ -155,18 +147,10 @@ class _$CaptureResultCopyWithImpl<$Res, $Val extends CaptureResult>
           ? _value.nutrition
           : nutrition // ignore: cast_nullable_to_non_nullable
               as CaptureNutrition?,
-      medicalAlerts: freezed == medicalAlerts
-          ? _value.medicalAlerts
-          : medicalAlerts // ignore: cast_nullable_to_non_nullable
-              as CaptureMedicalAlerts?,
-      suitableFor: freezed == suitableFor
-          ? _value.suitableFor
-          : suitableFor // ignore: cast_nullable_to_non_nullable
-              as CaptureSuitableFor?,
-      improvementSuggestions: null == improvementSuggestions
-          ? _value.improvementSuggestions
-          : improvementSuggestions // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      imagePath: freezed == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -179,30 +163,6 @@ class _$CaptureResultCopyWithImpl<$Res, $Val extends CaptureResult>
 
     return $CaptureNutritionCopyWith<$Res>(_value.nutrition!, (value) {
       return _then(_value.copyWith(nutrition: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $CaptureMedicalAlertsCopyWith<$Res>? get medicalAlerts {
-    if (_value.medicalAlerts == null) {
-      return null;
-    }
-
-    return $CaptureMedicalAlertsCopyWith<$Res>(_value.medicalAlerts!, (value) {
-      return _then(_value.copyWith(medicalAlerts: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $CaptureSuitableForCopyWith<$Res>? get suitableFor {
-    if (_value.suitableFor == null) {
-      return null;
-    }
-
-    return $CaptureSuitableForCopyWith<$Res>(_value.suitableFor!, (value) {
-      return _then(_value.copyWith(suitableFor: value) as $Val);
     });
   }
 }
@@ -229,16 +189,10 @@ abstract class _$$CaptureResultImplCopyWith<$Res>
       bool userEdited,
       int? estimatedPortionG,
       CaptureNutrition? nutrition,
-      CaptureMedicalAlerts? medicalAlerts,
-      CaptureSuitableFor? suitableFor,
-      List<String> improvementSuggestions});
+      String? imagePath});
 
   @override
   $CaptureNutritionCopyWith<$Res>? get nutrition;
-  @override
-  $CaptureMedicalAlertsCopyWith<$Res>? get medicalAlerts;
-  @override
-  $CaptureSuitableForCopyWith<$Res>? get suitableFor;
 }
 
 /// @nodoc
@@ -265,9 +219,7 @@ class __$$CaptureResultImplCopyWithImpl<$Res>
     Object? userEdited = null,
     Object? estimatedPortionG = freezed,
     Object? nutrition = freezed,
-    Object? medicalAlerts = freezed,
-    Object? suitableFor = freezed,
-    Object? improvementSuggestions = null,
+    Object? imagePath = freezed,
   }) {
     return _then(_$CaptureResultImpl(
       jobId: null == jobId
@@ -322,18 +274,10 @@ class __$$CaptureResultImplCopyWithImpl<$Res>
           ? _value.nutrition
           : nutrition // ignore: cast_nullable_to_non_nullable
               as CaptureNutrition?,
-      medicalAlerts: freezed == medicalAlerts
-          ? _value.medicalAlerts
-          : medicalAlerts // ignore: cast_nullable_to_non_nullable
-              as CaptureMedicalAlerts?,
-      suitableFor: freezed == suitableFor
-          ? _value.suitableFor
-          : suitableFor // ignore: cast_nullable_to_non_nullable
-              as CaptureSuitableFor?,
-      improvementSuggestions: null == improvementSuggestions
-          ? _value._improvementSuggestions
-          : improvementSuggestions // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      imagePath: freezed == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -355,12 +299,9 @@ class _$CaptureResultImpl implements _CaptureResult {
       this.userEdited = false,
       this.estimatedPortionG,
       this.nutrition,
-      this.medicalAlerts,
-      this.suitableFor,
-      final List<String> improvementSuggestions = const []})
+      this.imagePath})
       : _ingredients = ingredients,
-        _allergens = allergens,
-        _improvementSuggestions = improvementSuggestions;
+        _allergens = allergens;
 
   factory _$CaptureResultImpl.fromJson(Map<String, dynamic> json) =>
       _$$CaptureResultImplFromJson(json);
@@ -410,22 +351,11 @@ class _$CaptureResultImpl implements _CaptureResult {
   @override
   final CaptureNutrition? nutrition;
   @override
-  final CaptureMedicalAlerts? medicalAlerts;
-  @override
-  final CaptureSuitableFor? suitableFor;
-  final List<String> _improvementSuggestions;
-  @override
-  @JsonKey()
-  List<String> get improvementSuggestions {
-    if (_improvementSuggestions is EqualUnmodifiableListView)
-      return _improvementSuggestions;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_improvementSuggestions);
-  }
+  final String? imagePath;
 
   @override
   String toString() {
-    return 'CaptureResult(jobId: $jobId, savedAt: $savedAt, ingredients: $ingredients, allergens: $allergens, notes: $notes, title: $title, mealType: $mealType, isManualEntry: $isManualEntry, isReviewed: $isReviewed, reviewedAt: $reviewedAt, userEdited: $userEdited, estimatedPortionG: $estimatedPortionG, nutrition: $nutrition, medicalAlerts: $medicalAlerts, suitableFor: $suitableFor, improvementSuggestions: $improvementSuggestions)';
+    return 'CaptureResult(jobId: $jobId, savedAt: $savedAt, ingredients: $ingredients, allergens: $allergens, notes: $notes, title: $title, mealType: $mealType, isManualEntry: $isManualEntry, isReviewed: $isReviewed, reviewedAt: $reviewedAt, userEdited: $userEdited, estimatedPortionG: $estimatedPortionG, nutrition: $nutrition, imagePath: $imagePath)';
   }
 
   @override
@@ -455,12 +385,8 @@ class _$CaptureResultImpl implements _CaptureResult {
                 other.estimatedPortionG == estimatedPortionG) &&
             (identical(other.nutrition, nutrition) ||
                 other.nutrition == nutrition) &&
-            (identical(other.medicalAlerts, medicalAlerts) ||
-                other.medicalAlerts == medicalAlerts) &&
-            (identical(other.suitableFor, suitableFor) ||
-                other.suitableFor == suitableFor) &&
-            const DeepCollectionEquality().equals(
-                other._improvementSuggestions, _improvementSuggestions));
+            (identical(other.imagePath, imagePath) ||
+                other.imagePath == imagePath));
   }
 
   @JsonKey(ignore: true)
@@ -480,9 +406,7 @@ class _$CaptureResultImpl implements _CaptureResult {
       userEdited,
       estimatedPortionG,
       nutrition,
-      medicalAlerts,
-      suitableFor,
-      const DeepCollectionEquality().hash(_improvementSuggestions));
+      imagePath);
 
   @JsonKey(ignore: true)
   @override
@@ -513,9 +437,7 @@ abstract class _CaptureResult implements CaptureResult {
       final bool userEdited,
       final int? estimatedPortionG,
       final CaptureNutrition? nutrition,
-      final CaptureMedicalAlerts? medicalAlerts,
-      final CaptureSuitableFor? suitableFor,
-      final List<String> improvementSuggestions}) = _$CaptureResultImpl;
+      final String? imagePath}) = _$CaptureResultImpl;
 
   factory _CaptureResult.fromJson(Map<String, dynamic> json) =
       _$CaptureResultImpl.fromJson;
@@ -547,11 +469,7 @@ abstract class _CaptureResult implements CaptureResult {
   @override
   CaptureNutrition? get nutrition;
   @override
-  CaptureMedicalAlerts? get medicalAlerts;
-  @override
-  CaptureSuitableFor? get suitableFor;
-  @override
-  List<String> get improvementSuggestions;
+  String? get imagePath;
   @override
   @JsonKey(ignore: true)
   _$$CaptureResultImplCopyWith<_$CaptureResultImpl> get copyWith =>
@@ -780,415 +698,5 @@ abstract class _CaptureNutrition implements CaptureNutrition {
   @override
   @JsonKey(ignore: true)
   _$$CaptureNutritionImplCopyWith<_$CaptureNutritionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-CaptureMedicalAlerts _$CaptureMedicalAlertsFromJson(Map<String, dynamic> json) {
-  return _CaptureMedicalAlerts.fromJson(json);
-}
-
-/// @nodoc
-mixin _$CaptureMedicalAlerts {
-  String? get diabetes => throw _privateConstructorUsedError;
-  String? get hypertension => throw _privateConstructorUsedError;
-  String? get cholesterol => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $CaptureMedicalAlertsCopyWith<CaptureMedicalAlerts> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CaptureMedicalAlertsCopyWith<$Res> {
-  factory $CaptureMedicalAlertsCopyWith(CaptureMedicalAlerts value,
-          $Res Function(CaptureMedicalAlerts) then) =
-      _$CaptureMedicalAlertsCopyWithImpl<$Res, CaptureMedicalAlerts>;
-  @useResult
-  $Res call({String? diabetes, String? hypertension, String? cholesterol});
-}
-
-/// @nodoc
-class _$CaptureMedicalAlertsCopyWithImpl<$Res,
-        $Val extends CaptureMedicalAlerts>
-    implements $CaptureMedicalAlertsCopyWith<$Res> {
-  _$CaptureMedicalAlertsCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? diabetes = freezed,
-    Object? hypertension = freezed,
-    Object? cholesterol = freezed,
-  }) {
-    return _then(_value.copyWith(
-      diabetes: freezed == diabetes
-          ? _value.diabetes
-          : diabetes // ignore: cast_nullable_to_non_nullable
-              as String?,
-      hypertension: freezed == hypertension
-          ? _value.hypertension
-          : hypertension // ignore: cast_nullable_to_non_nullable
-              as String?,
-      cholesterol: freezed == cholesterol
-          ? _value.cholesterol
-          : cholesterol // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$CaptureMedicalAlertsImplCopyWith<$Res>
-    implements $CaptureMedicalAlertsCopyWith<$Res> {
-  factory _$$CaptureMedicalAlertsImplCopyWith(_$CaptureMedicalAlertsImpl value,
-          $Res Function(_$CaptureMedicalAlertsImpl) then) =
-      __$$CaptureMedicalAlertsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String? diabetes, String? hypertension, String? cholesterol});
-}
-
-/// @nodoc
-class __$$CaptureMedicalAlertsImplCopyWithImpl<$Res>
-    extends _$CaptureMedicalAlertsCopyWithImpl<$Res, _$CaptureMedicalAlertsImpl>
-    implements _$$CaptureMedicalAlertsImplCopyWith<$Res> {
-  __$$CaptureMedicalAlertsImplCopyWithImpl(_$CaptureMedicalAlertsImpl _value,
-      $Res Function(_$CaptureMedicalAlertsImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? diabetes = freezed,
-    Object? hypertension = freezed,
-    Object? cholesterol = freezed,
-  }) {
-    return _then(_$CaptureMedicalAlertsImpl(
-      diabetes: freezed == diabetes
-          ? _value.diabetes
-          : diabetes // ignore: cast_nullable_to_non_nullable
-              as String?,
-      hypertension: freezed == hypertension
-          ? _value.hypertension
-          : hypertension // ignore: cast_nullable_to_non_nullable
-              as String?,
-      cholesterol: freezed == cholesterol
-          ? _value.cholesterol
-          : cholesterol // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$CaptureMedicalAlertsImpl implements _CaptureMedicalAlerts {
-  const _$CaptureMedicalAlertsImpl(
-      {this.diabetes, this.hypertension, this.cholesterol});
-
-  factory _$CaptureMedicalAlertsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CaptureMedicalAlertsImplFromJson(json);
-
-  @override
-  final String? diabetes;
-  @override
-  final String? hypertension;
-  @override
-  final String? cholesterol;
-
-  @override
-  String toString() {
-    return 'CaptureMedicalAlerts(diabetes: $diabetes, hypertension: $hypertension, cholesterol: $cholesterol)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CaptureMedicalAlertsImpl &&
-            (identical(other.diabetes, diabetes) ||
-                other.diabetes == diabetes) &&
-            (identical(other.hypertension, hypertension) ||
-                other.hypertension == hypertension) &&
-            (identical(other.cholesterol, cholesterol) ||
-                other.cholesterol == cholesterol));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, diabetes, hypertension, cholesterol);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CaptureMedicalAlertsImplCopyWith<_$CaptureMedicalAlertsImpl>
-      get copyWith =>
-          __$$CaptureMedicalAlertsImplCopyWithImpl<_$CaptureMedicalAlertsImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CaptureMedicalAlertsImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _CaptureMedicalAlerts implements CaptureMedicalAlerts {
-  const factory _CaptureMedicalAlerts(
-      {final String? diabetes,
-      final String? hypertension,
-      final String? cholesterol}) = _$CaptureMedicalAlertsImpl;
-
-  factory _CaptureMedicalAlerts.fromJson(Map<String, dynamic> json) =
-      _$CaptureMedicalAlertsImpl.fromJson;
-
-  @override
-  String? get diabetes;
-  @override
-  String? get hypertension;
-  @override
-  String? get cholesterol;
-  @override
-  @JsonKey(ignore: true)
-  _$$CaptureMedicalAlertsImplCopyWith<_$CaptureMedicalAlertsImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-CaptureSuitableFor _$CaptureSuitableForFromJson(Map<String, dynamic> json) {
-  return _CaptureSuitableFor.fromJson(json);
-}
-
-/// @nodoc
-mixin _$CaptureSuitableFor {
-  bool get children => throw _privateConstructorUsedError;
-  bool get lowFodmap => throw _privateConstructorUsedError;
-  bool get glutenFree => throw _privateConstructorUsedError;
-  bool get vegetarian => throw _privateConstructorUsedError;
-  bool get vegan => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $CaptureSuitableForCopyWith<CaptureSuitableFor> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CaptureSuitableForCopyWith<$Res> {
-  factory $CaptureSuitableForCopyWith(
-          CaptureSuitableFor value, $Res Function(CaptureSuitableFor) then) =
-      _$CaptureSuitableForCopyWithImpl<$Res, CaptureSuitableFor>;
-  @useResult
-  $Res call(
-      {bool children,
-      bool lowFodmap,
-      bool glutenFree,
-      bool vegetarian,
-      bool vegan});
-}
-
-/// @nodoc
-class _$CaptureSuitableForCopyWithImpl<$Res, $Val extends CaptureSuitableFor>
-    implements $CaptureSuitableForCopyWith<$Res> {
-  _$CaptureSuitableForCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? children = null,
-    Object? lowFodmap = null,
-    Object? glutenFree = null,
-    Object? vegetarian = null,
-    Object? vegan = null,
-  }) {
-    return _then(_value.copyWith(
-      children: null == children
-          ? _value.children
-          : children // ignore: cast_nullable_to_non_nullable
-              as bool,
-      lowFodmap: null == lowFodmap
-          ? _value.lowFodmap
-          : lowFodmap // ignore: cast_nullable_to_non_nullable
-              as bool,
-      glutenFree: null == glutenFree
-          ? _value.glutenFree
-          : glutenFree // ignore: cast_nullable_to_non_nullable
-              as bool,
-      vegetarian: null == vegetarian
-          ? _value.vegetarian
-          : vegetarian // ignore: cast_nullable_to_non_nullable
-              as bool,
-      vegan: null == vegan
-          ? _value.vegan
-          : vegan // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$CaptureSuitableForImplCopyWith<$Res>
-    implements $CaptureSuitableForCopyWith<$Res> {
-  factory _$$CaptureSuitableForImplCopyWith(_$CaptureSuitableForImpl value,
-          $Res Function(_$CaptureSuitableForImpl) then) =
-      __$$CaptureSuitableForImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {bool children,
-      bool lowFodmap,
-      bool glutenFree,
-      bool vegetarian,
-      bool vegan});
-}
-
-/// @nodoc
-class __$$CaptureSuitableForImplCopyWithImpl<$Res>
-    extends _$CaptureSuitableForCopyWithImpl<$Res, _$CaptureSuitableForImpl>
-    implements _$$CaptureSuitableForImplCopyWith<$Res> {
-  __$$CaptureSuitableForImplCopyWithImpl(_$CaptureSuitableForImpl _value,
-      $Res Function(_$CaptureSuitableForImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? children = null,
-    Object? lowFodmap = null,
-    Object? glutenFree = null,
-    Object? vegetarian = null,
-    Object? vegan = null,
-  }) {
-    return _then(_$CaptureSuitableForImpl(
-      children: null == children
-          ? _value.children
-          : children // ignore: cast_nullable_to_non_nullable
-              as bool,
-      lowFodmap: null == lowFodmap
-          ? _value.lowFodmap
-          : lowFodmap // ignore: cast_nullable_to_non_nullable
-              as bool,
-      glutenFree: null == glutenFree
-          ? _value.glutenFree
-          : glutenFree // ignore: cast_nullable_to_non_nullable
-              as bool,
-      vegetarian: null == vegetarian
-          ? _value.vegetarian
-          : vegetarian // ignore: cast_nullable_to_non_nullable
-              as bool,
-      vegan: null == vegan
-          ? _value.vegan
-          : vegan // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$CaptureSuitableForImpl implements _CaptureSuitableFor {
-  const _$CaptureSuitableForImpl(
-      {this.children = false,
-      this.lowFodmap = false,
-      this.glutenFree = false,
-      this.vegetarian = false,
-      this.vegan = false});
-
-  factory _$CaptureSuitableForImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CaptureSuitableForImplFromJson(json);
-
-  @override
-  @JsonKey()
-  final bool children;
-  @override
-  @JsonKey()
-  final bool lowFodmap;
-  @override
-  @JsonKey()
-  final bool glutenFree;
-  @override
-  @JsonKey()
-  final bool vegetarian;
-  @override
-  @JsonKey()
-  final bool vegan;
-
-  @override
-  String toString() {
-    return 'CaptureSuitableFor(children: $children, lowFodmap: $lowFodmap, glutenFree: $glutenFree, vegetarian: $vegetarian, vegan: $vegan)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CaptureSuitableForImpl &&
-            (identical(other.children, children) ||
-                other.children == children) &&
-            (identical(other.lowFodmap, lowFodmap) ||
-                other.lowFodmap == lowFodmap) &&
-            (identical(other.glutenFree, glutenFree) ||
-                other.glutenFree == glutenFree) &&
-            (identical(other.vegetarian, vegetarian) ||
-                other.vegetarian == vegetarian) &&
-            (identical(other.vegan, vegan) || other.vegan == vegan));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, children, lowFodmap, glutenFree, vegetarian, vegan);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CaptureSuitableForImplCopyWith<_$CaptureSuitableForImpl> get copyWith =>
-      __$$CaptureSuitableForImplCopyWithImpl<_$CaptureSuitableForImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CaptureSuitableForImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _CaptureSuitableFor implements CaptureSuitableFor {
-  const factory _CaptureSuitableFor(
-      {final bool children,
-      final bool lowFodmap,
-      final bool glutenFree,
-      final bool vegetarian,
-      final bool vegan}) = _$CaptureSuitableForImpl;
-
-  factory _CaptureSuitableFor.fromJson(Map<String, dynamic> json) =
-      _$CaptureSuitableForImpl.fromJson;
-
-  @override
-  bool get children;
-  @override
-  bool get lowFodmap;
-  @override
-  bool get glutenFree;
-  @override
-  bool get vegetarian;
-  @override
-  bool get vegan;
-  @override
-  @JsonKey(ignore: true)
-  _$$CaptureSuitableForImplCopyWith<_$CaptureSuitableForImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

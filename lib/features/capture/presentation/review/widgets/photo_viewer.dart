@@ -1,15 +1,42 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/core/widgets/meal_type_chip.dart';
+import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
+
+/// Provider for photo URL from backend
+final photoUrlProvider = FutureProvider.family<String?, String?>((ref, photoId) async {
+  if (photoId == null || photoId.isEmpty) return null;
+
+  // Check if it's already a URL
+  if (photoId.startsWith('http://') || photoId.startsWith('https://')) {
+    return photoId;
+  }
+
+  // Check if it's a local file path
+  if (photoId.startsWith('/')) {
+    return null; // Will use FileImage
+  }
+
+  // It's a photoId, fetch URL from backend
+  try {
+    final apiClient = ref.watch(captureApiClientProvider);
+    return await apiClient.getPhotoUrl(photoId);
+  } catch (e) {
+    print('[PhotoViewer] Error fetching photo URL: $e');
+    return null;
+  }
+});
 
 /// Widget for viewing photos with zoom and pan capabilities
-class PhotoViewer extends StatelessWidget {
+class PhotoViewer extends ConsumerWidget {
   const PhotoViewer({
     super.key,
     this.imagePath,
@@ -28,12 +55,12 @@ class PhotoViewer extends StatelessWidget {
   final Function(MealType?)? onMealTypeChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Photo viewer
-        _buildPhotoView(context),
+        _buildPhotoView(context, ref),
         const SizedBox(height: 12),
 
         // Metadata bar (timestamp + portion)
@@ -46,42 +73,100 @@ class PhotoViewer extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotoView(BuildContext context) {
+  Widget _buildPhotoView(BuildContext context, WidgetRef ref) {
+    // Guard against null or empty path
     if (imagePath == null || imagePath!.isEmpty) {
       return _buildPlaceholder(context);
     }
 
-    final file = File(imagePath!);
-    if (!file.existsSync()) {
-      return _buildPlaceholder(context);
+    // Check if it's a local file path
+    if (imagePath!.startsWith('/')) {
+      try {
+        final file = File(imagePath!);
+        if (!file.existsSync()) {
+          return _buildPlaceholder(context);
+        }
+
+        return Container(
+          height: 300,
+          decoration: BoxDecoration(
+            color: AppColors.neutralDark,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: PhotoView(
+            imageProvider: FileImage(file),
+            minScale: PhotoViewComputedScale.contained,
+            maxScale: PhotoViewComputedScale.covered * 3,
+            initialScale: PhotoViewComputedScale.contained,
+            backgroundDecoration: const BoxDecoration(
+              color: AppColors.neutralDark,
+            ),
+            loadingBuilder: (context, event) => Center(
+              child: CircularProgressIndicator(
+                value: event == null
+                    ? 0
+                    : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
+              ),
+            ),
+            errorBuilder: (context, error, stackTrace) {
+              return _buildPlaceholder(context);
+            },
+          ),
+        );
+      } catch (e) {
+        return _buildPlaceholder(context);
+      }
     }
 
-    return Container(
-      height: 300,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: PhotoView(
-        imageProvider: FileImage(file),
-        minScale: PhotoViewComputedScale.contained,
-        maxScale: PhotoViewComputedScale.covered * 3,
-        initialScale: PhotoViewComputedScale.contained,
-        backgroundDecoration: const BoxDecoration(
-          color: Colors.black,
-        ),
-        loadingBuilder: (context, event) => Center(
-          child: CircularProgressIndicator(
-            value: event == null
-                ? 0
-                : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
-          ),
-        ),
-        errorBuilder: (context, error, stackTrace) {
+    // It's a photoId or URL, fetch from backend
+    final photoUrlAsync = ref.watch(photoUrlProvider(imagePath));
+
+    return photoUrlAsync.when(
+      data: (url) {
+        if (url == null) {
           return _buildPlaceholder(context);
-        },
+        }
+
+        return Container(
+          height: 300,
+          decoration: BoxDecoration(
+            color: AppColors.neutralDark,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: PhotoView(
+            imageProvider: NetworkImage(url),
+            minScale: PhotoViewComputedScale.contained,
+            maxScale: PhotoViewComputedScale.covered * 3,
+            initialScale: PhotoViewComputedScale.contained,
+            backgroundDecoration: const BoxDecoration(
+              color: AppColors.neutralDark,
+            ),
+            loadingBuilder: (context, event) => Center(
+              child: CircularProgressIndicator(
+                value: event == null
+                    ? 0
+                    : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
+              ),
+            ),
+            errorBuilder: (context, error, stackTrace) {
+              return _buildPlaceholder(context);
+            },
+          ),
+        );
+      },
+      loading: () => Container(
+        height: 300,
+        decoration: BoxDecoration(
+          color: AppColors.neutralDark,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
+      error: (error, stack) => _buildPlaceholder(context),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/picked_image_preview.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class CameraCaptureView extends StatelessWidget {
   const CameraCaptureView({
@@ -102,7 +103,7 @@ class _CameraPreviewPlaceholder extends StatelessWidget {
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withAlpha((0.3 * 255).round()),
+                    color: AppColors.overlayBlack30,
                   ),
                   child: Center(
                     child: Column(
@@ -111,13 +112,13 @@ class _CameraPreviewPlaceholder extends StatelessWidget {
                         Icon(
                           Icons.camera_alt,
                           size: 48,
-                          color: Colors.white.withAlpha((0.7 * 255).round()),
+                          color: AppColors.neutralWhite.withAlpha((0.7 * 255).round()),
                         ),
                         const SizedBox(height: 12),
                         Text(
                           'Abre la cámara para comenzar',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.white.withAlpha((0.7 * 255).round()),
+                                color: AppColors.neutralWhite.withAlpha((0.7 * 255).round()),
                               ),
                         ),
                       ],
@@ -152,7 +153,7 @@ class _GridPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Grid lines with better visibility
     final gridPaint = Paint()
-      ..color = Colors.white.withAlpha((0.4 * 255).round())
+      ..color = AppColors.neutralWhite.withAlpha((0.4 * 255).round())
       ..strokeWidth = 1.5;
 
     // Vertical lines (rule of thirds)
@@ -177,7 +178,7 @@ class _GridPainter extends CustomPainter {
 
     // Draw focus points at intersections
     final focusPaint = Paint()
-      ..color = Colors.white.withAlpha((0.6 * 255).round())
+      ..color = AppColors.neutralWhite.withAlpha((0.6 * 255).round())
       ..strokeWidth = 2;
 
     final intersections = [

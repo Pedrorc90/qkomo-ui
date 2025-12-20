@@ -4,5 +4,5 @@ class AppConstants {
 
   // API Config
   static const Duration apiConnectTimeout = Duration(seconds: 5);
-  static const Duration apiReceiveTimeout = Duration(seconds: 15);
+  static const Duration apiReceiveTimeout = Duration(seconds: 60); // Increased from 15s to allow for AI analysis
 }

@@ -6,6 +6,7 @@ import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class MealCard extends ConsumerStatefulWidget {
   const MealCard({
@@ -71,7 +72,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                                     height: 60,
                                     fit: BoxFit.cover,
                                     errorBuilder: (_, __, ___) =>
-                                        _buildPlaceholder(),
+                                        _buildPlaceholder(context),
                                   )
                                 : Image.file(
                                     File(widget.meal.photoPath!),
@@ -79,9 +80,9 @@ class _MealCardState extends ConsumerState<MealCard> {
                                     height: 60,
                                     fit: BoxFit.cover,
                                     errorBuilder: (_, __, ___) =>
-                                        _buildPlaceholder(),
+                                        _buildPlaceholder(context),
                                   ))
-                            : _buildPlaceholder(),
+                            : _buildPlaceholder(context),
                       ),
                       // Meal type badge on image
                       Positioned(
@@ -101,7 +102,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                           child: Icon(
                             _getMealIcon(widget.meal.mealType),
                             size: 14,
-                            color: Colors.white,
+                            color: AppColors.neutralWhite,
                           ),
                         ),
                       ),
@@ -250,12 +251,13 @@ class _MealCardState extends ConsumerState<MealCard> {
     }
   }
 
-  Widget _buildPlaceholder() {
+  Widget _buildPlaceholder(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: 60,
       height: 60,
-      color: Colors.grey[200],
-      child: const Icon(Icons.restaurant, color: Colors.grey),
+      color: colorScheme.surfaceContainerHighest,
+      child: Icon(Icons.restaurant, color: colorScheme.onSurfaceVariant),
     );
   }
 }

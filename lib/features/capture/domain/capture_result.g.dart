@@ -32,18 +32,7 @@ _$CaptureResultImpl _$$CaptureResultImplFromJson(Map<String, dynamic> json) =>
           ? null
           : CaptureNutrition.fromJson(
               json['nutrition'] as Map<String, dynamic>),
-      medicalAlerts: json['medicalAlerts'] == null
-          ? null
-          : CaptureMedicalAlerts.fromJson(
-              json['medicalAlerts'] as Map<String, dynamic>),
-      suitableFor: json['suitableFor'] == null
-          ? null
-          : CaptureSuitableFor.fromJson(
-              json['suitableFor'] as Map<String, dynamic>),
-      improvementSuggestions: (json['improvementSuggestions'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+      imagePath: json['imagePath'] as String?,
     );
 
 Map<String, dynamic> _$$CaptureResultImplToJson(_$CaptureResultImpl instance) =>
@@ -61,9 +50,7 @@ Map<String, dynamic> _$$CaptureResultImplToJson(_$CaptureResultImpl instance) =>
       'userEdited': instance.userEdited,
       'estimatedPortionG': instance.estimatedPortionG,
       'nutrition': instance.nutrition,
-      'medicalAlerts': instance.medicalAlerts,
-      'suitableFor': instance.suitableFor,
-      'improvementSuggestions': instance.improvementSuggestions,
+      'imagePath': instance.imagePath,
     };
 
 const _$MealTypeEnumMap = {
@@ -91,40 +78,4 @@ Map<String, dynamic> _$$CaptureNutritionImplToJson(
       'carbohydratesG': instance.carbohydratesG,
       'fatsG': instance.fatsG,
       'fiberG': instance.fiberG,
-    };
-
-_$CaptureMedicalAlertsImpl _$$CaptureMedicalAlertsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$CaptureMedicalAlertsImpl(
-      diabetes: json['diabetes'] as String?,
-      hypertension: json['hypertension'] as String?,
-      cholesterol: json['cholesterol'] as String?,
-    );
-
-Map<String, dynamic> _$$CaptureMedicalAlertsImplToJson(
-        _$CaptureMedicalAlertsImpl instance) =>
-    <String, dynamic>{
-      'diabetes': instance.diabetes,
-      'hypertension': instance.hypertension,
-      'cholesterol': instance.cholesterol,
-    };
-
-_$CaptureSuitableForImpl _$$CaptureSuitableForImplFromJson(
-        Map<String, dynamic> json) =>
-    _$CaptureSuitableForImpl(
-      children: json['children'] as bool? ?? false,
-      lowFodmap: json['lowFodmap'] as bool? ?? false,
-      glutenFree: json['glutenFree'] as bool? ?? false,
-      vegetarian: json['vegetarian'] as bool? ?? false,
-      vegan: json['vegan'] as bool? ?? false,
-    );
-
-Map<String, dynamic> _$$CaptureSuitableForImplToJson(
-        _$CaptureSuitableForImpl instance) =>
-    <String, dynamic>{
-      'children': instance.children,
-      'lowFodmap': instance.lowFodmap,
-      'glutenFree': instance.glutenFree,
-      'vegetarian': instance.vegetarian,
-      'vegan': instance.vegan,
     };

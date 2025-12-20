@@ -15,8 +15,7 @@ class FakeCaptureApiClient implements CaptureApiClient {
 
   @override
   // ignore: override_on_non_overriding_member
-  Future<AnalyzeResponseDto> analyzeImage(
-      {required XFile file, String? type}) async {
+  Future<AnalyzeResponseDto> analyzeImage({required XFile file, String? type}) async {
     lastAnalyzedImage = file;
     lastAnalysisType = type;
     if (shouldThrow) throw Exception('Network error');
@@ -29,6 +28,18 @@ class FakeCaptureApiClient implements CaptureApiClient {
     lastAnalyzedBarcode = barcode;
     if (shouldThrow) throw Exception('Network error');
     return successResponse!;
+  }
+
+  @override
+  Future<String> uploadPhoto(XFile file) async {
+    if (shouldThrow) throw Exception('Network error');
+    return 'fake-photo-id';
+  }
+
+  @override
+  Future<String> getPhotoUrl(String photoId) async {
+    if (shouldThrow) throw Exception('Network error');
+    return 'https://fake-url.com/$photoId';
   }
 
   // ignore: unused_field
@@ -48,10 +59,7 @@ void main() {
       detectedIngredients: ['Ing1'],
     ),
     nutrition: NutritionDto(),
-    medicalAlerts: MedicalAlertsDto(),
-    suitableFor: SuitableForDto(),
     allergens: [],
-    improvementSuggestions: [],
   );
 
   setUp(() {
@@ -85,8 +93,7 @@ void main() {
       expect(fakeApiClient.lastAnalyzedBarcode, '123456');
     });
 
-    test('analyze throws exception when image file is missing for camera mode',
-        () async {
+    test('analyze throws exception when image file is missing for camera mode', () async {
       expect(
         () => analyzer.analyze(mode: CaptureMode.camera, file: null),
         throwsException,

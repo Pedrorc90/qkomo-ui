@@ -5,6 +5,7 @@ import 'package:qkomo_ui/features/statistics/application/statistics_controller.d
 import 'package:qkomo_ui/features/statistics/presentation/widgets/entries_bar_chart.dart';
 import 'package:qkomo_ui/features/statistics/presentation/widgets/ingredients_pie_chart.dart';
 import 'package:qkomo_ui/features/statistics/presentation/widgets/summary_card.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class StatisticsPage extends ConsumerWidget {
   const StatisticsPage({super.key});
@@ -12,6 +13,7 @@ class StatisticsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(statisticsControllerProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: const QkomoNavBar(),
@@ -38,7 +40,7 @@ class StatisticsPage extends ConsumerWidget {
                           title: 'Total Entradas',
                           value: data.totalEntries.toString(),
                           icon: Icons.restaurant_menu,
-                          color: Colors.orange,
+                          color: colorScheme.primary,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -47,7 +49,7 @@ class StatisticsPage extends ConsumerWidget {
                           title: 'Racha Actual',
                           value: '${data.currentStreak} días',
                           icon: Icons.local_fire_department,
-                          color: Colors.red,
+                          color: AppColors.semanticError,
                         ),
                       ),
                     ],

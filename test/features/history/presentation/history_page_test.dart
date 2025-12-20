@@ -10,8 +10,7 @@ import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 
 // Fakes
-class FakeHistoryController extends StateNotifier<HistoryState>
-    implements HistoryController {
+class FakeHistoryController extends StateNotifier<HistoryState> implements HistoryController {
   FakeHistoryController(super.state);
 
   @override
@@ -35,18 +34,16 @@ final dummyEntry = Entry(
     title: 'Test Meal',
     ingredients: [],
     allergens: [],
-    improvementSuggestions: [],
   ),
 );
 
 void main() {
-  testWidgets('HistoryPage renders empty state when no entries',
-      (tester) async {
+  testWidgets('HistoryPage renders empty state when no entries', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          historyControllerProvider.overrideWith(
-              (ref) => FakeHistoryController(const HistoryState())),
+          historyControllerProvider
+              .overrideWith((ref) => FakeHistoryController(const HistoryState())),
           groupedEntriesProvider.overrideWithValue({}),
         ],
         child: const MaterialApp(
@@ -56,9 +53,7 @@ void main() {
     );
 
     // Verify empty state message for 'today' (default filter)
-    expect(
-        find.text(
-            'Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!'),
+    expect(find.text('Aún no has registrado comidas hoy.\n¡Empieza capturando una foto!'),
         findsOneWidget);
     expect(find.byIcon(Icons.camera_alt_outlined), findsOneWidget);
   });
@@ -71,8 +66,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          historyControllerProvider.overrideWith(
-              (ref) => FakeHistoryController(const HistoryState())),
+          historyControllerProvider
+              .overrideWith((ref) => FakeHistoryController(const HistoryState())),
           groupedEntriesProvider.overrideWithValue(grouped),
         ],
         child: const MaterialApp(

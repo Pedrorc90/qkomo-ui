@@ -56,12 +56,13 @@ void main() {
     test('Successful token retrieval from store integration', () async {
       fakeStore.token = 'cached-token';
       // Mock auth that returns nothing, ensuring we use store
+      final dio = Dio();
       final interceptor = FirebaseTokenInterceptor(
         tokenStore: fakeStore,
         auth: FakeFirebaseAuth(null),
+        dioClient: dio,
       );
 
-      final dio = Dio();
       dio.interceptors.add(interceptor);
 
       // Mock the adapter to stop network
@@ -85,12 +86,13 @@ void main() {
       final fakeUser = FakeUser('fresh-token');
       final fakeAuth = FakeFirebaseAuth(fakeUser);
 
+      final dio = Dio();
       final interceptor = FirebaseTokenInterceptor(
         tokenStore: fakeStore,
         auth: fakeAuth,
+        dioClient: dio,
       );
 
-      final dio = Dio();
       dio.interceptors.add(interceptor);
       dio.httpClientAdapter = _MockAdapter((options) {
         return ResponseBox(

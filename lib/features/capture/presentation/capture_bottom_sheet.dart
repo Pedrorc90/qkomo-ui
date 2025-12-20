@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
@@ -11,6 +12,7 @@ import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_vi
 import 'package:qkomo_ui/features/capture/presentation/widgets/capture_status_banner.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/gallery_import_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/text_entry_view.dart';
+import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 
 class CaptureBottomSheet extends ConsumerStatefulWidget {
   const CaptureBottomSheet({
@@ -27,21 +29,22 @@ class CaptureBottomSheet extends ConsumerStatefulWidget {
 class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
   ProviderSubscription<CaptureState>? _captureSubscription;
   ProviderSubscription<AsyncValue<String?>>? _analyzeSubscription;
+  DateTime? _analyzeStartTime;
 
   @override
   void initState() {
     super.initState();
-    final controller = ref.read(captureControllerProvider.notifier);
 
     _captureSubscription = ref.listenManual<CaptureState>(
       captureControllerProvider,
       (previous, next) {
+        final controller = ref.read(captureControllerProvider.notifier);
         if (next.error != null && next.error != previous?.error) {
           _showSnackBar(next.error!, isError: true);
-          controller.clearError();
+          Future(() => controller.clearError());
         } else if (next.message != null && next.message != previous?.message) {
           _showSnackBar(next.message!);
-          controller.clearMessage();
+          Future(() => controller.clearMessage());
         }
       },
     );
@@ -49,14 +52,52 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
     _analyzeSubscription = ref.listenManual<AsyncValue<String?>>(
       directAnalyzeControllerProvider,
       (previous, next) {
+        // Only process state transitions, not repeated same states
         next.when(
           data: (jobId) {
-            if (jobId != null) {
+            // Guard: Only navigate if previous wasn't already success
+            final wasSuccess = previous?.asData != null;
+            if (jobId != null && !wasSuccess) {
+              // Log analysis time
+              if (_analyzeStartTime != null) {
+                final duration = DateTime.now().difference(_analyzeStartTime!);
+                debugPrint('⏱️  Tiempo de análisis: ${duration.inMilliseconds}ms (${duration.inSeconds}s)');
+                _analyzeStartTime = null;
+              }
+
               _showSnackBar('Análisis completado');
+              // Navigate to review page after brief delay for user feedback
+              Future.delayed(const Duration(milliseconds: 500), () {
+                if (mounted) {
+                  final navigator = Navigator.of(context);
+                  navigator.pop(); // Close bottom sheet
+                  navigator.push(
+                    MaterialPageRoute(
+                      builder: (_) => CaptureReviewPage(resultId: jobId),
+                    ),
+                  );
+                }
+              });
             }
           },
-          error: (error, _) =>
-              _showSnackBar('Error al analizar: $error', isError: true),
+          error: (error, _) {
+            // Guard: Only show error if previous wasn't already error
+            final wasError = previous?.asError != null;
+            if (!wasError) {
+              // Log analysis time even on error
+              if (_analyzeStartTime != null) {
+                final duration = DateTime.now().difference(_analyzeStartTime!);
+                debugPrint('⏱️  Tiempo de análisis (fallido): ${duration.inMilliseconds}ms (${duration.inSeconds}s)');
+                _analyzeStartTime = null;
+              }
+
+              final errorMessage = error.toString();
+              _showSnackBar(
+                'Análisis fallido. $errorMessage',
+                isError: true,
+              );
+            }
+          },
           loading: () {},
         );
       },
@@ -131,7 +172,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
               onClose: () => Navigator.of(context).pop(),
               mode: captureState.mode,
             ),
-            Expanded(
+            Flexible(
               child: SingleChildScrollView(
                 controller: widget.scrollController,
                 physics: const BouncingScrollPhysics(),
@@ -167,7 +208,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             icon: Icons.camera_alt_outlined,
             label: 'Cámara',
             description: 'Tomar una foto',
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
             onPressed: () => controller.setMode(CaptureMode.camera),
           ),
           const SizedBox(height: 10),
@@ -175,7 +216,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             icon: Icons.photo_library_outlined,
             label: 'Galería',
             description: 'Elegir de tus fotos',
-            color: Colors.green,
+            color: AppColors.semanticSuccess,
             onPressed: () => controller.setMode(CaptureMode.gallery),
           ),
           const SizedBox(height: 10),
@@ -183,7 +224,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             icon: Icons.qr_code_2_outlined,
             label: 'Código QR',
             description: 'Escanear código',
-            color: Colors.purple,
+            color: Theme.of(context).colorScheme.tertiary,
             onPressed: () => controller.setMode(CaptureMode.barcode),
           ),
           const SizedBox(height: 10),
@@ -191,7 +232,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             icon: Icons.edit_note_outlined,
             label: 'Texto',
             description: 'Escribir ingredientes',
-            color: Colors.orange,
+            color: AppColors.semanticWarning,
             onPressed: () => controller.setMode(CaptureMode.text),
           ),
           const SizedBox(height: 8),
@@ -222,46 +263,65 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
 
   Widget _buildModeContent(CaptureMode mode) {
     final captureState = ref.watch(captureControllerProvider);
+    final analyzeState = ref.watch(directAnalyzeControllerProvider);
     final controller = ref.read(captureControllerProvider.notifier);
     final analyzeController =
         ref.read(directAnalyzeControllerProvider.notifier);
 
+    final isAnalyzing = analyzeState.isLoading;
+
     Future<void> analyze() async {
+      _analyzeStartTime = DateTime.now();
+      debugPrint('🚀 Iniciando análisis...');
       await analyzeController.analyze(captureState);
-      if (mounted) {
-        _showSnackBar('Análisis completado');
-        Future.delayed(const Duration(milliseconds: 1500), () {
-          if (mounted) {
-            Navigator.of(context).pop();
-          }
-        });
-      }
+      // The listener handles navigation, so we don't close the modal here
     }
 
-    switch (mode) {
-      case CaptureMode.camera:
-        return CameraCaptureView(
-          state: captureState,
-          onCapture: controller.captureWithCamera,
-          onAnalyze: analyze,
-          scrollable: false,
-        );
-      case CaptureMode.gallery:
-        return GalleryImportView(
-          state: captureState,
-          onImport: controller.importFromGallery,
-          onAnalyze: analyze,
-          scrollable: false,
-        );
-      case CaptureMode.barcode:
-        return BarcodeScannerView(
-          state: captureState,
-          onBarcodeScanned: controller.onBarcodeScanned,
-          onAnalyze: analyze,
-        );
-      case CaptureMode.text:
-        return const TextEntryView();
-    }
+    return Stack(
+      children: [
+        switch (mode) {
+          CaptureMode.camera => CameraCaptureView(
+              state: captureState,
+              onCapture: controller.captureWithCamera,
+              onAnalyze: analyze,
+              scrollable: false,
+            ),
+          CaptureMode.gallery => GalleryImportView(
+              state: captureState,
+              onImport: controller.importFromGallery,
+              onAnalyze: analyze,
+              scrollable: false,
+            ),
+          CaptureMode.barcode => BarcodeScannerView(
+              state: captureState,
+              onBarcodeScanned: controller.onBarcodeScanned,
+              onAnalyze: analyze,
+            ),
+          CaptureMode.text => const TextEntryView(),
+        },
+        // Loading overlay during analysis
+        if (isAnalyzing)
+          Container(
+            color: Colors.black.withAlpha((0.4 * 255).round()),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Analizando imagen...',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }
 
@@ -276,7 +336,7 @@ class _DragHandle extends StatelessWidget {
         width: 40,
         height: 4,
         decoration: BoxDecoration(
-          color: Colors.grey[300],
+          color: Theme.of(context).colorScheme.outlineVariant,
           borderRadius: BorderRadius.circular(2),
         ),
       ),

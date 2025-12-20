@@ -117,6 +117,44 @@ class AppColors {
   /// Pure white
   static const Color neutralWhite = Color(0xFFFFFFFF);
 
+  // Chart color palette - 5-color palette for data visualization
+  /// Blue color for charts - light theme variant
+  static const Color chartBlue = Color(0xFF2196F3);
+
+  /// Red color for charts - light theme variant
+  static const Color chartRed = Color(0xFFF44336);
+
+  /// Green color for charts - light theme variant
+  static const Color chartGreen = Color(0xFF4CAF50);
+
+  /// Orange color for charts - light theme variant
+  static const Color chartOrange = Color(0xFFFF9800);
+
+  /// Purple color for charts - light theme variant
+  static const Color chartPurple = Color(0xFF9C27B0);
+
+  /// Blue color for charts - dark theme variant (brighter for visibility)
+  static const Color chartBlueDark = Color(0xFF42A5F5);
+
+  /// Red color for charts - dark theme variant (brighter for visibility)
+  static const Color chartRedDark = Color(0xFFEF5350);
+
+  /// Green color for charts - dark theme variant (brighter for visibility)
+  static const Color chartGreenDark = Color(0xFF66BB6A);
+
+  /// Orange color for charts - dark theme variant (brighter for visibility)
+  static const Color chartOrangeDark = Color(0xFFFFB74D);
+
+  /// Purple color for charts - dark theme variant (brighter for visibility)
+  static const Color chartPurpleDark = Color(0xFFAB47BC);
+
+  /// Returns chart color palette appropriate for theme brightness
+  static List<Color> getChartColors(Brightness brightness) {
+    return brightness == Brightness.dark
+        ? [chartBlueDark, chartRedDark, chartGreenDark, chartOrangeDark, chartPurpleDark]
+        : [chartBlue, chartRed, chartGreen, chartOrange, chartPurple];
+  }
+
   // Warm theme color scheme (default)
   /// Warm theme with orange/coral primary colors and inviting surfaces
   static const Color warmSurface = Color(0xFFF6F7FB); // Light lavender-tinted white
@@ -125,15 +163,6 @@ class AppColors {
   static const Color warmSecondary = Color(0xFF6B5B95); // Purple accent
   static const Color warmOnSurface = neutralDark;
   static const Color warmBorder = Color(0xFFE5D9FF); // Light purple-tinted border
-
-  // Fresh theme color scheme
-  /// Fresh theme with teal and blue primary colors and cool surfaces
-  static const Color freshSurface = Color(0xFFF5FAFF); // Icy blue-white
-  static const Color freshBackground = Color(0xFFFFFFFF);
-  static const Color freshPrimary = secondaryTeal; // Teal
-  static const Color freshSecondary = secondaryBlue; // Blue
-  static const Color freshOnSurface = neutralDark;
-  static const Color freshBorder = Color(0xFFD4F3EB); // Light teal-tinted border
 
   // Off-white theme color scheme
   /// Minimalist theme using grays and blacks
@@ -174,13 +203,6 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
-  /// Fresh theme gradient - teal to blue
-  static const LinearGradient gradientFresh = LinearGradient(
-    colors: [Color(0xFFE7FFF7), Color(0xFFE1ECFF)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
   /// Off-white theme gradient - subtle neutrals
   static const LinearGradient gradientOffWhite = LinearGradient(
     colors: [Color(0xFFFBFBFB), Color(0xFFEAEAEA)],
@@ -191,6 +213,38 @@ class AppColors {
   /// Dark theme gradient - dark grays to charcoal
   static const LinearGradient gradientDark = LinearGradient(
     colors: [Color(0xFF1A1A1A), Color(0xFF2C2C2C)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // Forest theme color scheme
+  /// Forest theme with deep green and earthy tones
+  static const Color forestSurface = Color(0xFFF1F5F0); // Light forest-white
+  static const Color forestBackground = Color(0xFFFFFFFF);
+  static const Color forestPrimary = Color(0xFF2D5016); // Deep forest green
+  static const Color forestSecondary = Color(0xFF66BB6A); // Light green
+  static const Color forestOnSurface = neutralDark;
+  static const Color forestBorder = Color(0xFFC8E6C9); // Light green border
+
+  /// Forest gradient - earthy green tones
+  static const LinearGradient gradientForest = LinearGradient(
+    colors: [Color(0xFFF1F5F0), Color(0xFFE8F5E9)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // Indigo theme color scheme
+  /// Indigo theme with deep indigo and elegant tones
+  static const Color indigoSurface = Color(0xFFF0F4FF); // Indigo-white
+  static const Color indigoBackground = Color(0xFFFFFFFF);
+  static const Color indigoPrimary = Color(0xFF4338CA); // Deep indigo
+  static const Color indigoSecondary = Color(0xFF7C3AED); // Purple
+  static const Color indigoOnSurface = neutralDark;
+  static const Color indigoBorder = Color(0xFFE0E7FF); // Light indigo border
+
+  /// Indigo gradient - deep indigo and purple
+  static const LinearGradient gradientIndigo = LinearGradient(
+    colors: [Color(0xFFF0F4FF), Color(0xFFF5F3FF)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

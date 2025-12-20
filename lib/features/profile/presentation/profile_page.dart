@@ -21,6 +21,7 @@ class ProfilePage extends ConsumerWidget {
     final user = ref.watch(firebaseAuthProvider).currentUser;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const QkomoNavBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

@@ -28,6 +28,7 @@ final dioProvider = Provider<Dio>((ref) {
     FirebaseTokenInterceptor(
       tokenStore: tokenStore,
       auth: auth,
+      dioClient: dio,
     ),
   );
 

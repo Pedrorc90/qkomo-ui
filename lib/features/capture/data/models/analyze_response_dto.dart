@@ -1,15 +1,11 @@
 class AnalyzeResponseDto {
-  AnalyzeResponseDto({
-    required this.analysisId,
-    required this.type,
-    this.photoId,
-    required this.identification,
-    required this.nutrition,
-    this.allergens = const [],
-    this.improvementSuggestions = const [],
-    required this.medicalAlerts,
-    required this.suitableFor,
-  });
+  AnalyzeResponseDto(
+      {required this.analysisId,
+      required this.type,
+      this.photoId,
+      required this.identification,
+      required this.nutrition,
+      this.allergens = const []});
 
   final String analysisId;
   final String type;
@@ -17,30 +13,15 @@ class AnalyzeResponseDto {
   final IdentificationDto identification;
   final NutritionDto nutrition;
   final List<String> allergens;
-  final List<String> improvementSuggestions;
-  final MedicalAlertsDto medicalAlerts;
-  final SuitableForDto suitableFor;
 
   factory AnalyzeResponseDto.fromJson(Map<String, dynamic> json) {
     return AnalyzeResponseDto(
       analysisId: json['analysisId'] as String,
       type: json['type'] as String,
       photoId: json['photoId'] as String?,
-      identification: IdentificationDto.fromJson(
-          json['identification'] as Map<String, dynamic>),
-      nutrition:
-          NutritionDto.fromJson(json['nutrition'] as Map<String, dynamic>),
-      allergens: (json['allergens'] as List<dynamic>? ?? [])
-          .map((e) => e.toString())
-          .toList(),
-      improvementSuggestions:
-          (json['improvementSuggestions'] as List<dynamic>? ?? [])
-              .map((e) => e.toString())
-              .toList(),
-      medicalAlerts: MedicalAlertsDto.fromJson(
-          json['medicalAlerts'] as Map<String, dynamic>),
-      suitableFor:
-          SuitableForDto.fromJson(json['suitableFor'] as Map<String, dynamic>),
+      identification: IdentificationDto.fromJson(json['identification'] as Map<String, dynamic>),
+      nutrition: NutritionDto.fromJson(json['nutrition'] as Map<String, dynamic>),
+      allergens: (json['allergens'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
     );
   }
 }
@@ -59,9 +40,8 @@ class IdentificationDto {
   factory IdentificationDto.fromJson(Map<String, dynamic> json) {
     return IdentificationDto(
       dishName: json['dishName'] as String?,
-      detectedIngredients: (json['detectedIngredients'] as List<dynamic>? ?? [])
-          .map((e) => e.toString())
-          .toList(),
+      detectedIngredients:
+          (json['detectedIngredients'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
       estimatedPortionG: json['estimatedPortionG'] as int?,
     );
   }

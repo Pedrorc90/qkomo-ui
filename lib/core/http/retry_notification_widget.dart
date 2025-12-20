@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/http/retry_state_notifier.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 /// Widget que muestra un indicador cuando se están reintentando conexiones
 class RetryNotificationWidget extends ConsumerWidget {
@@ -26,7 +27,7 @@ class RetryNotificationWidget extends ConsumerWidget {
             right: 0,
             child: Material(
               elevation: 4,
-              color: Colors.orange.shade700,
+              color: AppColors.semanticWarning,
               child: SafeArea(
                 bottom: false,
                 child: Padding(
@@ -42,7 +43,7 @@ class RetryNotificationWidget extends ConsumerWidget {
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
+                            AppColors.neutralWhite,
                           ),
                         ),
                       ),
@@ -52,7 +53,7 @@ class RetryNotificationWidget extends ConsumerWidget {
                           'Conectando con el servidor... '
                           '(intento ${retryState.retryCount} de 3)',
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.neutralWhite,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),

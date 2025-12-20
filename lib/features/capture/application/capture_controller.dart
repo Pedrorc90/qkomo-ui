@@ -152,4 +152,9 @@ class CaptureController extends StateNotifier<CaptureState> {
       isProcessing: false,
     );
   }
+
+  /// Resets the controller to initial state
+  void reset() {
+    state = CaptureState.initial();
+  }
 }

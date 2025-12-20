@@ -17,10 +17,7 @@ void main() {
         nutrition: NutritionDto(
           calories: 100,
         ),
-        medicalAlerts: MedicalAlertsDto(),
-        suitableFor: SuitableForDto(),
         allergens: ['gluten'],
-        improvementSuggestions: ['Eat less'],
       );
 
       expect(dto.analysisId, equals('analysis-123'));
@@ -30,7 +27,6 @@ void main() {
       expect(dto.identification.detectedIngredients, hasLength(2));
       expect(dto.identification.detectedIngredients[0], equals('Flour'));
       expect(dto.allergens, contains('gluten'));
-      expect(dto.improvementSuggestions, contains('Eat less'));
     });
 
     test('IdentificationDto should handle ingredients correctly', () {
@@ -41,8 +37,7 @@ void main() {
 
       expect(identification.dishName, equals('Soup'));
       expect(identification.detectedIngredients, hasLength(2));
-      expect(
-          identification.detectedIngredients, containsAll(['Water', 'Salt']));
+      expect(identification.detectedIngredients, containsAll(['Water', 'Salt']));
     });
   });
 

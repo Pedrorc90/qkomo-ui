@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/picked_image_preview.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class GalleryImportView extends StatelessWidget {
   const GalleryImportView({
@@ -54,7 +55,7 @@ class GalleryImportView extends StatelessWidget {
                   if (state.imageFile == null)
                     Positioned.fill(
                       child: Container(
-                        color: Colors.black.withAlpha((0.2 * 255).round()),
+                        color: AppColors.overlayBlack30,
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -62,7 +63,7 @@ class GalleryImportView extends StatelessWidget {
                               Icon(
                                 Icons.image_outlined,
                                 size: 48,
-                                color: Colors.white
+                                color: AppColors.neutralWhite
                                     .withAlpha((0.7 * 255).round()),
                               ),
                               const SizedBox(height: 12),
@@ -72,7 +73,7 @@ class GalleryImportView extends StatelessWidget {
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(
-                                      color: Colors.white
+                                      color: AppColors.neutralWhite
                                           .withAlpha((0.7 * 255).round()),
                                     ),
                               ),

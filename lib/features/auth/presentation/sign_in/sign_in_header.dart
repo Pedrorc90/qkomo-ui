@@ -13,7 +13,7 @@ class SignInHeader extends StatelessWidget {
         const QkomoLogo(size: 80),
         const SizedBox(height: 24),
         Text(
-          'qkomo',
+          'QKomo',
           style: textTheme.displayMedium?.copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: -1.0,

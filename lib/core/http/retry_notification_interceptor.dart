@@ -34,6 +34,10 @@ class RetryNotificationInterceptor extends Interceptor {
         debugPrint('Reintentando conexión (intento $newRetryCount de 3)...');
         ref.read(retryStateProvider.notifier).startRetry(newRetryCount);
       }
+    } else {
+      // Error no recuperable: limpiar la notificación
+      debugPrint('Error no recuperable (${err.type}). Limpiando estado de reintentos.');
+      ref.read(retryStateProvider.notifier).endRetry();
     }
 
     super.onError(err, handler);

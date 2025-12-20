@@ -27,7 +27,7 @@ final capturePermissionsProvider = Provider<CapturePermissions>((ref) {
 });
 
 final captureControllerProvider =
-    StateNotifierProvider<CaptureController, CaptureState>((ref) {
+    StateNotifierProvider.autoDispose<CaptureController, CaptureState>((ref) {
   final picker = ref.watch(imagePickerProvider);
   final permissions = ref.watch(capturePermissionsProvider);
   return CaptureController(picker, permissions);
@@ -89,5 +89,6 @@ final directAnalyzeControllerProvider = StateNotifierProvider.autoDispose<
     DirectAnalyzeController, AsyncValue<String?>>((ref) {
   final analyzer = ref.watch(captureAnalyzerProvider);
   final resultRepo = ref.watch(captureResultRepositoryProvider);
-  return DirectAnalyzeController(analyzer, resultRepo);
+  final entryRepo = ref.watch(entryRepositoryProvider);
+  return DirectAnalyzeController(analyzer, resultRepo, entryRepo);
 });

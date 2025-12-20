@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class BarcodeScannerView extends StatefulWidget {
   const BarcodeScannerView({
@@ -134,7 +135,7 @@ class _ScannerOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withAlpha((0.4 * 255).round())
+      ..color = AppColors.neutralWhite.withAlpha((0.4 * 255).round())
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
@@ -150,7 +151,7 @@ class _ScannerOverlayPainter extends CustomPainter {
 
     // Esquinas redondeadas
     final cornerPaint = Paint()
-      ..color = Colors.white.withAlpha((0.8 * 255).round())
+      ..color = AppColors.neutralWhite.withAlpha((0.8 * 255).round())
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
@@ -235,7 +236,7 @@ class _ScannedBarcodeDisplay extends StatelessWidget {
                 ),
                 child: Icon(
                   Icons.check_circle,
-                  color: Colors.green,
+                  color: AppColors.semanticSuccess,
                   size: 80,
                 ),
               ),

@@ -22,13 +22,10 @@ class CaptureResult with _$CaptureResult {
     // New fields
     int? estimatedPortionG,
     CaptureNutrition? nutrition,
-    CaptureMedicalAlerts? medicalAlerts,
-    CaptureSuitableFor? suitableFor,
-    @Default([]) List<String> improvementSuggestions,
+    String? imagePath,
   }) = _CaptureResult;
 
-  factory CaptureResult.fromJson(Map<String, dynamic> json) =>
-      _$CaptureResultFromJson(json);
+  factory CaptureResult.fromJson(Map<String, dynamic> json) => _$CaptureResultFromJson(json);
 }
 
 @freezed
@@ -41,32 +38,5 @@ class CaptureNutrition with _$CaptureNutrition {
     double? fiberG,
   }) = _CaptureNutrition;
 
-  factory CaptureNutrition.fromJson(Map<String, dynamic> json) =>
-      _$CaptureNutritionFromJson(json);
-}
-
-@freezed
-class CaptureMedicalAlerts with _$CaptureMedicalAlerts {
-  const factory CaptureMedicalAlerts({
-    String? diabetes,
-    String? hypertension,
-    String? cholesterol,
-  }) = _CaptureMedicalAlerts;
-
-  factory CaptureMedicalAlerts.fromJson(Map<String, dynamic> json) =>
-      _$CaptureMedicalAlertsFromJson(json);
-}
-
-@freezed
-class CaptureSuitableFor with _$CaptureSuitableFor {
-  const factory CaptureSuitableFor({
-    @Default(false) bool children,
-    @Default(false) bool lowFodmap,
-    @Default(false) bool glutenFree,
-    @Default(false) bool vegetarian,
-    @Default(false) bool vegan,
-  }) = _CaptureSuitableFor;
-
-  factory CaptureSuitableFor.fromJson(Map<String, dynamic> json) =>
-      _$CaptureSuitableForFromJson(json);
+  factory CaptureNutrition.fromJson(Map<String, dynamic> json) => _$CaptureNutritionFromJson(json);
 }

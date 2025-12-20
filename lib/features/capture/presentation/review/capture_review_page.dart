@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_review_controller.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/allergen_selector.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/ingredient_list_editor.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/photo_viewer.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/nutrition_info_card.dart';
-import 'package:qkomo_ui/features/capture/presentation/review/widgets/medical_alerts_card.dart';
-import 'package:qkomo_ui/features/capture/presentation/review/widgets/improvement_suggestions_card.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 /// Page for reviewing and editing capture results
 class CaptureReviewPage extends ConsumerWidget {
@@ -23,13 +22,11 @@ class CaptureReviewPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(captureReviewControllerProvider(resultId));
-    final controller =
-        ref.read(captureReviewControllerProvider(resultId).notifier);
+    final controller = ref.read(captureReviewControllerProvider(resultId).notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Revisar captura'),
-        backgroundColor: Colors.transparent,
+      appBar: QkomoNavBar(
+        title: 'Revisar captura',
         actions: [
           if (state.hasChanges)
             IconButton(
@@ -42,9 +39,8 @@ class CaptureReviewPage extends ConsumerWidget {
       body: state.result == null
           ? _buildLoading(context, state.error)
           : _buildContent(context, ref, state, controller),
-      bottomNavigationBar: state.result != null
-          ? _buildBottomBar(context, state, controller)
-          : null,
+      bottomNavigationBar:
+          state.result != null ? _buildBottomBar(context, state, controller) : null,
     );
   }
 
@@ -93,7 +89,7 @@ class CaptureReviewPage extends ConsumerWidget {
         children: [
           // Photo viewer with metadata and meal type selector
           PhotoViewer(
-            imagePath: result.jobId, // TODO: Get actual image path from job
+            imagePath: result.imagePath,
             title: result.title,
             capturedAt: result.savedAt,
             estimatedPortionG: result.estimatedPortionG,
@@ -106,12 +102,6 @@ class CaptureReviewPage extends ConsumerWidget {
           // Nutrition info card
           if (result.nutrition != null) ...[
             NutritionInfoCard(nutrition: result.nutrition!),
-            const SizedBox(height: 16),
-          ],
-
-          // Medical alerts card
-          if (result.medicalAlerts != null) ...[
-            MedicalAlertsCard(medicalAlerts: result.medicalAlerts!),
             const SizedBox(height: 16),
           ],
 
@@ -139,20 +129,6 @@ class CaptureReviewPage extends ConsumerWidget {
 
           const SizedBox(height: 24),
 
-          // Improvement suggestions card
-          if (result.improvementSuggestions.isNotEmpty) ...[
-            ImprovementSuggestionsCard(
-              suggestions: result.improvementSuggestions,
-            ),
-            const SizedBox(height: 24),
-          ],
-
-          // Suitable for section
-          if (result.suitableFor != null) ...[
-            _buildSuitableForSection(context, result.suitableFor!),
-            const SizedBox(height: 24),
-          ],
-
           const SizedBox(height: 100), // Space for bottom bar
         ],
       ),
@@ -170,8 +146,8 @@ class CaptureReviewPage extends ConsumerWidget {
         Text(
           'Notas adicionales',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+                fontWeight: FontWeight.w600,
+              ),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -187,61 +163,15 @@ class CaptureReviewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildSuitableForSection(
-    BuildContext context,
-    CaptureSuitableFor suitableFor,
-  ) {
-    final activeBadges = {
-      'Apto para niños': suitableFor.children,
-      'Bajo FODMAP': suitableFor.lowFodmap,
-      'Sin gluten': suitableFor.glutenFree,
-      'Vegetariano': suitableFor.vegetarian,
-      'Vegano': suitableFor.vegan,
-    }.entries.where((e) => e.value).map((e) => e.key).toList();
-
-    if (activeBadges.isEmpty) return const SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Apto para',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: activeBadges.map((badge) {
-            return Chip(
-              label: Text(badge),
-              avatar: Icon(
-                Icons.check_circle,
-                size: 16,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              backgroundColor: Theme.of(context)
-                  .colorScheme
-                  .primaryContainer
-                  .withValues(alpha: 0.3),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBottomBar(BuildContext context, CaptureReviewState state,
-      CaptureReviewController controller) {
+  Widget _buildBottomBar(
+      BuildContext context, CaptureReviewState state, CaptureReviewController controller) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.outline.withAlpha((0.1 * 255).round()),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -282,8 +212,7 @@ class CaptureReviewPage extends ConsumerWidget {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed:
-                        state.isSaving ? null : () => Navigator.pop(context),
+                    onPressed: state.isSaving ? null : () => Navigator.pop(context),
                     child: const Text('Cancelar'),
                   ),
                 ),
@@ -291,9 +220,7 @@ class CaptureReviewPage extends ConsumerWidget {
                 Expanded(
                   flex: 2,
                   child: FilledButton(
-                    onPressed: state.isSaving
-                        ? null
-                        : () => _saveReview(context, controller),
+                    onPressed: state.isSaving ? null : () => _saveReview(context, controller),
                     child: state.isSaving
                         ? const SizedBox(
                             width: 20,
@@ -311,22 +238,20 @@ class CaptureReviewPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _saveReview(
-      BuildContext context, CaptureReviewController controller) async {
+  Future<void> _saveReview(BuildContext context, CaptureReviewController controller) async {
     final success = await controller.saveReview();
     if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Análisis guardado correctamente'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Análisis guardado correctamente'),
+          backgroundColor: AppColors.semanticSuccess,
         ),
       );
       Navigator.pop(context);
     }
   }
 
-  void _showDiscardDialog(
-      BuildContext context, CaptureReviewController controller) {
+  void _showDiscardDialog(BuildContext context, CaptureReviewController controller) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

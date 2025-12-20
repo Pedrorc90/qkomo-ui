@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/home/presentation/home_page.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/profile_page.dart';
@@ -28,11 +29,28 @@ class RootShell extends ConsumerWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => const Dialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+              child: CaptureBottomSheet(scrollController: null),
+            ),
+          );
+        },
+        tooltip: 'Capturar comida',
+        child: const Icon(Icons.camera_alt_outlined),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
         child: Material(
           elevation: 3,
           borderRadius: BorderRadius.circular(20),
+          color: Theme.of(context).colorScheme.surface,
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
@@ -44,6 +62,7 @@ class RootShell extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: NavigationBar(
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 selectedIndex: index,
                 height: 65,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,

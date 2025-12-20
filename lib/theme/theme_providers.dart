@@ -5,7 +5,7 @@ import 'package:qkomo_ui/theme/app_theme.dart';
 import 'package:qkomo_ui/theme/theme_type.dart';
 
 final themeTypeProvider =
-    StateProvider<AppThemeType>((_) => AppThemeType.fresh);
+    StateProvider<AppThemeType>((_) => AppThemeType.warm);
 
 final appThemeProvider = Provider<ThemeData>((ref) {
   final type = ref.watch(themeTypeProvider);

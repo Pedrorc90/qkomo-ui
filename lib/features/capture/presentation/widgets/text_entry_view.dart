@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class TextEntryView extends ConsumerStatefulWidget {
   const TextEntryView({super.key});
@@ -111,7 +112,7 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
               SnackBar(
                 content:
                     Text('Entrada guardada: ${result.title ?? "Sin título"}'),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.semanticSuccess,
               ),
             );
             _clearForm();
@@ -122,7 +123,7 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Error al guardar: $error'),
-                backgroundColor: Colors.red,
+                backgroundColor: AppColors.semanticError,
               ),
             );
           },

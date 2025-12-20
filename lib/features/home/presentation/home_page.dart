@@ -18,6 +18,7 @@ class HomePage extends ConsumerWidget {
     final gradient = ref.watch(appGradientProvider);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Container(
         decoration: BoxDecoration(gradient: gradient),
         child: SafeArea(

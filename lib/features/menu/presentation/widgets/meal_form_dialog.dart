@@ -8,6 +8,7 @@ import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/preset_recipe_dialog.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class MealFormDialog extends ConsumerStatefulWidget {
   const MealFormDialog({
@@ -219,7 +220,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                         width: double.infinity,
                         height: 180,
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(12),
                           image: _photoPath != null
                               ? DecorationImage(
@@ -235,11 +236,11 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(Icons.camera_alt,
-                                      size: 40, color: Colors.grey[400]),
+                                      size: 40, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   const SizedBox(height: 8),
                                   Text(
                                     'Añadir foto',
-                                    style: TextStyle(color: Colors.grey[600]),
+                                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
                                 ],
                               )
@@ -259,11 +260,11 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                           top: 8,
                           right: 8,
                           child: CircleAvatar(
-                            backgroundColor: Colors.black54,
+                            backgroundColor: AppColors.overlayBlack50,
                             radius: 16,
                             child: IconButton(
                               icon: const Icon(Icons.close,
-                                  size: 16, color: Colors.white),
+                                  size: 16, color: AppColors.neutralWhite),
                               onPressed: () {
                                 setState(() {
                                   _photoPath = null;

@@ -50,7 +50,7 @@ class QkomoNavBar extends StatelessWidget implements PreferredSizeWidget {
                 const QkomoLogo(size: 32),
                 const SizedBox(width: 12),
                 Text(
-                  'Qkomo',
+                  'QKomo',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.primary,

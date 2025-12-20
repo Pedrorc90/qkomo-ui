@@ -10,6 +10,7 @@ import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 /// Enhanced home header with next meal image or hero capture button
 class HomeHeader extends ConsumerWidget {
@@ -104,7 +105,7 @@ class HomeHeader extends ConsumerWidget {
           borderRadius: BorderRadius.circular(DesignTokens.radiusXl),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: AppColors.overlayBlack30.withAlpha((0.15/0.3 * 255 * 0.3).round()),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -157,8 +158,8 @@ class HomeHeader extends ConsumerWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withValues(alpha: 0.0),
-                      Colors.black.withValues(alpha: 0.7),
+                      AppColors.neutralDark.withAlpha(0),
+                      AppColors.overlayBlack70,
                     ],
                   ),
                 ),
@@ -175,7 +176,7 @@ class HomeHeader extends ConsumerWidget {
                     Text(
                       'Tu próxima comida',
                       style: textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: AppColors.neutralWhite.withValues(alpha: 0.8),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -185,7 +186,7 @@ class HomeHeader extends ConsumerWidget {
                           child: Text(
                             nextMeal.name,
                             style: textTheme.titleLarge?.copyWith(
-                              color: Colors.white,
+                              color: AppColors.neutralWhite,
                               fontWeight: FontWeight.bold,
                             ),
                             maxLines: 1,
@@ -203,7 +204,7 @@ class HomeHeader extends ConsumerWidget {
                     Text(
                       timeLabel,
                       style: textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
+                        color: AppColors.neutralWhite,
                       ),
                     ),
                   ],
@@ -279,7 +280,7 @@ class HomeHeader extends ConsumerWidget {
       builder: (context) => const Dialog(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        insetPadding: EdgeInsets.all(24),
+        insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         child: CaptureBottomSheet(scrollController: null),
       ),
     );

@@ -49,7 +49,7 @@ flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8080
 - La app usa Firebase ID token en Authorization Bearer para `/v1/analyze` (multipart) y `/v1/analyze/barcode`.
 - Configura `API_BASE_URL` con `--dart-define` (default `http://10.0.2.2:8080`).
 - Se espera que el backend acepte ambos endpoints y devuelva `AnalyzeResponse`.
-- Servidor development: flutter run --dart-define=API_BASE_URL=https://qkomo-backend-production.up.railway.app
+- Servidor development: flutter run --dart-define=API_BASE_URL=https://qkomo-backend.onrender.com
 
 Para desarrollo rápido (sin backend) puedes desactivar la cola o apuntar a un mock, pero por defecto se usará el backend real al procesar la cola offline.
 

@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class IngredientsPieChart extends StatefulWidget {
   const IngredientsPieChart({super.key, required this.topIngredients});
@@ -22,14 +23,9 @@ class _IngredientsPieChartState extends State<IngredientsPieChart> {
     final sortedEntries = widget.topIngredients.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    // Colors for the pie sections
-    final List<Color> colors = [
-      Colors.blue,
-      Colors.red,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-    ];
+    // Colors for the pie sections - adaptive to theme brightness
+    final brightness = Theme.of(context).brightness;
+    final List<Color> colors = AppColors.getChartColors(brightness);
 
     return AspectRatio(
       aspectRatio: 1.3,
@@ -87,7 +83,9 @@ class _IngredientsPieChartState extends State<IngredientsPieChart> {
                               titleStyle: TextStyle(
                                 fontSize: fontSize,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: brightness == Brightness.dark
+                                    ? AppColors.neutralDark
+                                    : AppColors.neutralWhite,
                               ),
                             );
                           }),

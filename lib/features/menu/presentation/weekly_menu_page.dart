@@ -21,6 +21,7 @@ class WeeklyMenuPage extends ConsumerWidget {
         '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const QkomoNavBar(),
       body: Column(
         children: [

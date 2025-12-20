@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import 'package:image_picker/image_picker.dart';
 
 import 'package:qkomo_ui/features/capture/data/capture_api_client.dart';
@@ -78,11 +79,19 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     final title = dto.identification.dishName ??
         (switch (mode) {
           CaptureMode.barcode => 'Producto código $barcode',
-          CaptureMode.camera =>
-            dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura',
+          CaptureMode.camera => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura',
           CaptureMode.gallery => 'Imagen importada',
           CaptureMode.text => 'Texto manual',
         });
+
+    final imagePath = file?.path;
+
+    if (kDebugMode) {
+      print('[BackendCaptureAnalyzer] Información de la imagen:');
+      print('  - file != null: ${file != null}');
+      print('  - file?.path: ${file?.path}');
+      print('  - imagePath: $imagePath');
+    }
 
     final result = CaptureResult(
       jobId: dto.analysisId ?? jobId, // Use backend ID if available, else local
@@ -90,7 +99,6 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
       title: title,
       ingredients: dto.identification.detectedIngredients,
       allergens: dto.allergens,
-      improvementSuggestions: dto.improvementSuggestions,
       estimatedPortionG: dto.identification.estimatedPortionG,
       nutrition: CaptureNutrition(
         calories: dto.nutrition.calories,
@@ -99,23 +107,14 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
         fatsG: dto.nutrition.fatsG,
         fiberG: dto.nutrition.fiberG,
       ),
-      medicalAlerts: CaptureMedicalAlerts(
-        diabetes: dto.medicalAlerts.diabetes,
-        hypertension: dto.medicalAlerts.hypertension,
-        cholesterol: dto.medicalAlerts.cholesterol,
-      ),
-      suitableFor: CaptureSuitableFor(
-        children: dto.suitableFor.children,
-        lowFodmap: dto.suitableFor.lowFodmap,
-        glutenFree: dto.suitableFor.glutenFree,
-        vegetarian: dto.suitableFor.vegetarian,
-        vegan: dto.suitableFor.vegan,
-      ),
+      imagePath: imagePath,
     );
 
     if (kDebugMode) {
       print('[BackendCaptureAnalyzer] CaptureResult creado:');
+      print('  - jobId: ${result.jobId}');
       print('  - title: ${result.title}');
+      print('  - imagePath: ${result.imagePath}');
       print('  - ingredients: ${result.ingredients}');
       print('  - allergens: ${result.allergens}');
     }

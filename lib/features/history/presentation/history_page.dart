@@ -13,6 +13,7 @@ import 'package:qkomo_ui/features/history/presentation/widgets/date_group_header
 import 'package:qkomo_ui/features/history/presentation/widgets/enhanced_result_card.dart';
 import 'package:qkomo_ui/features/history/presentation/widgets/history_search_bar.dart';
 import 'package:qkomo_ui/features/statistics/presentation/statistics_page.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
 
 class HistoryPage extends ConsumerWidget {
   const HistoryPage({super.key});
@@ -130,13 +131,13 @@ class HistoryPage extends ConsumerWidget {
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
                               color:
-                                  Colors.orange.withAlpha((0.8 * 255).round()),
+                                  AppColors.semanticWarning.withAlpha((0.8 * 255).round()),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
                               Icons.cloud_upload,
                               size: 12,
-                              color: Colors.white,
+                              color: AppColors.neutralWhite,
                             ),
                           ),
                         ),
@@ -147,13 +148,13 @@ class HistoryPage extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.red.withAlpha((0.8 * 255).round()),
+                              color: AppColors.semanticError.withAlpha((0.8 * 255).round()),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
                               Icons.sync_problem,
                               size: 12,
-                              color: Colors.white,
+                              color: AppColors.neutralWhite,
                             ),
                           ),
                         ),

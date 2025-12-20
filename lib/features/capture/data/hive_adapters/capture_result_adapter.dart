@@ -18,12 +18,6 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
     final nutrition = fields[12] != null
         ? CaptureNutrition.fromJson((fields[12] as Map).cast<String, dynamic>())
         : null;
-    final medicalAlerts = fields[13] != null
-        ? CaptureMedicalAlerts.fromJson((fields[13] as Map).cast<String, dynamic>())
-        : null;
-    final suitableFor = fields[14] != null
-        ? CaptureSuitableFor.fromJson((fields[14] as Map).cast<String, dynamic>())
-        : null;
 
     return CaptureResult(
       jobId: fields[0] as String,
@@ -40,18 +34,14 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
       // New fields with backward compatibility
       estimatedPortionG: fields[11] as int?,
       nutrition: nutrition,
-      medicalAlerts: medicalAlerts,
-      suitableFor: suitableFor,
-      improvementSuggestions: fields[15] != null
-          ? (fields[15] as List).cast<String>()
-          : [],
+      imagePath: fields[15] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CaptureResult obj) {
     writer
-      ..writeByte(16) // Updated field count
+      ..writeByte(13) // Updated field count
       ..writeByte(0)
       ..write(obj.jobId)
       ..writeByte(1)
@@ -79,11 +69,7 @@ class CaptureResultAdapter extends TypeAdapter<CaptureResult> {
       ..write(obj.estimatedPortionG)
       ..writeByte(12)
       ..write(obj.nutrition?.toJson())
-      ..writeByte(13)
-      ..write(obj.medicalAlerts?.toJson())
-      ..writeByte(14)
-      ..write(obj.suitableFor?.toJson())
       ..writeByte(15)
-      ..write(obj.improvementSuggestions);
+      ..write(obj.imagePath);
   }
 }

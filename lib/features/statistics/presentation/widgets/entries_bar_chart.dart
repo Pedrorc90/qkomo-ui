@@ -38,14 +38,14 @@ class EntriesBarChart extends StatelessWidget {
                     barTouchData: BarTouchData(
                       enabled: true,
                       touchTooltipData: BarTouchTooltipData(
-                        getTooltipColor: (_) => Colors.blueGrey,
+                        getTooltipColor: (_) => Theme.of(context).colorScheme.inverseSurface,
                         tooltipPadding: const EdgeInsets.all(8),
                         tooltipMargin: 8,
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           return BarTooltipItem(
                             rod.toY.round().toString(),
-                            const TextStyle(
-                              color: Colors.white,
+                            TextStyle(
+                              color: Theme.of(context).colorScheme.onInverseSurface,
                               fontWeight: FontWeight.bold,
                             ),
                           );
@@ -71,8 +71,8 @@ class EntriesBarChart extends StatelessWidget {
                                   dayName.substring(0, 1).toUpperCase() +
                                       dayName.substring(
                                           1), // Capitalize first letter
-                                  style: const TextStyle(
-                                    color: Color(0xff7589a2),
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                   ),
