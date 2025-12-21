@@ -41,8 +41,7 @@ class MealRepository {
   }
 
   List<Meal> allSorted() {
-    final items =
-        _mealBox.values.where((meal) => meal.userId == _userId).toList();
+    final items = _mealBox.values.where((meal) => meal.userId == _userId).toList();
     items.sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
     return items;
   }
@@ -51,8 +50,7 @@ class MealRepository {
     final weekEnd = weekStart.add(const Duration(days: 7));
     return _mealBox.values.where((meal) {
       return meal.userId == _userId &&
-          meal.scheduledFor
-              .isAfter(weekStart.subtract(const Duration(days: 1))) &&
+          meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
           meal.scheduledFor.isBefore(weekEnd);
     }).toList()
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
@@ -93,5 +91,17 @@ class MealRepository {
 
   Future<void> delete(String id) {
     return _mealBox.delete(id);
+  }
+
+  Future<void> deleteForDay(DateTime date) async {
+    final mealsToDelete = _mealBox.values.where((meal) {
+      final mealDate = meal.scheduledFor;
+      return meal.userId == _userId &&
+          mealDate.year == date.year &&
+          mealDate.month == date.month &&
+          mealDate.day == date.day;
+    }).map((meal) => meal.id);
+
+    await _mealBox.deleteAll(mealsToDelete);
   }
 }

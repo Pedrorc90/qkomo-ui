@@ -12,7 +12,7 @@ class DietaryPage extends ConsumerWidget {
     final settingsAsync = ref.watch(userSettingsProvider);
 
     return Scaffold(
-      appBar: const QkomoNavBar(title: 'Restricciones'),
+      appBar: const QkomoNavBar(title: 'Preferencias dietéticas'),
       body: settingsAsync.when(
         data: (settings) {
           return ListView.builder(
@@ -20,8 +20,7 @@ class DietaryPage extends ConsumerWidget {
             itemCount: DietaryRestriction.values.length,
             itemBuilder: (context, index) {
               final restriction = DietaryRestriction.values[index];
-              final isSelected =
-                  settings.dietaryRestrictions.contains(restriction);
+              final isSelected = settings.dietaryRestrictions.contains(restriction);
 
               return Card(
                 elevation: 0,
@@ -34,24 +33,18 @@ class DietaryPage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 color: isSelected
-                    ? Theme.of(context)
-                        .colorScheme
-                        .primaryContainer
-                        .withOpacity(0.3)
+                    ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
                     : null,
                 margin: const EdgeInsets.only(bottom: 8),
                 child: CheckboxListTile(
                   value: isSelected,
                   onChanged: (value) {
-                    ref
-                        .read(userSettingsProvider.notifier)
-                        .toggleDietaryRestriction(restriction);
+                    ref.read(userSettingsProvider.notifier).toggleDietaryRestriction(restriction);
                   },
                   title: Text(
                     restriction.displayName,
                     style: TextStyle(
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
                   secondary: Icon(

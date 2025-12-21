@@ -32,122 +32,135 @@ class _QkomoLogoPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final strokePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.08
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+    final center = Offset(size.width / 2, size.height * 0.47);
+    final radius = size.width * 0.35;
 
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-
-    // Draw rounded square background with gradient effect
-    final roundedRect = RRect.fromRectAndRadius(
-      Rect.fromCircle(center: center, radius: radius * 0.85),
-      Radius.circular(size.width * 0.25),
-    );
-
-    // Background with subtle gradient
-    final gradientPaint = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          color.withValues(alpha: 0.15),
-          color.withValues(alpha: 0.08),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ).createShader(roundedRect.outerRect);
-
-    canvas.drawRRect(roundedRect, gradientPaint);
-
-    // Draw stylized bowl (bottom half circle)
-    final bowlRect = Rect.fromCircle(
-      center: Offset(center.dx, center.dy + size.height * 0.08),
-      radius: size.width * 0.35,
-    );
-
-    canvas.drawArc(
-      bowlRect,
-      0, // Start angle (0 = 3 o'clock)
-      3.14159, // Sweep angle (pi = 180 degrees)
-      false, // useCenter = false for arc
-      strokePaint,
-    );
-
-    // Draw leaf/sprout above bowl
-    final leafPath = Path();
-
-    // Leaf stem
-    final stemStart = Offset(center.dx, center.dy - size.height * 0.05);
-    final stemEnd = Offset(center.dx, center.dy - size.height * 0.25);
-    leafPath.moveTo(stemStart.dx, stemStart.dy);
-    leafPath.lineTo(stemEnd.dx, stemEnd.dy);
-
-    // Left leaf
-    final leftLeafControl1 =
-        Offset(center.dx - size.width * 0.18, center.dy - size.height * 0.2);
-    final leftLeafControl2 =
-        Offset(center.dx - size.width * 0.22, center.dy - size.height * 0.12);
-    final leftLeafEnd =
-        Offset(center.dx - size.width * 0.08, center.dy - size.height * 0.1);
-
-    leafPath.moveTo(stemEnd.dx, stemEnd.dy - size.height * 0.02);
-    leafPath.cubicTo(
-      leftLeafControl1.dx,
-      leftLeafControl1.dy,
-      leftLeafControl2.dx,
-      leftLeafControl2.dy,
-      leftLeafEnd.dx,
-      leftLeafEnd.dy,
-    );
-
-    // Right leaf
-    final rightLeafControl1 =
-        Offset(center.dx + size.width * 0.18, center.dy - size.height * 0.2);
-    final rightLeafControl2 =
-        Offset(center.dx + size.width * 0.22, center.dy - size.height * 0.12);
-    final rightLeafEnd =
-        Offset(center.dx + size.width * 0.08, center.dy - size.height * 0.1);
-
-    leafPath.moveTo(stemEnd.dx, stemEnd.dy - size.height * 0.02);
-    leafPath.cubicTo(
-      rightLeafControl1.dx,
-      rightLeafControl1.dy,
-      rightLeafControl2.dx,
-      rightLeafControl2.dy,
-      rightLeafEnd.dx,
-      rightLeafEnd.dy,
-    );
-
-    canvas.drawPath(leafPath, strokePaint);
-
-    // Draw three small dots representing ingredients/particles
-    final dotPaint = Paint()
-      ..color = color
+    // 1. Draw the "Q" Plate background
+    final platePaint = Paint()
+      ..color = Colors.white
       ..style = PaintingStyle.fill;
 
-    final dotRadius = size.width * 0.045;
+    final plateShadowPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.1)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.015;
 
-    // Left dot
-    canvas.drawCircle(
-      Offset(center.dx - size.width * 0.18, center.dy + size.height * 0.08),
-      dotRadius,
-      dotPaint,
+    canvas.drawCircle(center, radius, platePaint);
+    canvas.drawCircle(center, radius, plateShadowPaint);
+
+    // Q-tail (plate detail) - Bottom Right
+    final tailPaint = Paint()
+      ..color = const Color(0xFFCCCCCC)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.035
+      ..strokeCap = StrokeCap.round;
+
+    // Draw the "palo" of the Q (stalk)
+    canvas.drawLine(
+      Offset(center.dx + radius * 0.65, center.dy + radius * 0.75),
+      Offset(center.dx + radius * 0.95, center.dy + radius * 1.05),
+      tailPaint,
     );
 
-    // Center dot
-    canvas.drawCircle(
-      Offset(center.dx, center.dy + size.height * 0.12),
-      dotRadius,
-      dotPaint,
+    // 2. Draw the "Q" outer ring (Forest Green)
+    final forestPaint = Paint()
+      ..color = const Color(0xFF2D5016)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.05
+      ..strokeCap = StrokeCap.round;
+
+    final rect = Rect.fromCircle(center: center, radius: radius * 1.15);
+    // Gap at bottom right (from approx 40 deg to 80 deg)
+    // Start at 1.4 radians and sweep 5.1
+    canvas.drawArc(rect, 1.4, 5.1, false, forestPaint);
+
+    // 3. Draw the "K" elements
+    final kStemPaint = Paint()
+      ..color = const Color(0xFF2D5016)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.06
+      ..strokeCap = StrokeCap.round;
+
+    // K Vertical Stem (Fork)
+    final stemX = center.dx - radius * 0.3;
+    canvas.drawLine(
+      Offset(stemX, center.dy - radius * 0.6),
+      Offset(stemX, center.dy + radius * 0.6),
+      kStemPaint,
     );
 
-    // Right dot
-    canvas.drawCircle(
-      Offset(center.dx + size.width * 0.18, center.dy + size.height * 0.08),
-      dotRadius,
-      dotPaint,
+    // Fork Tines
+    final tinesPaint = Paint()
+      ..color = const Color(0xFF2D5016)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.02
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(Offset(stemX - 10, center.dy - radius * 0.7),
+        Offset(stemX - 10, center.dy - radius * 0.55), tinesPaint);
+    canvas.drawLine(Offset(stemX, center.dy - radius * 0.7),
+        Offset(stemX, center.dy - radius * 0.55), tinesPaint);
+    canvas.drawLine(Offset(stemX + 10, center.dy - radius * 0.7),
+        Offset(stemX + 10, center.dy - radius * 0.55), tinesPaint);
+
+    // K Upper Arm (Carrot - Coral)
+    final coralPaint = Paint()
+      ..color = const Color(0xFFFF6F3C)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.07
+      ..strokeCap = StrokeCap.round;
+
+    final carrotPath = Path();
+    carrotPath.moveTo(stemX, center.dy);
+    carrotPath.quadraticBezierTo(
+      center.dx + radius * 0.2,
+      center.dy - radius * 0.1,
+      center.dx + radius * 0.6,
+      center.dy - radius * 0.5,
+    );
+    canvas.drawPath(carrotPath, coralPaint);
+
+    // Carrot Greens (Fresh Green)
+    final freshGreenPaint = Paint()
+      ..color = const Color(0xFF66BB6A)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.02
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(
+      Offset(center.dx + radius * 0.5, center.dy - radius * 0.45),
+      Offset(center.dx + radius * 0.65, center.dy - radius * 0.6),
+      freshGreenPaint,
+    );
+
+    // K Lower Arm (Leaf - Fresh Green)
+    final leafPaint = Paint()
+      ..color = const Color(0xFF66BB6A)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.07
+      ..strokeCap = StrokeCap.round;
+
+    final leafPath = Path();
+    leafPath.moveTo(stemX, center.dy);
+    leafPath.quadraticBezierTo(
+      center.dx + radius * 0.2,
+      center.dy + radius * 0.2,
+      center.dx + radius * 0.6,
+      center.dy + radius * 0.6,
+    );
+    canvas.drawPath(leafPath, leafPaint);
+
+    // Leaf Detail
+    final leafDetailPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.4)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.01
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(
+      Offset(center.dx + radius * 0.6, center.dy + radius * 0.6),
+      Offset(center.dx + radius * 0.4, center.dy + radius * 0.4),
+      leafDetailPaint,
     );
   }
 

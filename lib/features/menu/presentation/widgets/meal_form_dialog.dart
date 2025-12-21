@@ -40,8 +40,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   @override
   void initState() {
     super.initState();
-    _selectedMealType =
-        widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
+    _selectedMealType = widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
 
     if (widget.existingMeal != null) {
       _showForm = true; // Show form when editing existing meal
@@ -148,15 +147,11 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveMeal() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients = _ingredientControllers
-        .map((c) => c.text.trim())
-        .where((text) => text.isNotEmpty)
-        .toList();
+    final ingredients =
+        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
 
     if (ingredients.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Debes agregar al menos un ingrediente')),
-      );
+      // Form validation should catch this now with the validator on the first field
       return;
     }
 
@@ -169,9 +164,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty
-            ? null
-            : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     } else {
@@ -180,9 +173,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty
-            ? null
-            : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     }
@@ -199,9 +190,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
       title: Text(
-        widget.existingMeal != null
-            ? 'Editar ${_selectedMealType.displayName}'
-            : 'Agregar comida',
+        widget.existingMeal != null ? 'Editar ${_selectedMealType.displayName}' : 'Agregar comida',
       ),
       content: SizedBox(
         width: double.maxFinite,
@@ -236,11 +225,13 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(Icons.camera_alt,
-                                      size: 40, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                      size: 40,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   const SizedBox(height: 8),
                                   Text(
                                     'Añadir foto',
-                                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                    style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
                                 ],
                               )
@@ -263,8 +254,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                             backgroundColor: AppColors.overlayBlack50,
                             radius: 16,
                             child: IconButton(
-                              icon: const Icon(Icons.close,
-                                  size: 16, color: AppColors.neutralWhite),
+                              icon:
+                                  const Icon(Icons.close, size: 16, color: AppColors.neutralWhite),
                               onPressed: () {
                                 setState(() {
                                   _photoPath = null;
@@ -366,9 +357,21 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                           Expanded(
                             child: TextFormField(
                               controller: controller,
+                              onChanged: (value) {
+                                // Trigger validation of first field when typing in others
+                                if (index != 0) _formKey.currentState?.validate();
+                              },
                               decoration: InputDecoration(
                                 hintText: 'Ingrediente ${index + 1}',
                               ),
+                              validator: index == 0
+                                  ? (value) {
+                                      if (value == null || value.trim().isEmpty) {
+                                        return 'Agrega al menos un ingrediente';
+                                      }
+                                      return null;
+                                    }
+                                  : null,
                             ),
                           ),
                           if (_ingredientControllers.length > 1)
@@ -400,8 +403,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                   const SizedBox(height: 16),
                   Text(
                     menuState.errorMessage!,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                 ],
               ],
@@ -411,8 +413,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed:
-              menuState.isLoading ? null : () => Navigator.of(context).pop(),
+          onPressed: menuState.isLoading ? null : () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
         FilledButton(

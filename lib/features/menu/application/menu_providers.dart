@@ -32,14 +32,16 @@ final mealsProvider = StreamProvider<List<Meal>>((ref) {
   final box = ref.watch(mealBoxProvider);
   final controller = StreamController<List<Meal>>();
 
-  List<Meal> _sorted() {
-    final items = box.values.toList();
+  List<Meal> _filtered() {
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    final userId = user?.uid ?? '';
+    final items = box.values.where((meal) => meal.userId == userId).toList();
     items.sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
     return items;
   }
 
-  controller.add(_sorted());
-  final sub = box.watch().listen((_) => controller.add(_sorted()));
+  controller.add(_filtered());
+  final sub = box.watch().listen((_) => controller.add(_filtered()));
 
   ref.onDispose(() {
     sub.cancel();
@@ -63,8 +65,7 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
   final weekEnd = weekStart.add(const Duration(days: 7));
 
   return allMeals.where((meal) {
-    return meal.scheduledFor
-            .isAfter(weekStart.subtract(const Duration(days: 1))) &&
+    return meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
         meal.scheduledFor.isBefore(weekEnd);
   }).toList();
 });
@@ -99,16 +100,19 @@ final todayMealsProvider = Provider<List<Meal>>((ref) {
 
   return allMeals.where((meal) {
     final mealDate = meal.scheduledFor;
-    return mealDate.year == now.year &&
-        mealDate.month == now.month &&
-        mealDate.day == now.day;
+    return mealDate.year == now.year && mealDate.month == now.month && mealDate.day == now.day;
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });
 
+// All meals provider (for selecting existing meals)
+final allMealsProvider = Provider<List<Meal>>((ref) {
+  final allMeals = ref.watch(mealsProvider).value ?? [];
+  return allMeals;
+});
+
 // Controller provider
-final menuControllerProvider =
-    StateNotifierProvider<MenuController, MenuState>((ref) {
+final menuControllerProvider = StateNotifierProvider<MenuController, MenuState>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
   return MenuController(repository);
 });

@@ -89,6 +89,19 @@ class MenuController extends StateNotifier<MenuState> {
     }
   }
 
+  Future<void> deleteMealsForDay(DateTime date) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _repository.deleteForDay(date);
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Error al eliminar las comidas del día: $e',
+      );
+    }
+  }
+
   void startEditing(Meal meal) {
     state = state.copyWith(editingMeal: meal);
   }

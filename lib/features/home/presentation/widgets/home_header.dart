@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import 'package:qkomo_ui/core/widgets/meal_type_chip.dart';
 import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
@@ -23,10 +22,10 @@ class HomeHeader extends ConsumerWidget {
     final name = user?.displayName?.split(' ').first ?? '';
     final now = DateTime.now();
     final dateStr = DateFormat('EEEE, d MMMM', 'es').format(now);
-    final formattedDate =
-        dateStr.substring(0, 1).toUpperCase() + dateStr.substring(1);
+    final formattedDate = dateStr.substring(0, 1).toUpperCase() + dateStr.substring(1);
 
     final nextMeal = ref.watch(nextMealProvider);
+    final lastAnalysis = ref.watch(lastAnalysisProvider);
 
     return Padding(
       padding: const EdgeInsets.all(DesignTokens.spacingMd),
@@ -51,48 +50,115 @@ class HomeHeader extends ConsumerWidget {
                 ),
           ),
           const SizedBox(height: DesignTokens.spacingMd),
-          // Next meal image or hero capture button
-          if (nextMeal != null && nextMeal.photoPath != null)
-            _buildNextMealImageSection(context, ref, nextMeal)
-          else
-            _buildHeroCaptureButton(context),
+          // Dual Hero Section
+          Row(
+            children: [
+              Expanded(
+                child: _buildMealHero(context, ref, nextMeal),
+              ),
+              const SizedBox(width: DesignTokens.spacingMd),
+              Expanded(
+                child: _buildAnalysisHero(context, ref, lastAnalysis),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  /// Builds the next meal image section with overlay
-  Widget _buildNextMealImageSection(
+  Widget _buildMealHero(BuildContext context, WidgetRef ref, dynamic nextMeal) {
+    if (nextMeal != null) {
+      return _buildNextMealCard(context, ref, nextMeal);
+    } else {
+      return _buildHeroCTA(
+        context,
+        title: 'Crea tu menú',
+        subtitle: 'Planifica tu semana',
+        icon: Icons.restaurant_menu,
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const WeeklyMenuPage(),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Widget _buildAnalysisHero(BuildContext context, WidgetRef ref, dynamic lastAnalysis) {
+    if (lastAnalysis != null) {
+      return _buildLastAnalysisCard(context, ref, lastAnalysis);
+    } else {
+      return _buildHeroCTA(
+        context,
+        title: 'Analiza comida',
+        subtitle: 'Captura tu plato',
+        icon: Icons.camera_alt_outlined,
+        onTap: () => _showCaptureDialog(context),
+        isPrimary: true,
+      );
+    }
+  }
+
+  Widget _buildHeroCTA(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+    bool isPrimary = false,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return _HeroCard(
+      onTap: onTap,
+      color: isPrimary ? scheme.primaryContainer : scheme.surfaceContainerLow,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 32,
+            color: isPrimary ? scheme.onPrimaryContainer : scheme.primary,
+          ),
+          const SizedBox(height: DesignTokens.spacingSm),
+          Text(
+            title,
+            style: textTheme.titleSmall?.copyWith(
+              color: isPrimary ? scheme.onPrimaryContainer : scheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: textTheme.labelSmall?.copyWith(
+              color: isPrimary
+                  ? scheme.onPrimaryContainer.withValues(alpha: 0.8)
+                  : scheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNextMealCard(
     BuildContext context,
     WidgetRef ref,
     dynamic nextMeal,
   ) {
-    final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
-    // Determine if photo is asset or file
-    final isAsset = nextMeal.photoPath!.startsWith('assets/');
+    final isAsset = nextMeal.photoPath != null && nextMeal.photoPath!.startsWith('assets/');
     final timeFormat = DateFormat('HH:mm');
     final scheduledTime = timeFormat.format(nextMeal.scheduledFor);
 
-    // Determine if meal is today or tomorrow
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
-    final mealDate = DateTime(
-      nextMeal.scheduledFor.year,
-      nextMeal.scheduledFor.month,
-      nextMeal.scheduledFor.day,
-    );
-
-    final isTomorrow = mealDate.year == tomorrow.year &&
-        mealDate.month == tomorrow.month &&
-        mealDate.day == tomorrow.day;
-
-    final timeLabel =
-        isTomorrow ? 'Mañana a las $scheduledTime' : 'Hoy a las $scheduledTime';
-
-    return GestureDetector(
+    return _HeroCard(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -100,175 +166,128 @@ class HomeHeader extends ConsumerWidget {
           ),
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(DesignTokens.radiusXl),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.overlayBlack30.withAlpha((0.15/0.3 * 255 * 0.3).round()),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (nextMeal.photoPath != null)
+            _buildHeroImage(context, nextMeal.photoPath!, isAsset)
+          else
+            Container(color: Theme.of(context).colorScheme.primaryContainer),
+          _buildHeroGradient(),
+          Positioned(
+            bottom: 8,
+            left: 8,
+            right: 8,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Próxima: $scheduledTime',
+                  style: textTheme.labelSmall?.copyWith(
+                    color: AppColors.neutralWhite,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  nextMeal.name,
+                  style: textTheme.labelMedium?.copyWith(
+                    color: AppColors.neutralWhite,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(DesignTokens.radiusXl),
-          child: Stack(
-            children: [
-              // Image background
-              if (isAsset)
-                Image.asset(
-                  nextMeal.photoPath!,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 200,
-                      color: scheme.surfaceContainerHighest,
-                    );
-                  },
-                )
-              else
-                Container(
-                  width: double.infinity,
-                  height: 200,
-                  color: scheme.surfaceContainerHighest,
-                  child: Image.file(
-                    File(nextMeal.photoPath!),
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: scheme.surfaceContainerHighest,
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-              // Gradient overlay
-              Container(
-                width: double.infinity,
-                height: 200,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.neutralDark.withAlpha(0),
-                      AppColors.overlayBlack70,
-                    ],
-                  ),
-                ),
-              ),
-
-              // Text overlay
-              Positioned(
-                bottom: 16,
-                left: 16,
-                right: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Tu próxima comida',
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.neutralWhite.withValues(alpha: 0.8),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            nextMeal.name,
-                            style: textTheme.titleLarge?.copyWith(
-                              color: AppColors.neutralWhite,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        MealTypeChip(
-                          mealType: nextMeal.mealType,
-                          variant: MealTypeChipVariant.iconOnly,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      timeLabel,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: AppColors.neutralWhite,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
-        ),
+        ],
       ),
     );
   }
 
-  /// Builds the hero capture button for when no meal is planned
-  Widget _buildHeroCaptureButton(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+  Widget _buildLastAnalysisCard(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic lastAnalysis,
+  ) {
     final textTheme = Theme.of(context).textTheme;
+    final String? imagePath = lastAnalysis.imagePath ?? lastAnalysis.jobId;
+    final bool hasImage =
+        imagePath != null && (imagePath.startsWith('assets/') || File(imagePath).existsSync());
 
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          _showCaptureDialog(context);
-        },
-        child: SizedBox(
-          width: double.infinity,
-          child: Card(
-            elevation: DesignTokens.elevationMd,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(DesignTokens.radiusXl),
-            ),
-            color: scheme.primaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: DesignTokens.spacingXl,
-                horizontal: DesignTokens.spacingLg,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.camera_alt_outlined,
-                    size: 64,
-                    color: scheme.onPrimaryContainer,
+    return _HeroCard(
+      onTap: () => _showCaptureDialog(context),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (hasImage)
+            _buildHeroImage(context, imagePath!, imagePath.startsWith('assets/'))
+          else
+            Container(color: Theme.of(context).colorScheme.surfaceContainer),
+          _buildHeroGradient(),
+          Positioned(
+            bottom: 8,
+            left: 8,
+            right: 8,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Último análisis',
+                  style: textTheme.labelSmall?.copyWith(
+                    color: AppColors.neutralWhite,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: DesignTokens.spacingMd),
-                  Text(
-                    'Captura tu comida',
-                    style: textTheme.titleLarge?.copyWith(
-                      color: scheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
+                ),
+                Text(
+                  lastAnalysis.title ??
+                      (lastAnalysis.ingredients.isNotEmpty
+                          ? lastAnalysis.ingredients.first
+                          : 'Comida'),
+                  style: textTheme.labelMedium?.copyWith(
+                    color: AppColors.neutralWhite,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: DesignTokens.spacingSm),
-                  Text(
-                    'Toca para tomar una foto o escanear código de barras',
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: scheme.onPrimaryContainer.withValues(alpha: 0.9),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroImage(BuildContext context, String path, bool isAsset) {
+    final scheme = Theme.of(context).colorScheme;
+    if (isAsset) {
+      return Image.asset(
+        path,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            Container(color: scheme.surfaceContainerHighest),
+      );
+    } else {
+      return Image.file(
+        File(path),
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            Container(color: scheme.surfaceContainerHighest),
+      );
+    }
+  }
+
+  Widget _buildHeroGradient() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            AppColors.overlayBlack70.withValues(alpha: 0.8),
+          ],
         ),
       ),
     );
@@ -282,6 +301,43 @@ class HomeHeader extends ConsumerWidget {
         elevation: 0,
         insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         child: CaptureBottomSheet(scrollController: null),
+      ),
+    );
+  }
+}
+
+class _HeroCard extends StatelessWidget {
+  const _HeroCard({
+    required this.child,
+    required this.onTap,
+    this.color,
+  });
+
+  final Widget child;
+  final VoidCallback onTap;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: color ?? Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
+          child: child,
+        ),
       ),
     );
   }

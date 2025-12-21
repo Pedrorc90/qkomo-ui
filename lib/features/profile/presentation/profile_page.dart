@@ -73,9 +73,9 @@ class ProfilePage extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             ProfileOptionCard(
-              title: 'Restricciones',
+              title: 'Preferencias Dietéticas',
               icon: Icons.restaurant_menu,
-              subtitle: 'Dietas y restricciones alimentarias',
+              subtitle: 'Preferencias para tus comidas',
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -84,10 +84,10 @@ class ProfilePage extends ConsumerWidget {
                 );
               },
             ),
-            const SizedBox(height: 8),
-            const _NotificationOption(),
-            const SizedBox(height: 8),
-            const _LanguageOption(),
+            //const SizedBox(height: 8),
+            //const _NotificationOption(),
+            //const SizedBox(height: 8),
+            //const _LanguageOption(),
             const SizedBox(height: 24),
             Text(
               'Apariencia',
@@ -104,8 +104,7 @@ class ProfilePage extends ConsumerWidget {
               onTap: () {
                 Navigator.of(
                   context,
-                ).push(MaterialPageRoute(
-                    builder: (context) => const ThemeSelectionPage()));
+                ).push(MaterialPageRoute(builder: (context) => const ThemeSelectionPage()));
               },
             ),
             const SizedBox(height: 24),
@@ -150,9 +149,7 @@ class _NotificationOption extends ConsumerWidget {
         ),
         value: enabled,
         onChanged: (value) {
-          ref
-              .read(userSettingsProvider.notifier)
-              .setNotificationsEnabled(value);
+          ref.read(userSettingsProvider.notifier).setNotificationsEnabled(value);
         },
       ),
     );

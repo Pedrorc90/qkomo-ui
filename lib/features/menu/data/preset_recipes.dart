@@ -17,6 +17,41 @@ class PresetRecipe {
 
 class PresetRecipes {
   static final List<PresetRecipe> all = [
+    // Desayunos
+    PresetRecipe(
+      name: 'Tostadas con Tomate',
+      ingredients: [
+        'Pan',
+        'Tomate',
+        'Aceite de oliva',
+        'Sal',
+        'Jamón serrano',
+      ],
+      photoPath: MealImages.tostadas,
+      suggestedMealType: MealType.breakfast,
+    ),
+    PresetRecipe(
+      name: 'Café con Leche y Galletas',
+      ingredients: [
+        'Café',
+        'Leche',
+        'Galletas María',
+        'Azúcar',
+      ],
+      photoPath: MealImages.cafeGalletas,
+      suggestedMealType: MealType.breakfast,
+    ),
+    PresetRecipe(
+      name: 'Churros con Chocolate',
+      ingredients: [
+        'Churros',
+        'Chocolate caliente',
+        'Azúcar',
+      ],
+      photoPath: MealImages.churros,
+      suggestedMealType: MealType.breakfast,
+    ),
+    // Comidas
     PresetRecipe(
       name: 'Paella Valenciana',
       ingredients: [
@@ -31,18 +66,6 @@ class PresetRecipes {
       ],
       photoPath: MealImages.paella,
       suggestedMealType: MealType.lunch,
-    ),
-    PresetRecipe(
-      name: 'Tortilla Española',
-      ingredients: [
-        'Huevos',
-        'Patatas',
-        'Cebolla',
-        'Aceite de oliva',
-        'Sal',
-      ],
-      photoPath: MealImages.tortilla,
-      suggestedMealType: MealType.dinner,
     ),
     PresetRecipe(
       name: 'Gazpacho',
@@ -103,6 +126,82 @@ class PresetRecipes {
       ],
       photoPath: MealImages.lentejas,
       suggestedMealType: MealType.lunch,
+    ),
+    // Meriendas
+    PresetRecipe(
+      name: 'Bocadillo de Jamón',
+      ingredients: [
+        'Pan',
+        'Jamón serrano',
+        'Tomate',
+        'Aceite de oliva',
+      ],
+      photoPath: MealImages.bocadilloJamon,
+      suggestedMealType: MealType.snack,
+    ),
+    PresetRecipe(
+      name: 'Frutas y Yogur',
+      ingredients: [
+        'Yogur natural',
+        'Fresas',
+        'Plátano',
+        'Miel',
+      ],
+      photoPath: MealImages.frutasYogur,
+      suggestedMealType: MealType.snack,
+    ),
+    PresetRecipe(
+      name: 'Magdalenas Caseras',
+      ingredients: [
+        'Harina',
+        'Huevos',
+        'Azúcar',
+        'Aceite',
+        'Levadura',
+        'Leche',
+      ],
+      photoPath: MealImages.magdalenas,
+      suggestedMealType: MealType.snack,
+    ),
+    // Cenas
+    PresetRecipe(
+      name: 'Tortilla Española',
+      ingredients: [
+        'Huevos',
+        'Patatas',
+        'Cebolla',
+        'Aceite de oliva',
+        'Sal',
+      ],
+      photoPath: MealImages.tortilla,
+      suggestedMealType: MealType.dinner,
+    ),
+    PresetRecipe(
+      name: 'Sopa de Verduras',
+      ingredients: [
+        'Zanahoria',
+        'Calabacín',
+        'Puerro',
+        'Patata',
+        'Cebolla',
+        'Aceite de oliva',
+        'Sal',
+      ],
+      photoPath: MealImages.sopaVerduras,
+      suggestedMealType: MealType.dinner,
+    ),
+    PresetRecipe(
+      name: 'Pescado a la Plancha',
+      ingredients: [
+        'Pescado blanco',
+        'Limón',
+        'Ajo',
+        'Perejil',
+        'Aceite de oliva',
+        'Sal',
+      ],
+      photoPath: MealImages.pescadoPlancha,
+      suggestedMealType: MealType.dinner,
     ),
   ];
 }

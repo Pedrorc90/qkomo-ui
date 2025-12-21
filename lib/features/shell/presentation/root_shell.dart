@@ -44,7 +44,7 @@ class RootShell extends ConsumerWidget {
         tooltip: 'Capturar comida',
         child: const Icon(Icons.camera_alt_outlined),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
         child: Material(
