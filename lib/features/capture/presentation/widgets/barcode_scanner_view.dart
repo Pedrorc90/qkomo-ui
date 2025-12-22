@@ -67,7 +67,7 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView>
                       MobileScanner(
                         controller: _scannerController,
                         onDetect: (capture) {
-                          final List<Barcode> barcodes = capture.barcodes;
+                          final barcodes = capture.barcodes;
                           if (barcodes.isNotEmpty) {
                             final barcode = barcodes.first.rawValue;
                             if (barcode != null && barcode.isNotEmpty) {
@@ -91,8 +91,7 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView>
           if (widget.state.scannedBarcode != null) ...[
             _AnalyzeButton(
               isProcessing: widget.state.isProcessing,
-              onPressed:
-                  widget.state.isProcessing ? null : widget.onAnalyze,
+              onPressed: widget.state.isProcessing ? null : widget.onAnalyze,
               label: widget.state.isProcessing
                   ? 'Analizando...'
                   : 'Analizar código',
@@ -140,8 +139,8 @@ class _ScannerOverlayPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     // Marco central para enfocar
-    final margin = 50.0;
-    final left = margin;
+    const margin = 50.0;
+    const left = margin;
     final top = (size.height - (size.width - 2 * margin)) / 2;
     final right = size.width - margin;
     final bottom = top + (size.width - 2 * margin);
@@ -219,8 +218,8 @@ class _ScannedBarcodeDisplay extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: Theme.of(context).colorScheme.outline.withAlpha(
-              (0.3 * 255).round(),
-            ),
+                  (0.3 * 255).round(),
+                ),
           ),
         ),
         child: Center(
@@ -234,7 +233,7 @@ class _ScannedBarcodeDisplay extends StatelessWidget {
                     curve: Curves.easeOutBack,
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.check_circle,
                   color: AppColors.semanticSuccess,
                   size: 80,

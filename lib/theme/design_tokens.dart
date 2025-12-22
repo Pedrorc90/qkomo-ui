@@ -29,23 +29,29 @@ class DesignTokens {
   static const double radiusMd = 12.0; // Medium (buttons, small cards)
   static const double radiusLg = 16.0; // Large (cards, modals)
   static const double radiusXl = 20.0; // Extra large (large cards)
-  static const double radiusFull = 100.0; // Full circle (for pill-shaped components)
+  static const double radiusFull =
+      100.0; // Full circle (for pill-shaped components)
 
   /// Elevation (shadow) values following Material Design elevation system
   ///
   /// Used for depth perception and visual hierarchy. Each elevation level
   /// corresponds to a specific material layer in the design system.
   static const double elevationNone = 0.0; // Flat surface (no shadow)
-  static const double elevationSm = 2.0; // Subtle elevation (cards, FAB resting)
-  static const double elevationMd = 4.0; // Medium elevation (raised buttons, hovered cards)
-  static const double elevationLg = 8.0; // Large elevation (floating action button)
+  static const double elevationSm =
+      2.0; // Subtle elevation (cards, FAB resting)
+  static const double elevationMd =
+      4.0; // Medium elevation (raised buttons, hovered cards)
+  static const double elevationLg =
+      8.0; // Large elevation (floating action button)
   static const double elevationXl = 12.0; // Extra large (modals, overlays)
-  static const double elevationXxl = 16.0; // Extra extra large (top-level modals)
+  static const double elevationXxl =
+      16.0; // Extra extra large (top-level modals)
 
   /// Border width values
   ///
   /// Used for strokes on outlined buttons, input fields, and dividers.
-  static const double borderWidthThin = 1.0; // Thin stroke (input borders, dividers)
+  static const double borderWidthThin =
+      1.0; // Thin stroke (input borders, dividers)
   static const double borderWidthMedium = 1.5; // Medium stroke (focused states)
   static const double borderWidthThick = 2.0; // Thick stroke (emphasis)
 
@@ -53,9 +59,12 @@ class DesignTokens {
   ///
   /// Consistent timing across all transitions and animations for a cohesive
   /// feel throughout the app. Follows Material Design guidance.
-  static const Duration durationFast = Duration(milliseconds: 150); // Micro-interactions
-  static const Duration durationBase = Duration(milliseconds: 300); // Standard transitions
-  static const Duration durationSlow = Duration(milliseconds: 500); // Complex animations
+  static const Duration durationFast =
+      Duration(milliseconds: 150); // Micro-interactions
+  static const Duration durationBase =
+      Duration(milliseconds: 300); // Standard transitions
+  static const Duration durationSlow =
+      Duration(milliseconds: 500); // Complex animations
 
   /// Opacity/Alpha values for various semantic purposes
   ///

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../features/auth/application/secure_token_store.dart';
+import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
 
 /// Dio interceptor that automatically adds Firebase ID token to all requests
 /// and handles token refresh on 401 responses.
@@ -89,7 +89,7 @@ class FirebaseTokenInterceptor extends Interceptor {
   /// Get token from secure storage, or fall back to Firebase Auth
   Future<String?> _getToken() async {
     // Try to get cached token from secure storage
-    String? token = await _tokenStore.readToken();
+    var token = await _tokenStore.readToken();
 
     // If no cached token, try to get fresh token from Firebase Auth
     if (token == null || token.isEmpty) {

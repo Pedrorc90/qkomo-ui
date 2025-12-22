@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'package:qkomo_ui/core/widgets/allergen_badge.dart';
-import 'package:qkomo_ui/core/widgets/meal_type_chip.dart';
+import 'package:qkomo_ui/core/animations/page_transitions.dart';
+import 'package:qkomo_ui/core/widgets/widgets.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
@@ -33,7 +32,6 @@ class RecentEntriesSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: colorScheme.outlineVariant,
-          width: 1,
         ),
       ),
       child: Column(
@@ -67,13 +65,7 @@ class RecentEntriesSection extends StatelessWidget {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const HistoryPage(),
-                      ),
-                    );
-                  },
+                  onPressed: () => context.pushSlide(const HistoryPage()),
                   child: const Text('Ver todo'),
                 ),
               ],
@@ -167,7 +159,7 @@ class RecentEntriesSection extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     // Check if we should try to display an image
-    bool hasImage = false;
+    var hasImage = false;
     File? imageFile;
 
     try {
@@ -186,128 +178,122 @@ class RecentEntriesSection extends StatelessWidget {
             ? entry.ingredients.take(3).join(', ')
             : 'Sin ingredientes detectados');
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+    return AnimatedCard(
+      onTap: () => context.pushSlide(const HistoryPage()),
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: colorScheme.outlineVariant,
-          width: 1,
+      color: Colors.transparent,
+      padding: EdgeInsets.zero,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: colorScheme.outlineVariant,
+          ),
         ),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        leading: hasImage && imageFile != null
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  imageFile,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
+        child: Row(
+          children: [
+            hasImage && imageFile != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(
+                      imageFile,
                       width: 60,
                       height: 60,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        Icons.image_not_supported,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    );
-                  },
-                ),
-              )
-            : Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer
-                      .withAlpha((0.3 * 255).round()),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  entry.isManualEntry ? Icons.edit : Icons.camera_alt,
-                  color: colorScheme.primary,
-                ),
-              ),
-        title: Row(
-          children: [
-            // Meal type chip if available
-            if (entry.mealType != null) ...[
-              MealTypeChip(
-                mealType: entry.mealType!,
-                variant: MealTypeChipVariant.iconOnly,
-              ),
-              const SizedBox(width: 8),
-            ],
-            // Title
-            Expanded(
-              child: Text(
-                titleText,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.bodyMedium,
-              ),
-            ),
-          ],
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            // Time
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Meal type label if available
-                if (entry.mealType != null)
-                  Text(
-                    entry.mealType!.displayName,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.image_not_supported,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer
+                          .withAlpha((0.3 * 255).round()),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      entry.isManualEntry ? Icons.edit : Icons.camera_alt,
+                      color: colorScheme.primary,
                     ),
                   ),
-                // Time
-                Text(
-                  timeFormat.format(entry.savedAt),
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      if (entry.mealType != null) ...[
+                        MealTypeChip(
+                          mealType: entry.mealType!,
+                          variant: MealTypeChipVariant.iconOnly,
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Expanded(
+                        child: Text(
+                          titleText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodyMedium,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            // Allergen badges if available
-            if (entry.allergens.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 4,
-                children: entry.allergens.take(2).map((allergen) {
-                  return AllergenBadge(
-                    allergen: allergen,
-                    isPersonalAlert: true,
-                  );
-                }).toList(),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (entry.mealType != null)
+                        Text(
+                          entry.mealType!.displayName,
+                          style: textTheme.labelSmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      Text(
+                        timeFormat.format(entry.savedAt),
+                        style: textTheme.labelSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (entry.allergens.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Wrap(
+                      spacing: 4,
+                      children: entry.allergens.take(2).map((allergen) {
+                        return AllergenBadge(
+                          allergen: allergen,
+                          isPersonalAlert: true,
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ],
               ),
-            ],
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: colorScheme.onSurfaceVariant,
+            ),
           ],
         ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: colorScheme.onSurfaceVariant,
-        ),
-        onTap: () {
-          // Navigate to entry details if needed
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const HistoryPage(),
-            ),
-          );
-        },
       ),
     );
   }

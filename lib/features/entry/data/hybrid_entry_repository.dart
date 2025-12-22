@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
+import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
-import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 
 class HybridEntryRepository implements EntryRepository {
   HybridEntryRepository({
@@ -86,7 +86,7 @@ class HybridEntryRepository implements EntryRepository {
       final remoteEntries = await _remoteRepo.fetchEntries(from: lastSynced);
 
       for (final remoteEntry in remoteEntries) {
-        final localEntry = await _localRepo.getEntryById(remoteEntry.id);
+        final localEntry = _localRepo.getEntryById(remoteEntry.id);
 
         if (localEntry == null) {
           // New from cloud -> save locally

@@ -25,20 +25,22 @@ class ImageCompressor {
       final originalSize = bytes.length;
 
       if (kDebugMode) {
-        print('[ImageCompressor] Tamaño original: ${(originalSize / 1024 / 1024).toStringAsFixed(2)} MB');
+        print(
+            '[ImageCompressor] Tamaño original: ${(originalSize / 1024 / 1024).toStringAsFixed(2)} MB');
       }
 
       // Decode image
       final image = img.decodeImage(bytes);
       if (image == null) {
         if (kDebugMode) {
-          print('[ImageCompressor] No se pudo decodificar la imagen, usando original');
+          print(
+              '[ImageCompressor] No se pudo decodificar la imagen, usando original');
         }
         return imageFile;
       }
 
       // Resize if necessary (maintain aspect ratio)
-      img.Image resized = image;
+      var resized = image;
       if (image.width > maxDimension || image.height > maxDimension) {
         resized = img.copyResize(
           image,
@@ -47,7 +49,8 @@ class ImageCompressor {
           interpolation: img.Interpolation.linear,
         );
         if (kDebugMode) {
-          print('[ImageCompressor] Redimensionada a ${resized.width}x${resized.height}');
+          print(
+              '[ImageCompressor] Redimensionada a ${resized.width}x${resized.height}');
         }
       }
 
@@ -56,14 +59,17 @@ class ImageCompressor {
       final compressedSize = compressedBytes.length;
 
       if (kDebugMode) {
-        print('[ImageCompressor] Tamaño comprimido: ${(compressedSize / 1024 / 1024).toStringAsFixed(2)} MB');
-        print('[ImageCompressor] Reducción: ${((1 - compressedSize / originalSize) * 100).toStringAsFixed(1)}%');
+        print(
+            '[ImageCompressor] Tamaño comprimido: ${(compressedSize / 1024 / 1024).toStringAsFixed(2)} MB');
+        print(
+            '[ImageCompressor] Reducción: ${((1 - compressedSize / originalSize) * 100).toStringAsFixed(1)}%');
       }
 
       // If compressed is not significantly smaller, return original
       if (compressedSize >= originalSize * 0.9) {
         if (kDebugMode) {
-          print('[ImageCompressor] Compresión no significativa, usando original');
+          print(
+              '[ImageCompressor] Compresión no significativa, usando original');
         }
         return imageFile;
       }
@@ -76,13 +82,15 @@ class ImageCompressor {
       await compressedFile.writeAsBytes(compressedBytes);
 
       if (kDebugMode) {
-        print('[ImageCompressor] Imagen comprimida guardada en ${compressedFile.path}');
+        print(
+            '[ImageCompressor] Imagen comprimida guardada en ${compressedFile.path}');
       }
 
       return XFile(compressedFile.path, name: 'compressed_${imageFile.name}');
     } catch (e) {
       if (kDebugMode) {
-        print('[ImageCompressor] Error durante compresión: $e, usando original');
+        print(
+            '[ImageCompressor] Error durante compresión: $e, usando original');
       }
       // Return original file if compression fails
       return imageFile;

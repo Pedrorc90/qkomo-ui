@@ -12,7 +12,9 @@ final todayEntriesProvider = Provider<List<CaptureResult>>((ref) {
 
   return allResults.where((result) {
     final date = result.savedAt;
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }).toList()
     ..sort((a, b) => a.savedAt.compareTo(b.savedAt));
 });
@@ -38,7 +40,9 @@ final tomorrowMealsProvider = Provider<List<Meal>>((ref) {
 
   return allMeals.where((meal) {
     final date = meal.scheduledFor;
-    return date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day;
+    return date.year == tomorrow.year &&
+        date.month == tomorrow.month &&
+        date.day == tomorrow.day;
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });

@@ -21,17 +21,17 @@ class MockCaptureController extends StateNotifier<CaptureState>
 
   @override
   void clearMode() {
-    state = state.copyWith(mode: null);
+    state = state.copyWith();
   }
 
   @override
   void clearError() {
-    state = state.copyWith(error: null);
+    state = state.copyWith();
   }
 
   @override
   void clearMessage() {
-    state = state.copyWith(message: null);
+    state = state.copyWith();
   }
 
   // Stubs for other methods
@@ -51,7 +51,7 @@ class MockCaptureController extends StateNotifier<CaptureState>
   Future<void> openSettings() async {}
 
   @override
-  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {

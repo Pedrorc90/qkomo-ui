@@ -25,7 +25,7 @@ class _IngredientsPieChartState extends State<IngredientsPieChart> {
 
     // Colors for the pie sections - adaptive to theme brightness
     final brightness = Theme.of(context).brightness;
-    final List<Color> colors = AppColors.getChartColors(brightness);
+    final colors = AppColors.getChartColors(brightness);
 
     return AspectRatio(
       aspectRatio: 1.3,

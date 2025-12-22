@@ -1,0 +1,24 @@
+version: 2
+updates:
+  # Enable version updates for pub (Dart/Flutter packages)
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Pedrorc90"
+    labels:
+      - "dependencies"
+      - "automated"
+    # Group minor and patch updates together
+    groups:
+      flutter-packages:
+        patterns:
+          - "flutter*"
+      firebase-packages:
+        patterns:
+          - "firebase*"
+      dev-dependencies:
+        dependency-type: "development"

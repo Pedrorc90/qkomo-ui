@@ -1,15 +1,14 @@
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 
 class MenuState {
-  final bool isLoading;
-  final String? errorMessage;
-  final Meal? editingMeal;
-
   MenuState({
     this.isLoading = false,
     this.errorMessage,
     this.editingMeal,
   });
+  final bool isLoading;
+  final String? errorMessage;
+  final Meal? editingMeal;
 
   MenuState copyWith({
     bool? isLoading,

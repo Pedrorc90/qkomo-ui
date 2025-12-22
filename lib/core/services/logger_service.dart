@@ -3,13 +3,12 @@ import 'package:flutter/foundation.dart';
 /// Service for structured logging.
 /// Use this instead of print() or debugPrint().
 class LogService {
-  static final LogService _instance = LogService._internal();
-
   factory LogService() {
     return _instance;
   }
 
   LogService._internal();
+  static final LogService _instance = LogService._internal();
 
   /// Log debug message (development only)
   void d(String message) {

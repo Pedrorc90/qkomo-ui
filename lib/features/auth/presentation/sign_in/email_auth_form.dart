@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'email_auth_result.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/email_auth_result.dart';
 
 class EmailAuthForm extends StatelessWidget {
   const EmailAuthForm({
@@ -60,7 +60,6 @@ class EmailAuthForm extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Align(
-          alignment: Alignment.center,
           child: TextButton(
             onPressed: onToggleMode,
             style: TextButton.styleFrom(

@@ -1,16 +1,7 @@
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class Meal {
-  final String id;
-  final String userId;
-  final String name;
-  final List<String> ingredients;
-  final MealType mealType;
-  final DateTime scheduledFor;
-  final DateTime createdAt;
-  final DateTime? updatedAt;
-  final String? notes;
-  final String? photoPath; // Path to local image or asset
+  // Path to local image or asset
 
   Meal({
     required this.id,
@@ -24,6 +15,16 @@ class Meal {
     this.notes,
     this.photoPath,
   });
+  final String id;
+  final String userId;
+  final String name;
+  final List<String> ingredients;
+  final MealType mealType;
+  final DateTime scheduledFor;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  final String? notes;
+  final String? photoPath;
 
   Meal copyWith({
     String? id,

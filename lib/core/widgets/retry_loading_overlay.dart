@@ -7,12 +7,11 @@ import 'package:qkomo_ui/theme/app_colors.dart';
 
 /// Overlay visual amigable para mostrar estado de reintentos
 class RetryLoadingOverlay extends ConsumerWidget {
-  final Widget child;
-
   const RetryLoadingOverlay({
     super.key,
     required this.child,
   });
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +25,8 @@ class RetryLoadingOverlay extends ConsumerWidget {
             child: IgnorePointer(
               ignoring: false,
               child: Container(
-                color: AppColors.overlayBlack50.withAlpha((0.4/0.5 * 255 * 0.5).round()),
+                color: AppColors.overlayBlack50
+                    .withAlpha((0.4 / 0.5 * 255 * 0.5).round()),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -45,7 +45,8 @@ class RetryLoadingOverlay extends ConsumerWidget {
                                 color: AppColors.neutralWhite,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.overlayBlack30.withAlpha((0.2/0.3 * 255 * 0.3).round()),
+                                    color: AppColors.overlayBlack30.withAlpha(
+                                        (0.2 / 0.3 * 255 * 0.3).round()),
                                     blurRadius: 12,
                                     spreadRadius: 2,
                                   ),
@@ -66,10 +67,11 @@ class RetryLoadingOverlay extends ConsumerWidget {
                       // Texto de estado
                       Text(
                         'Conectando...',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: AppColors.neutralWhite,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: AppColors.neutralWhite,
+                                  fontWeight: FontWeight.w600,
+                                ),
                       ),
                       const SizedBox(height: 12)
                     ],

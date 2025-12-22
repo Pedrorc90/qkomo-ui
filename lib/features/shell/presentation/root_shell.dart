@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/home/presentation/home_page.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/profile_page.dart';
-
 import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 
 class RootShell extends ConsumerWidget {
@@ -37,12 +36,15 @@ class RootShell extends ConsumerWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
               insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-              child: CaptureBottomSheet(scrollController: null),
+              child: CaptureBottomSheet(),
             ),
           );
         },
-        tooltip: 'Capturar comida',
-        child: const Icon(Icons.camera_alt_outlined),
+        tooltip: SemanticLabels.navCapture,
+        child: const Icon(
+          Icons.camera_alt_outlined,
+          semanticLabel: SemanticLabels.navCapture,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Padding(
@@ -55,7 +57,6 @@ class RootShell extends ConsumerWidget {
             decoration: BoxDecoration(
               border: Border.all(
                 color: Theme.of(context).colorScheme.outlineVariant,
-                width: 1,
               ),
               borderRadius: BorderRadius.circular(20),
             ),
@@ -73,17 +74,17 @@ class RootShell extends ConsumerWidget {
                   NavigationDestination(
                     icon: Icon(Icons.calendar_month_outlined, size: 24),
                     selectedIcon: Icon(Icons.calendar_month, size: 32),
-                    label: '',
+                    label: SemanticLabels.navMenu,
                   ),
                   NavigationDestination(
                     icon: Icon(Icons.home_outlined, size: 24),
                     selectedIcon: Icon(Icons.home_rounded, size: 32),
-                    label: '',
+                    label: SemanticLabels.navHome,
                   ),
                   NavigationDestination(
                     icon: Icon(Icons.person_2_outlined, size: 24),
                     selectedIcon: Icon(Icons.person, size: 32),
-                    label: '',
+                    label: SemanticLabels.navProfile,
                   ),
                 ],
               ),

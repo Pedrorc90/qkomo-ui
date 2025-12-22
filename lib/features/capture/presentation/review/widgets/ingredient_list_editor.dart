@@ -93,14 +93,14 @@ class _IngredientListEditorState extends State<IngredientListEditor> {
             Text(
               'Ingredientes',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             Text(
               '${widget.ingredients.length} ingredientes',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
+                    color: scheme.onSurfaceVariant,
+                  ),
             ),
           ],
         ),
@@ -204,8 +204,8 @@ class _IngredientListEditorState extends State<IngredientListEditor> {
         Text(
           'Detectados por IA (⨯): Añadidos manualmente (✎)',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: scheme.onSurfaceVariant,
-          ),
+                color: scheme.onSurfaceVariant,
+              ),
         ),
       ],
     );

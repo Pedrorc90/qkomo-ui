@@ -43,7 +43,6 @@ class AppTheme {
   /// Warm theme with orange/coral primary colors and inviting surfaces
   static final ColorScheme _warmScheme = ColorScheme.fromSeed(
     seedColor: AppColors.primaryMain,
-    brightness: Brightness.light,
     surface: AppColors.warmSurface,
   );
 
@@ -53,7 +52,6 @@ class AppTheme {
   /// Minimalist theme with neutral grays and clean off-white surfaces
   static final ColorScheme _offWhiteScheme = ColorScheme.fromSeed(
     seedColor: AppColors.neutralMediumDark,
-    brightness: Brightness.light,
     surface: AppColors.offWhiteSurface,
     primary: AppColors.offWhitePrimary,
     onSurface: AppColors.neutralDark,
@@ -78,7 +76,6 @@ class AppTheme {
   /// Forest theme with deep green earthy colors
   static final ColorScheme _forestScheme = ColorScheme.fromSeed(
     seedColor: AppColors.forestPrimary,
-    brightness: Brightness.light,
     surface: AppColors.forestSurface,
     secondary: AppColors.forestSecondary,
   );
@@ -89,7 +86,6 @@ class AppTheme {
   /// Indigo theme with deep indigo and purple elegant colors
   static final ColorScheme _indigoScheme = ColorScheme.fromSeed(
     seedColor: AppColors.indigoPrimary,
-    brightness: Brightness.light,
     surface: AppColors.indigoSurface,
     secondary: AppColors.indigoSecondary,
   );
@@ -113,8 +109,9 @@ class AppTheme {
         ),
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness:
-              scheme.brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+          statusBarIconBrightness: scheme.brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
           statusBarBrightness: scheme.brightness,
         ),
       ),
@@ -129,7 +126,7 @@ class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: DesignTokens.spacingMd,
             horizontal: DesignTokens.spacingMd,
           ),
@@ -141,7 +138,7 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: DesignTokens.spacingMd,
             horizontal: DesignTokens.spacingMd,
           ),
@@ -150,7 +147,6 @@ class AppTheme {
           ),
           side: BorderSide(
             color: scheme.outline,
-            width: DesignTokens.borderWidthThin,
           ),
           textStyle: AppTypography.titleMedium,
         ),
@@ -162,14 +158,12 @@ class AppTheme {
           borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
           borderSide: BorderSide(
             color: scheme.outlineVariant,
-            width: DesignTokens.borderWidthThin,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
           borderSide: BorderSide(
             color: scheme.outlineVariant,
-            width: DesignTokens.borderWidthThin,
           ),
         ),
         focusedBorder: OutlineInputBorder(

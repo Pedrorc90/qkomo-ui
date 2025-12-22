@@ -5,22 +5,21 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:qkomo_ui/core/http/firebase_token_interceptor.dart';
 import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
 
 // Manual fakes
 class FakeFirebaseAuth extends Fake implements FirebaseAuth {
-  final User? _user;
   FakeFirebaseAuth(this._user);
+  final User? _user;
 
   @override
   User? get currentUser => _user;
 }
 
 class FakeUser extends Fake implements User {
-  final String _token;
   FakeUser(this._token);
+  final String _token;
 
   @override
   Future<String> getIdToken([bool forceRefresh = false]) async {
@@ -118,18 +117,16 @@ void main() {
 typedef MockHandler = ResponseBox Function(RequestOptions options);
 
 class ResponseBox {
+  ResponseBox(
+      {required this.data, required this.statusCode, required this.headers});
   final dynamic data;
   final int statusCode;
   final Map<String, dynamic> headers;
-
-  ResponseBox(
-      {required this.data, required this.statusCode, required this.headers});
 }
 
 class _MockAdapter implements HttpClientAdapter {
-  final MockHandler _handler;
-
   _MockAdapter(this._handler);
+  final MockHandler _handler;
 
   @override
   Future<ResponseBody> fetch(

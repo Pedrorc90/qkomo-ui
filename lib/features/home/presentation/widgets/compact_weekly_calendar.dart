@@ -20,7 +20,7 @@ class CompactWeeklyCalendar extends ConsumerWidget {
     final today = DateTime(now.year, now.month, now.day);
 
     final dayCards = <Widget>[];
-    for (int index = 0; index < 7; index++) {
+    for (var index = 0; index < 7; index++) {
       final date = weekStart.add(Duration(days: index));
       final normalizedDate = DateTime(date.year, date.month, date.day);
       final isSelected = selectedDay != null &&

@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
-
-import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:uuid/uuid.dart';
 
 class TextEntryController extends StateNotifier<AsyncValue<CaptureResult?>> {
   TextEntryController(this._captureResultRepository)

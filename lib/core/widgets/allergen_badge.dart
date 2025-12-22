@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
+import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
 
 /// A badge widget for displaying allergen information with optional personal alert state.
@@ -44,49 +46,44 @@ class AllergenBadge extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return GestureDetector(
+    return SemanticWrapper(
       onTap: onTap,
-      child: Semantics(
-        label:
-            'Alérgeno: $allergen${isPersonalAlert ? ', alerta personal' : ', detectado'}',
-        enabled: onTap != null,
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: isPersonalAlert
-                ? scheme.errorContainer
-                : scheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
-            border: isPersonalAlert
-                ? Border.all(
-                    color: scheme.error,
-                    width: DesignTokens.borderWidthThin,
-                  )
-                : null,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (isPersonalAlert) ...[
-                Icon(
-                  Icons.warning_amber,
-                  size: 12,
+      label:
+          'Alérgeno: $allergen${isPersonalAlert ? ', alerta personal' : ', detectado'}',
+      enabled: onTap != null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isPersonalAlert
+              ? scheme.errorContainer
+              : scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+          border: isPersonalAlert
+              ? Border.all(
                   color: scheme.error,
-                ),
-                const SizedBox(width: 4),
-              ],
-              Text(
-                allergen,
-                style: textTheme.labelSmall?.copyWith(
-                  fontWeight:
-                      isPersonalAlert ? FontWeight.w700 : FontWeight.w400,
-                  color:
-                      isPersonalAlert ? scheme.error : scheme.onSurfaceVariant,
-                ),
+                )
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isPersonalAlert) ...[
+              Icon(
+                Icons.warning_amber,
+                size: 12,
+                color: scheme.error,
+                semanticLabel: SemanticLabels.iconWarning,
               ),
+              const SizedBox(width: 4),
             ],
-          ),
+            Text(
+              allergen,
+              style: textTheme.labelSmall?.copyWith(
+                fontWeight: isPersonalAlert ? FontWeight.w700 : FontWeight.w400,
+                color: isPersonalAlert ? scheme.error : scheme.onSurfaceVariant,
+              ),
+            ),
+          ],
         ),
       ),
     );

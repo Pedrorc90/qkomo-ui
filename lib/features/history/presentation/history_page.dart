@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qkomo_ui/core/animations/loading_states.dart';
+import 'package:qkomo_ui/core/animations/page_transitions.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 import 'package:qkomo_ui/features/history/application/history_controller.dart';
 import 'package:qkomo_ui/features/history/application/history_providers.dart';
-import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 import 'package:qkomo_ui/features/history/presentation/widgets/date_filter_tabs.dart';
 import 'package:qkomo_ui/features/history/presentation/widgets/date_group_header.dart';
 import 'package:qkomo_ui/features/history/presentation/widgets/enhanced_result_card.dart';
 import 'package:qkomo_ui/features/history/presentation/widgets/history_search_bar.dart';
+import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 import 'package:qkomo_ui/features/statistics/presentation/statistics_page.dart';
 import 'package:qkomo_ui/theme/app_colors.dart';
 
@@ -29,14 +31,7 @@ class HistoryPage extends ConsumerWidget {
           const HistorySearchBar(),
           IconButton(
             icon: const Icon(Icons.bar_chart),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const StatisticsPage(),
-                ),
-              );
-            },
+            onPressed: () => context.pushSlide(const StatisticsPage()),
           ),
           const SizedBox(width: 8),
         ],
@@ -44,7 +39,6 @@ class HistoryPage extends ConsumerWidget {
       body: RefreshIndicator(
         color: Theme.of(context).colorScheme.primary,
         backgroundColor: Theme.of(context).colorScheme.surface,
-        displacement: 40,
         strokeWidth: 3.0,
         onRefresh: () => _onRefresh(ref),
         child: CustomScrollView(
@@ -76,6 +70,11 @@ class HistoryPage extends ConsumerWidget {
     final hasResults = groupedEntries.values.any((list) => list.isNotEmpty);
 
     if (!hasResults) {
+      if (historyState.isRefreshing) {
+        return const SliverFillRemaining(
+          child: Center(child: SkeletonList()),
+        );
+      }
       return SliverFillRemaining(
         child: _buildEmptyState(context, historyState),
       );
@@ -113,15 +112,8 @@ class HistoryPage extends ConsumerWidget {
                     children: [
                       EnhancedResultCard(
                         result: entry.result,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CaptureReviewPage(resultId: entry.id),
-                            ),
-                          );
-                        },
+                        onTap: () => context
+                            .pushSlide(CaptureReviewPage(resultId: entry.id)),
                       ),
                       if (entry.syncStatus == SyncStatus.pending)
                         Positioned(
@@ -130,8 +122,8 @@ class HistoryPage extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color:
-                                  AppColors.semanticWarning.withAlpha((0.8 * 255).round()),
+                              color: AppColors.semanticWarning
+                                  .withAlpha((0.8 * 255).round()),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -148,7 +140,8 @@ class HistoryPage extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: AppColors.semanticError.withAlpha((0.8 * 255).round()),
+                              color: AppColors.semanticError
+                                  .withAlpha((0.8 * 255).round()),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -174,7 +167,7 @@ class HistoryPage extends ConsumerWidget {
   }
 
   int _countWidgets(Map<DateGroup, List<Entry>> groupedEntries) {
-    int count = 0;
+    var count = 0;
     for (final group in DateGroup.values) {
       final entries = groupedEntries[group] ?? [];
       if (entries.isNotEmpty) {

@@ -25,7 +25,8 @@ class CaptureResult with _$CaptureResult {
     String? imagePath,
   }) = _CaptureResult;
 
-  factory CaptureResult.fromJson(Map<String, dynamic> json) => _$CaptureResultFromJson(json);
+  factory CaptureResult.fromJson(Map<String, dynamic> json) =>
+      _$CaptureResultFromJson(json);
 }
 
 @freezed
@@ -38,5 +39,6 @@ class CaptureNutrition with _$CaptureNutrition {
     double? fiberG,
   }) = _CaptureNutrition;
 
-  factory CaptureNutrition.fromJson(Map<String, dynamic> json) => _$CaptureNutritionFromJson(json);
+  factory CaptureNutrition.fromJson(Map<String, dynamic> json) =>
+      _$CaptureNutritionFromJson(json);
 }

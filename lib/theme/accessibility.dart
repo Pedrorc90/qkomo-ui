@@ -146,7 +146,8 @@ class AccessibilityValidator {
     // Determine if this is large text (18pt bold+ or 24pt+)
     final fontSize = textStyle.fontSize ?? 16;
     final fontWeight = textStyle.fontWeight ?? FontWeight.normal;
-    final isLargeText = (fontSize >= 18 && fontWeight.index >= 6) || fontSize >= 24;
+    final isLargeText =
+        (fontSize >= 18 && fontWeight.index >= 6) || fontSize >= 24;
 
     return isLargeText
         ? isContrastRatioAALargeText(textColor, backgroundColor)
@@ -162,10 +163,10 @@ class AccessibilityValidator {
     final suggestions = <String>[];
 
     if (ratio < _minContrastRatioAA) {
-      suggestions.add(
-          'Current ratio: ${ratio.toStringAsFixed(2)}:1 (below WCAG AA)');
-      suggestions.add('Try using a darker foreground or lighter background');
-      suggestions.add('Consider using a more contrasting color pair');
+      suggestions
+        ..add('Current ratio: ${ratio.toStringAsFixed(2)}:1 (below WCAG AA)')
+        ..add('Try using a darker foreground or lighter background')
+        ..add('Consider using a more contrasting color pair');
     }
 
     return suggestions.join('\n');
@@ -187,7 +188,7 @@ class Math {
     if (exponent == 1) return base;
 
     double result = 1;
-    for (int i = 0; i < exponent; i++) {
+    for (var i = 0; i < exponent; i++) {
       result *= base;
     }
     return result;

@@ -11,7 +11,8 @@ class LoadingScreen extends StatefulWidget {
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProviderStateMixin {
+class _LoadingScreenState extends State<LoadingScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
@@ -80,8 +81,10 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
             SizedBox(
               width: 140,
               child: LinearProgressIndicator(
-                backgroundColor: theme.colorScheme.primaryContainer.withAlpha(50),
-                valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+                backgroundColor:
+                    theme.colorScheme.primaryContainer.withAlpha(50),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
                 borderRadius: BorderRadius.circular(DesignTokens.radiusFull),
               ),
             ),

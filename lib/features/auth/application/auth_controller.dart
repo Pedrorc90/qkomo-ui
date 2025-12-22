@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
+import 'package:qkomo_ui/features/auth/domain/auth_failure.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
-import '../domain/auth_failure.dart';
-import 'secure_token_store.dart';
 
 class AuthController {
   AuthController({

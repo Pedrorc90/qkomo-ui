@@ -30,16 +30,16 @@ void main() {
   const tEntryId = 'test-id';
   final tResult = CaptureResult(
     jobId: 'job-id',
-    savedAt: DateTime(2023, 1, 1),
+    savedAt: DateTime(2023),
     title: 'Test Meal',
   );
 
   final tEntry = Entry(
     id: tEntryId,
     result: tResult,
-    lastModifiedAt: DateTime(2023, 1, 1),
+    lastModifiedAt: DateTime(2023),
     syncStatus: SyncStatus.synced,
-    lastSyncedAt: DateTime(2023, 1, 1),
+    lastSyncedAt: DateTime(2023),
   );
 
   group('sync', () {
@@ -54,7 +54,7 @@ void main() {
       await repository.sync();
 
       // Assert
-      verify(mockRemoteRepo.fetchEntries(from: null)); // No previous sync time
+      verify(mockRemoteRepo.fetchEntries()); // No previous sync time
       verify(mockLocalRepo.saveEntry(tEntry));
     });
 

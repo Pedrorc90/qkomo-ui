@@ -4,12 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
+import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
+import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
+import 'package:qkomo_ui/core/animations/page_transitions.dart';
+import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
-import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
-import 'package:qkomo_ui/theme/app_colors.dart';
 
 /// Enhanced home header with next meal image or hero capture button
 class HomeHeader extends ConsumerWidget {
@@ -28,7 +29,7 @@ class HomeHeader extends ConsumerWidget {
     final lastAnalysis = ref.watch(lastAnalysisProvider);
 
     return Padding(
-      padding: const EdgeInsets.all(DesignTokens.spacingMd),
+      padding: const EdgeInsets.symmetric(vertical: DesignTokens.spacingMd),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,7 +41,7 @@ class HomeHeader extends ConsumerWidget {
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.5,
                 ),
-          ),
+          ).withSemantics(isHeader: true),
           const SizedBox(height: 4),
           Text(
             'Hola, $name',
@@ -51,16 +52,21 @@ class HomeHeader extends ConsumerWidget {
           ),
           const SizedBox(height: DesignTokens.spacingMd),
           // Dual Hero Section
-          Row(
-            children: [
-              Expanded(
-                child: _buildMealHero(context, ref, nextMeal),
+          Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildMealHero(context, ref, nextMeal),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildAnalysisHero(context, ref, lastAnalysis),
+                  ),
+                ],
               ),
-              const SizedBox(width: DesignTokens.spacingMd),
-              Expanded(
-                child: _buildAnalysisHero(context, ref, lastAnalysis),
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -76,13 +82,7 @@ class HomeHeader extends ConsumerWidget {
         title: 'Crea tu menú',
         subtitle: 'Planifica tu semana',
         icon: Icons.restaurant_menu,
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const WeeklyMenuPage(),
-            ),
-          );
-        },
+        onTap: () => context.pushSlide(const WeeklyMenuPage()),
       );
     }
   }
@@ -115,6 +115,8 @@ class HomeHeader extends ConsumerWidget {
 
     return _HeroCard(
       onTap: onTap,
+      label: '$title. $subtitle',
+      isButton: true,
       color: isPrimary ? scheme.primaryContainer : scheme.surfaceContainerLow,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -123,6 +125,7 @@ class HomeHeader extends ConsumerWidget {
             icon,
             size: 32,
             color: isPrimary ? scheme.onPrimaryContainer : scheme.primary,
+            semanticLabel: '', // Handled by _HeroCard label
           ),
           const SizedBox(height: DesignTokens.spacingSm),
           Text(
@@ -159,13 +162,9 @@ class HomeHeader extends ConsumerWidget {
     final scheduledTime = timeFormat.format(nextMeal.scheduledFor);
 
     return _HeroCard(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const WeeklyMenuPage(),
-          ),
-        );
-      },
+      onTap: () => context.pushSlide(const WeeklyMenuPage()),
+      label: 'Próxima comida: ${nextMeal.name} a las $scheduledTime',
+      isButton: true,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -184,14 +183,14 @@ class HomeHeader extends ConsumerWidget {
                 Text(
                   'Próxima: $scheduledTime',
                   style: textTheme.labelSmall?.copyWith(
-                    color: AppColors.neutralWhite,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   nextMeal.name,
                   style: textTheme.labelMedium?.copyWith(
-                    color: AppColors.neutralWhite,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
@@ -212,16 +211,18 @@ class HomeHeader extends ConsumerWidget {
   ) {
     final textTheme = Theme.of(context).textTheme;
     final String? imagePath = lastAnalysis.imagePath ?? lastAnalysis.jobId;
-    final bool hasImage =
+    final hasImage =
         imagePath != null && (imagePath.startsWith('assets/') || File(imagePath).existsSync());
 
     return _HeroCard(
       onTap: () => _showCaptureDialog(context),
+      label: 'Último análisis: ${lastAnalysis.title ?? 'comida'}. Toca para analizar otra.',
+      isButton: true,
       child: Stack(
         fit: StackFit.expand,
         children: [
           if (hasImage)
-            _buildHeroImage(context, imagePath!, imagePath.startsWith('assets/'))
+            _buildHeroImage(context, imagePath, imagePath.startsWith('assets/'))
           else
             Container(color: Theme.of(context).colorScheme.surfaceContainer),
           _buildHeroGradient(),
@@ -235,7 +236,7 @@ class HomeHeader extends ConsumerWidget {
                 Text(
                   'Último análisis',
                   style: textTheme.labelSmall?.copyWith(
-                    color: AppColors.neutralWhite,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -245,7 +246,7 @@ class HomeHeader extends ConsumerWidget {
                           ? lastAnalysis.ingredients.first
                           : 'Comida'),
                   style: textTheme.labelMedium?.copyWith(
-                    color: AppColors.neutralWhite,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
@@ -265,6 +266,7 @@ class HomeHeader extends ConsumerWidget {
       return Image.asset(
         path,
         fit: BoxFit.cover,
+        semanticLabel: SemanticLabels.mealImage,
         errorBuilder: (context, error, stackTrace) =>
             Container(color: scheme.surfaceContainerHighest),
       );
@@ -272,6 +274,7 @@ class HomeHeader extends ConsumerWidget {
       return Image.file(
         File(path),
         fit: BoxFit.cover,
+        semanticLabel: SemanticLabels.mealImage,
         errorBuilder: (context, error, stackTrace) =>
             Container(color: scheme.surfaceContainerHighest),
       );
@@ -286,7 +289,7 @@ class HomeHeader extends ConsumerWidget {
           end: Alignment.bottomCenter,
           colors: [
             Colors.transparent,
-            AppColors.overlayBlack70.withValues(alpha: 0.8),
+            Colors.black.withValues(alpha: 0.7),
           ],
         ),
       ),
@@ -300,7 +303,7 @@ class HomeHeader extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-        child: CaptureBottomSheet(scrollController: null),
+        child: CaptureBottomSheet(),
       ),
     );
   }
@@ -311,20 +314,27 @@ class _HeroCard extends StatelessWidget {
     required this.child,
     required this.onTap,
     this.color,
+    this.label,
+    this.isButton = false,
   });
 
   final Widget child;
   final VoidCallback onTap;
   final Color? color;
+  final String? label;
+  final bool isButton;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return SemanticWrapper(
       onTap: onTap,
+      label: label,
+      isButton: isButton,
       child: Container(
+        width: double.infinity,
         height: 120,
         decoration: BoxDecoration(
-          color: color ?? Theme.of(context).colorScheme.surface,
+          // Material handles the color and clipping, this Decoration is just for shadow
           borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
           boxShadow: [
             BoxShadow(
@@ -334,9 +344,14 @@ class _HeroCard extends StatelessWidget {
             ),
           ],
         ),
-        child: ClipRRect(
+        child: Material(
+          color: color ?? Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
-          child: child,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: child,
+          ),
         ),
       ),
     );

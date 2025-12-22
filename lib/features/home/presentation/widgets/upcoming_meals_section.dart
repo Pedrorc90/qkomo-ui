@@ -30,7 +30,6 @@ class UpcomingMealsSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: colorScheme.outlineVariant,
-          width: 1,
         ),
       ),
       child: Column(
@@ -40,7 +39,8 @@ class UpcomingMealsSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: colorScheme.secondaryContainer.withAlpha((0.3 * 255).round()),
+              color:
+                  colorScheme.secondaryContainer.withAlpha((0.3 * 255).round()),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -91,7 +91,8 @@ class UpcomingMealsSection extends StatelessWidget {
                           Icon(
                             Icons.event_busy,
                             size: 48,
-                            color: colorScheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
+                            color: colorScheme.onSurfaceVariant
+                                .withAlpha((0.5 * 255).round()),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -166,7 +167,6 @@ class UpcomingMealsSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
           color: colorScheme.outlineVariant,
-          width: 1,
         ),
       ),
       child: ListTile(

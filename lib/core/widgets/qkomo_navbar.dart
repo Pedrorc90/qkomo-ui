@@ -43,20 +43,23 @@ class QkomoNavBar extends StatelessWidget implements PreferredSizeWidget {
                 color: theme.colorScheme.primary,
               ),
             )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const QkomoLogo(size: 32),
-                const SizedBox(width: 12),
-                Text(
-                  'QKomo',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
+          : Semantics(
+              header: true,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const QkomoLogo(size: 32),
+                  const SizedBox(width: 12),
+                  Text(
+                    'QKomo',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
       centerTitle: true,
       actions: allActions,

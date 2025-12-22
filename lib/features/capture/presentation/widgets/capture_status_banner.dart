@@ -50,7 +50,7 @@ class CaptureStatusBanner extends StatelessWidget {
     if (hasImage) {
       return _StatusCard(
         icon: Icons.photo,
-        color: scheme.surfaceVariant,
+        color: scheme.surfaceContainerHighest,
         text: 'Imagen preparada desde ${_modeLabel(mode)}',
       );
     }

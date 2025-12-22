@@ -81,8 +81,8 @@ class AllergenSelector extends ConsumerWidget {
         Text(
           'Alérgenos detectados',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+                fontWeight: FontWeight.w600,
+              ),
         ),
         const SizedBox(height: 12),
 
@@ -140,9 +140,9 @@ class AllergenSelector extends ConsumerWidget {
               Text(
                 'Alerta personal',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: scheme.error,
-                ),
+                      fontWeight: FontWeight.w700,
+                      color: scheme.error,
+                    ),
               ),
             ],
           ),
@@ -173,8 +173,8 @@ class AllergenSelector extends ConsumerWidget {
         Text(
           'Otros alérgenos detectados',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+                fontWeight: FontWeight.w600,
+              ),
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -183,7 +183,6 @@ class AllergenSelector extends ConsumerWidget {
           children: allergens.map((allergen) {
             return AllergenBadge(
               allergen: allergen,
-              isPersonalAlert: false,
               onTap: () => onToggle(allergen),
             );
           }).toList(),
@@ -228,15 +227,15 @@ class AllergenSelector extends ConsumerWidget {
         Text(
           'Alérgenos comunes',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+                fontWeight: FontWeight.w600,
+              ),
         ),
         const SizedBox(height: 8),
         Text(
           'Toca para añadir si están presentes',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
         ),
         const SizedBox(height: 8),
         Wrap(

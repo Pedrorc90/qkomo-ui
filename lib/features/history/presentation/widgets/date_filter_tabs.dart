@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qkomo_ui/features/history/application/history_controller.dart';
 import 'package:qkomo_ui/features/history/application/history_providers.dart';
-import 'package:qkomo_ui/theme/design_tokens.dart';
 import 'package:qkomo_ui/theme/app_typography.dart';
+import 'package:qkomo_ui/theme/design_tokens.dart';
 
 /// Tab bar for filtering history by date with entry counts
 class DateFilterTabs extends ConsumerWidget {
@@ -24,7 +23,7 @@ class DateFilterTabs extends ConsumerWidget {
             .withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
       ),
-      padding: EdgeInsets.all(DesignTokens.spacingXs),
+      padding: const EdgeInsets.all(DesignTokens.spacingXs),
       child: Row(
         children: [
           Expanded(
@@ -35,7 +34,7 @@ class DateFilterTabs extends ConsumerWidget {
               onTap: () => controller.setDateFilter(DateFilter.today),
             ),
           ),
-          SizedBox(width: DesignTokens.spacingXs),
+          const SizedBox(width: DesignTokens.spacingXs),
           Expanded(
             child: _FilterTab(
               label: 'Esta semana',
@@ -44,7 +43,7 @@ class DateFilterTabs extends ConsumerWidget {
               onTap: () => controller.setDateFilter(DateFilter.thisWeek),
             ),
           ),
-          SizedBox(width: DesignTokens.spacingXs),
+          const SizedBox(width: DesignTokens.spacingXs),
           Expanded(
             child: _FilterTab(
               label: 'Todo',
@@ -81,7 +80,7 @@ class _FilterTab extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
         child: Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: DesignTokens.spacingMd,
           ),
           decoration: BoxDecoration(
@@ -104,7 +103,7 @@ class _FilterTab extends StatelessWidget {
                 ),
               ),
               if (count != null) ...[
-                SizedBox(height: DesignTokens.spacingXs),
+                const SizedBox(height: DesignTokens.spacingXs),
                 Text(
                   '$count',
                   style: AppTypography.bodySmall.copyWith(

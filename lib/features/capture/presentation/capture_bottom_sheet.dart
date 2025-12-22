@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/theme/theme_providers.dart';
-import 'package:qkomo_ui/theme/app_colors.dart';
-
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/barcode_scanner_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/capture_status_banner.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/gallery_import_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/text_entry_view.dart';
-import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
+import 'package:qkomo_ui/theme/app_colors.dart';
+import 'package:qkomo_ui/theme/theme_providers.dart';
 
 class CaptureBottomSheet extends ConsumerStatefulWidget {
   const CaptureBottomSheet({
@@ -61,7 +60,8 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
               // Log analysis time
               if (_analyzeStartTime != null) {
                 final duration = DateTime.now().difference(_analyzeStartTime!);
-                debugPrint('⏱️  Tiempo de análisis: ${duration.inMilliseconds}ms (${duration.inSeconds}s)');
+                debugPrint(
+                    '⏱️  Tiempo de análisis: ${duration.inMilliseconds}ms (${duration.inSeconds}s)');
                 _analyzeStartTime = null;
               }
 
@@ -87,7 +87,8 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
               // Log analysis time even on error
               if (_analyzeStartTime != null) {
                 final duration = DateTime.now().difference(_analyzeStartTime!);
-                debugPrint('⏱️  Tiempo de análisis (fallido): ${duration.inMilliseconds}ms (${duration.inSeconds}s)');
+                debugPrint(
+                    '⏱️  Tiempo de análisis (fallido): ${duration.inMilliseconds}ms (${duration.inSeconds}s)');
                 _analyzeStartTime = null;
               }
 

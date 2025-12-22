@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/application/capture_permissions.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 
 class CaptureController extends StateNotifier<CaptureState> {
   CaptureController(this._imagePicker, this._permissions)

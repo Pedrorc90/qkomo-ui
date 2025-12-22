@@ -1,22 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-import 'package:qkomo_ui/core/utils/hive_stream_utils.dart';
-
+import 'package:image_picker/image_picker.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
-import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
+import 'package:qkomo_ui/core/utils/hive_stream_utils.dart';
 import 'package:qkomo_ui/features/capture/application/backend_capture_analyzer.dart';
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_permissions.dart';
 import 'package:qkomo_ui/features/capture/application/capture_review_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
-import 'package:qkomo_ui/features/capture/application/text_entry_controller.dart';
 import 'package:qkomo_ui/features/capture/application/direct_analyze_controller.dart';
+import 'package:qkomo_ui/features/capture/application/text_entry_controller.dart';
 import 'package:qkomo_ui/features/capture/data/capture_api_client.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 
 final imagePickerProvider = Provider<ImagePicker>((ref) {
   return ImagePicker();

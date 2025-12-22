@@ -1,11 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:qkomo_ui/features/menu/data/hive_adapters/meal_adapter.dart';
 import 'package:qkomo_ui/features/menu/data/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
-import 'package:qkomo_ui/features/menu/data/hive_adapters/meal_adapter.dart';
-import 'dart:io';
 
 void main() {
   late Box<Meal> mealBox;
@@ -42,13 +43,13 @@ void main() {
         name: 'Breakfast 1',
         ingredients: ['egg'],
         mealType: MealType.breakfast,
-        scheduledFor: DateTime(2023, 10, 27, 8, 0),
+        scheduledFor: DateTime(2023, 10, 27, 8),
       );
       await repository.create(
         name: 'Lunch 1',
         ingredients: ['chicken'],
         mealType: MealType.lunch,
-        scheduledFor: DateTime(2023, 10, 27, 13, 0),
+        scheduledFor: DateTime(2023, 10, 27, 13),
       );
 
       // Add meal for date2
@@ -56,7 +57,7 @@ void main() {
         name: 'Breakfast 2',
         ingredients: ['toast'],
         mealType: MealType.breakfast,
-        scheduledFor: DateTime(2023, 10, 28, 8, 0),
+        scheduledFor: DateTime(2023, 10, 28, 8),
       );
 
       // Verify initial state

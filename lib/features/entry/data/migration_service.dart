@@ -2,7 +2,6 @@ import 'package:hive/hive.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 
 /// Service to migrate existing CaptureResult data to Entry model
 class MigrationService {
@@ -50,8 +49,6 @@ class MigrationService {
         id: result.jobId,
         result: result,
         lastModifiedAt: result.savedAt,
-        syncStatus: SyncStatus.pending, // Mark as pending for sync
-        isDeleted: false,
       );
 
       await _entryRepository.saveEntry(entry);

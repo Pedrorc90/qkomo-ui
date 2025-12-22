@@ -102,7 +102,7 @@ class _CameraPreviewPlaceholder extends StatelessWidget {
             if (state.imageFile == null)
               Positioned.fill(
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.overlayBlack30,
                   ),
                   child: Center(
@@ -112,14 +112,17 @@ class _CameraPreviewPlaceholder extends StatelessWidget {
                         Icon(
                           Icons.camera_alt,
                           size: 48,
-                          color: AppColors.neutralWhite.withAlpha((0.7 * 255).round()),
+                          color: AppColors.neutralWhite
+                              .withAlpha((0.7 * 255).round()),
                         ),
                         const SizedBox(height: 12),
                         Text(
                           'Abre la cámara para comenzar',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.neutralWhite.withAlpha((0.7 * 255).round()),
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.neutralWhite
+                                        .withAlpha((0.7 * 255).round()),
+                                  ),
                         ),
                       ],
                     ),
@@ -158,7 +161,7 @@ class _GridPainter extends CustomPainter {
 
     // Vertical lines (rule of thirds)
     final verticalDistance = size.width / 3;
-    for (int i = 1; i < 3; i++) {
+    for (var i = 1; i < 3; i++) {
       canvas.drawLine(
         Offset(verticalDistance * i, 0),
         Offset(verticalDistance * i, size.height),
@@ -168,7 +171,7 @@ class _GridPainter extends CustomPainter {
 
     // Horizontal lines (rule of thirds)
     final horizontalDistance = size.height / 3;
-    for (int i = 1; i < 3; i++) {
+    for (var i = 1; i < 3; i++) {
       canvas.drawLine(
         Offset(0, horizontalDistance * i),
         Offset(size.width, horizontalDistance * i),

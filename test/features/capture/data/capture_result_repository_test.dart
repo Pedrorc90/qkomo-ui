@@ -28,8 +28,8 @@ void main() {
   });
 
   test('saveResult writes and sorts by savedAt', () async {
-    final first = CaptureResult(jobId: '1', savedAt: DateTime(2024, 5, 1));
-    final second = CaptureResult(jobId: '2', savedAt: DateTime(2024, 6, 1));
+    final first = CaptureResult(jobId: '1', savedAt: DateTime(2024, 5));
+    final second = CaptureResult(jobId: '2', savedAt: DateTime(2024, 6));
 
     await repository.saveResult(first);
     await repository.saveResult(second);

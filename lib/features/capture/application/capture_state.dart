@@ -1,8 +1,11 @@
 import 'package:image_picker/image_picker.dart';
 
-import '../domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 
 class CaptureState {
+  factory CaptureState.initial() {
+    return const CaptureState();
+  }
   const CaptureState({
     this.mode,
     this.imageFile,
@@ -18,10 +21,6 @@ class CaptureState {
   final String? message;
   final String? error;
   final bool isProcessing;
-
-  factory CaptureState.initial() {
-    return const CaptureState(mode: null);
-  }
 
   CaptureState copyWith({
     CaptureMode? mode,

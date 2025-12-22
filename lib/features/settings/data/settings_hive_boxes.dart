@@ -5,11 +5,13 @@ class SettingsHiveBoxes {
   static const userSettings = 'user_settings_box';
 
   static Future<void> init() async {
-    Hive.registerAdapter(UserSettingsImplAdapter());
-    Hive.registerAdapter(AllergenAdapter());
-    Hive.registerAdapter(DietaryRestrictionAdapter());
+    Hive
+      ..registerAdapter(UserSettingsImplAdapter())
+      ..registerAdapter(AllergenAdapter())
+      ..registerAdapter(DietaryRestrictionAdapter());
 
     // We don't open the box here necessarily, as the repo manages it,
+
     // but opening it early doesn't hurt.
     await Hive.openBox<UserSettings>(userSettings);
   }

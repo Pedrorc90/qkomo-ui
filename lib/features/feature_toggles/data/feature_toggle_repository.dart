@@ -2,9 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle.dart';
 
 class FeatureToggleRepository {
-  final Dio _dio;
-
   FeatureToggleRepository(this._dio);
+  final Dio _dio;
 
   Future<List<FeatureToggle>> getFeatureToggles() async {
     try {

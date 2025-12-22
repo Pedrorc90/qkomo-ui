@@ -5,12 +5,11 @@ import 'package:qkomo_ui/theme/app_colors.dart';
 
 /// Widget que muestra un indicador cuando se están reintentando conexiones
 class RetryNotificationWidget extends ConsumerWidget {
-  final Widget child;
-
   const RetryNotificationWidget({
     super.key,
     required this.child,
   });
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

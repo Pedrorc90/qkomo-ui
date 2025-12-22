@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
@@ -93,7 +92,7 @@ void main() {
       final stream = repository.watchEntries();
 
       // Expect initial empty list
-      expectLater(
+      await expectLater(
         stream,
         emitsInOrder([
           [], // Initial state
@@ -118,6 +117,5 @@ Entry _createTestEntry(String id) {
       savedAt: DateTime.now(),
     ),
     lastModifiedAt: DateTime.now(),
-    syncStatus: SyncStatus.pending,
   );
 }

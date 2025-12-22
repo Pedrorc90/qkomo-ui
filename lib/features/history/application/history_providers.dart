@@ -1,20 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 import 'package:qkomo_ui/features/history/application/history_controller.dart';
+import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 
 /// Statistics for a date group
 class DateGroupStats {
-  final int mealCount;
-  final int ingredientCount;
-
   const DateGroupStats({
     required this.mealCount,
     required this.ingredientCount,
   });
+  final int mealCount;
+  final int ingredientCount;
 }
 
 /// Provider for history controller
@@ -123,8 +121,7 @@ final filterCountsProvider = Provider<Map<DateFilter, int>>((ref) {
 });
 
 /// Provider for statistics of each date group
-final dateGroupStatsProvider =
-    Provider<Map<DateGroup, DateGroupStats>>((ref) {
+final dateGroupStatsProvider = Provider<Map<DateGroup, DateGroupStats>>((ref) {
   final groupedEntries = ref.watch(groupedEntriesProvider);
 
   return {

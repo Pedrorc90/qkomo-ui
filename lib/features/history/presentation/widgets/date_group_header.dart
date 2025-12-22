@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 import 'package:qkomo_ui/features/history/application/history_providers.dart';
-import 'package:qkomo_ui/theme/design_tokens.dart';
+import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 import 'package:qkomo_ui/theme/app_typography.dart';
+import 'package:qkomo_ui/theme/design_tokens.dart';
 
 /// Header for date group sections with statistics
 class DateGroupHeader extends ConsumerWidget {
@@ -22,16 +22,18 @@ class DateGroupHeader extends ConsumerWidget {
     final stats = ref.watch(dateGroupStatsProvider)[group];
 
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         top: DesignTokens.spacingMd,
         bottom: DesignTokens.spacingSm,
       ),
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         vertical: DesignTokens.spacingMd,
         horizontal: DesignTokens.spacingMd,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer
+        color: Theme.of(context)
+            .colorScheme
+            .primaryContainer
             .withValues(alpha: 0.1),
         border: Border(
           left: BorderSide(
@@ -39,7 +41,7 @@ class DateGroupHeader extends ConsumerWidget {
             width: 4,
           ),
         ),
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topRight: Radius.circular(DesignTokens.radiusSm),
           bottomRight: Radius.circular(DesignTokens.radiusSm),
         ),
@@ -55,7 +57,7 @@ class DateGroupHeader extends ConsumerWidget {
             ),
           ),
           if (stats != null && stats.mealCount > 0) ...[
-            SizedBox(height: DesignTokens.spacingXs),
+            const SizedBox(height: DesignTokens.spacingXs),
             Text(
               '${stats.mealCount} ${stats.mealCount == 1 ? 'comida' : 'comidas'} • ${stats.ingredientCount} ${stats.ingredientCount == 1 ? 'ingrediente' : 'ingredientes'}',
               style: AppTypography.bodySmall.copyWith(

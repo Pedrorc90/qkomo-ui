@@ -1,17 +1,41 @@
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  errors:
+    invalid_annotation_target: ignore
+
 linter:
   rules:
-    prefer_single_quotes: true
-    always_use_package_imports: true
-    avoid_print: true
-    avoid_type_to_string: true
-    cancel_subscriptions: true
-    close_sinks: true
-    prefer_const_constructors: true
-    prefer_const_declarations: true
-    prefer_final_fields: true
-    prefer_final_locals: true
-    unawaited_futures: true
-    unnecessary_await_in_return: true
+    # Consistency & Hygiene
+    - always_use_package_imports
+    - avoid_print
+    - avoid_type_to_string
+    - cancel_subscriptions
+    - close_sinks
+    - prefer_single_quotes
+    - unawaited_futures
+    - unnecessary_await_in_return
+    - sort_constructors_first
+    - sort_pub_dependencies
+    
+    # Style & Quality
+    - always_declare_return_types
+    - avoid_dynamic_calls
+    - avoid_empty_else
+    - avoid_redundant_argument_values
+    - avoid_unused_constructor_parameters
+    - cascade_invocations
+    - directives_ordering
+    - omit_local_variable_types
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_final_fields
+    - prefer_final_locals
+    - prefer_interpolation_to_compose_strings
+    - type_annotate_public_apis
+    - use_super_parameters
+
 

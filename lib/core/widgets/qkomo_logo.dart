@@ -15,11 +15,15 @@ class QkomoLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     final logoColor = color ?? Theme.of(context).colorScheme.primary;
 
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(
-        painter: _QkomoLogoPainter(color: logoColor),
+    return Semantics(
+      label: 'Logo de QKomo',
+      image: true,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: CustomPaint(
+          painter: _QkomoLogoPainter(color: logoColor),
+        ),
       ),
     );
   }

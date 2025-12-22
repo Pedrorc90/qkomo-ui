@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:qkomo_ui/core/animations/feedback_animations.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_review_controller.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/allergen_selector.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/ingredient_list_editor.dart';
-import 'package:qkomo_ui/features/capture/presentation/review/widgets/photo_viewer.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/nutrition_info_card.dart';
-import 'package:qkomo_ui/theme/app_colors.dart';
+import 'package:qkomo_ui/features/capture/presentation/review/widgets/photo_viewer.dart';
 
 /// Page for reviewing and editing capture results
 class CaptureReviewPage extends ConsumerWidget {
@@ -22,7 +21,8 @@ class CaptureReviewPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(captureReviewControllerProvider(resultId));
-    final controller = ref.read(captureReviewControllerProvider(resultId).notifier);
+    final controller =
+        ref.read(captureReviewControllerProvider(resultId).notifier);
 
     return Scaffold(
       appBar: QkomoNavBar(
@@ -39,8 +39,9 @@ class CaptureReviewPage extends ConsumerWidget {
       body: state.result == null
           ? _buildLoading(context, state.error)
           : _buildContent(context, ref, state, controller),
-      bottomNavigationBar:
-          state.result != null ? _buildBottomBar(context, state, controller) : null,
+      bottomNavigationBar: state.result != null
+          ? _buildBottomBar(context, state, controller)
+          : null,
     );
   }
 
@@ -163,15 +164,18 @@ class CaptureReviewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBottomBar(
-      BuildContext context, CaptureReviewState state, CaptureReviewController controller) {
+  Widget _buildBottomBar(BuildContext context, CaptureReviewState state,
+      CaptureReviewController controller) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.outline.withAlpha((0.1 * 255).round()),
+            color: Theme.of(context)
+                .colorScheme
+                .outline
+                .withAlpha((0.1 * 255).round()),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -212,7 +216,8 @@ class CaptureReviewPage extends ConsumerWidget {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: state.isSaving ? null : () => Navigator.pop(context),
+                    onPressed:
+                        state.isSaving ? null : () => Navigator.pop(context),
                     child: const Text('Cancelar'),
                   ),
                 ),
@@ -220,7 +225,9 @@ class CaptureReviewPage extends ConsumerWidget {
                 Expanded(
                   flex: 2,
                   child: FilledButton(
-                    onPressed: state.isSaving ? null : () => _saveReview(context, controller),
+                    onPressed: state.isSaving
+                        ? null
+                        : () => _saveReview(context, controller),
                     child: state.isSaving
                         ? const SizedBox(
                             width: 20,
@@ -238,20 +245,22 @@ class CaptureReviewPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _saveReview(BuildContext context, CaptureReviewController controller) async {
+  Future<void> _saveReview(
+      BuildContext context, CaptureReviewController controller) async {
     final success = await controller.saveReview();
     if (success && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Análisis guardado correctamente'),
-          backgroundColor: AppColors.semanticSuccess,
-        ),
+      await SuccessFeedback.show(
+        context,
+        message: 'Análisis guardado correctamente',
       );
-      Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
     }
   }
 
-  void _showDiscardDialog(BuildContext context, CaptureReviewController controller) {
+  void _showDiscardDialog(
+      BuildContext context, CaptureReviewController controller) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

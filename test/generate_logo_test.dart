@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 
-import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_logo.dart';
 import 'package:qkomo_ui/theme/app_theme.dart';
@@ -11,7 +11,7 @@ import 'package:qkomo_ui/theme/theme_type.dart';
 void main() {
   testWidgets('Generate high-res logo', (WidgetTester tester) async {
     // Define the size for the icon (1024x1024 is good for high-res source)
-    const double size = 1024.0;
+    const size = 1024.0;
 
     // Get the primary color from the warm theme
     final theme = AppTheme.theme(AppThemeType.warm);
@@ -48,7 +48,7 @@ void main() {
     // Convert to image
     // Use runAsync to allow async image operations
     await tester.runAsync(() async {
-      final image = await renderObject.toImage(pixelRatio: 1.0);
+      final image = await renderObject.toImage();
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {

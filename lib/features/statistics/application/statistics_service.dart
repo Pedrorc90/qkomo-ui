@@ -35,7 +35,7 @@ class StatisticsService {
   int _calculateStreak(List<CaptureResult> sortedResults) {
     if (sortedResults.isEmpty) return 0;
 
-    int streak = 0;
+    var streak = 0;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
@@ -68,7 +68,7 @@ class StatisticsService {
     }
 
     // Iterate backwards from the most recent day
-    for (int i = 0; i < uniqueDays.length; i++) {
+    for (var i = 0; i < uniqueDays.length; i++) {
       final currentDay = uniqueDays[i];
 
       if (i == 0) {
@@ -91,12 +91,12 @@ class StatisticsService {
   }
 
   Map<String, int> _calculateEntriesPerDay(List<CaptureResult> results) {
-    final Map<String, int> map = {};
+    final map = <String, int>{};
     final dateFormat = DateFormat('yyyy-MM-dd');
 
     // Initialize last 7 days with 0
     final now = DateTime.now();
-    for (int i = 6; i >= 0; i--) {
+    for (var i = 6; i >= 0; i--) {
       final day = now.subtract(Duration(days: i));
       map[dateFormat.format(day)] = 0;
     }
@@ -112,7 +112,7 @@ class StatisticsService {
   }
 
   Map<String, int> _calculateTopIngredients(List<CaptureResult> results) {
-    final Map<String, int> counts = {};
+    final counts = <String, int>{};
 
     for (var result in results) {
       for (var ingredient in result.ingredients) {
@@ -124,7 +124,7 @@ class StatisticsService {
     final sortedEntries = counts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    final Map<String, int> top5 = {};
+    final top5 = <String, int>{};
     for (var i = 0; i < sortedEntries.length && i < 5; i++) {
       top5[sortedEntries[i].key] = sortedEntries[i].value;
     }
@@ -133,7 +133,7 @@ class StatisticsService {
   }
 
   Map<String, int> _calculateAllergenCounts(List<CaptureResult> results) {
-    final Map<String, int> counts = {};
+    final counts = <String, int>{};
 
     for (var result in results) {
       for (var allergen in result.allergens) {

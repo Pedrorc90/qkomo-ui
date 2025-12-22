@@ -7,7 +7,7 @@ class SettingsRepository {
 
   Future<Box<UserSettings>> _getBox() async {
     if (!Hive.isBoxOpen(boxName)) {
-      return await Hive.openBox<UserSettings>(boxName);
+      return Hive.openBox<UserSettings>(boxName);
     }
     return Hive.box<UserSettings>(boxName);
   }

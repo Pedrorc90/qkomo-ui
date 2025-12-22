@@ -25,7 +25,7 @@ class EnhancedResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedCard(
       onTap: onTap,
-      padding: EdgeInsets.all(DesignTokens.spacingMd),
+      padding: const EdgeInsets.all(DesignTokens.spacingMd),
       elevation: 0,
       borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
       child: Row(
@@ -33,7 +33,7 @@ class EnhancedResultCard extends StatelessWidget {
         children: [
           // Thumbnail larger (80x80dp)
           _buildThumbnail(context),
-          SizedBox(width: DesignTokens.spacingMd),
+          const SizedBox(width: DesignTokens.spacingMd),
 
           // Main content
           Expanded(
@@ -48,7 +48,7 @@ class EnhancedResultCard extends StatelessWidget {
                         mealType: result.mealType!,
                         variant: MealTypeChipVariant.iconOnly,
                       ),
-                      SizedBox(width: DesignTokens.spacingSm),
+                      const SizedBox(width: DesignTokens.spacingSm),
                     ],
                     Expanded(
                       child: Text(
@@ -62,25 +62,23 @@ class EnhancedResultCard extends StatelessWidget {
                     Text(
                       _timeFormat.format(result.savedAt),
                       style: AppTypography.labelSmall.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
 
-                SizedBox(height: DesignTokens.spacingXs),
+                const SizedBox(height: DesignTokens.spacingXs),
 
                 // Ingredient counter and top 3
                 if (result.ingredients.isNotEmpty) ...[
                   Text(
                     '${result.ingredients.length} ${result.ingredients.length == 1 ? 'ingrediente' : 'ingredientes'}',
                     style: AppTypography.bodySmall.copyWith(
-                      color:
-                          Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  SizedBox(height: DesignTokens.spacingXs),
+                  const SizedBox(height: DesignTokens.spacingXs),
 
                   // Top 3 ingredients
                   Text(
@@ -93,7 +91,7 @@ class EnhancedResultCard extends StatelessWidget {
 
                 // Allergen badges and reviewed status
                 if (result.allergens.isNotEmpty || result.isReviewed) ...[
-                  SizedBox(height: DesignTokens.spacingSm),
+                  const SizedBox(height: DesignTokens.spacingSm),
                   Wrap(
                     spacing: DesignTokens.spacingXs,
                     runSpacing: DesignTokens.spacingXs,
@@ -112,12 +110,12 @@ class EnhancedResultCard extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.check_circle,
                               size: 14,
                               color: AppColors.semanticSuccess,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Text(
                               'Revisado',
                               style: AppTypography.labelSmall.copyWith(

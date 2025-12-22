@@ -27,7 +27,6 @@ class MockCaptureAnalyzer implements CaptureAnalyzer {
       savedAt: DateTime.now(),
       title: _titleFor(mode, barcode, jobId),
       ingredients: _ingredientsFor(mode, barcode),
-      allergens: const [],
       notes: 'Resultado generado offline (mock).',
     );
   }

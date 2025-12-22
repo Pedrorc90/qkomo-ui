@@ -1,7 +1,8 @@
 import 'dart:io';
+
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 class ImagePickerService {
   final ImagePicker _picker = ImagePicker();
@@ -10,7 +11,7 @@ class ImagePickerService {
   /// Returns the file path or null if cancelled
   Future<String?> pickImageFromGallery() async {
     try {
-      final XFile? image = await _picker.pickImage(
+      final image = await _picker.pickImage(
         source: ImageSource.gallery,
         maxWidth: 1024,
         maxHeight: 1024,
@@ -29,7 +30,7 @@ class ImagePickerService {
   /// Returns the file path or null if cancelled
   Future<String?> pickImageFromCamera() async {
     try {
-      final XFile? image = await _picker.pickImage(
+      final image = await _picker.pickImage(
         source: ImageSource.camera,
         maxWidth: 1024,
         maxHeight: 1024,
@@ -46,23 +47,23 @@ class ImagePickerService {
 
   /// Save the picked image to app documents directory
   Future<String> _saveImageToAppDirectory(XFile image) async {
-    final Directory appDocDir = await getApplicationDocumentsDirectory();
-    final String mealsDir = path.join(appDocDir.path, 'meals');
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final mealsDir = path.join(appDocDir.path, 'meals');
 
     // Create meals directory if it doesn't exist
-    final Directory mealsDirObj = Directory(mealsDir);
+    final mealsDirObj = Directory(mealsDir);
     if (!await mealsDirObj.exists()) {
       await mealsDirObj.create(recursive: true);
     }
 
     // Generate unique filename
-    final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    final String extension = path.extension(image.path);
-    final String filename = 'meal_$timestamp$extension';
-    final String savedPath = path.join(mealsDir, filename);
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final extension = path.extension(image.path);
+    final filename = 'meal_$timestamp$extension';
+    final savedPath = path.join(mealsDir, filename);
 
     // Copy file to app directory
-    final File sourceFile = File(image.path);
+    final sourceFile = File(image.path);
     await sourceFile.copy(savedPath);
 
     return savedPath;
@@ -71,7 +72,7 @@ class ImagePickerService {
   /// Delete an image file
   Future<void> deleteImage(String imagePath) async {
     try {
-      final File file = File(imagePath);
+      final file = File(imagePath);
       if (await file.exists()) {
         await file.delete();
       }

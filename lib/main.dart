@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
 import 'package:qkomo_ui/app.dart';
-import 'package:qkomo_ui/features/sync/application/background_sync_worker.dart';
 import 'package:qkomo_ui/features/capture/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/migration_service.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart' as menu_hive;
 import 'package:qkomo_ui/features/settings/data/settings_hive_boxes.dart';
+import 'package:qkomo_ui/features/sync/application/background_sync_worker.dart';
 import 'package:qkomo_ui/firebase_options.dart';
 
 void main() async {

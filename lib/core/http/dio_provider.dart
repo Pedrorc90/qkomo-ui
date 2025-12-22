@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qkomo_ui/config/app_constants.dart';
 import 'package:qkomo_ui/config/env.dart';
-import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/core/http/firebase_token_interceptor.dart';
 import 'package:qkomo_ui/core/http/retry_notification_interceptor.dart';
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 
 final apiBaseUrlProvider = Provider<String>((ref) => EnvConfig.baseUrl);
 
@@ -42,7 +41,6 @@ final dioProvider = Provider<Dio>((ref) {
   dio.interceptors.add(
     RetryInterceptor(
       dio: dio,
-      retries: 3,
       retryDelays: const [
         Duration(seconds: 1), // Primer reintento después de 1s
         Duration(seconds: 2), // Segundo reintento después de 2s

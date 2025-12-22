@@ -15,7 +15,8 @@ class FakeCaptureApiClient implements CaptureApiClient {
 
   @override
   // ignore: override_on_non_overriding_member
-  Future<AnalyzeResponseDto> analyzeImage({required XFile file, String? type}) async {
+  Future<AnalyzeResponseDto> analyzeImage(
+      {required XFile file, String? type}) async {
     lastAnalyzedImage = file;
     lastAnalysisType = type;
     if (shouldThrow) throw Exception('Network error');
@@ -93,9 +94,10 @@ void main() {
       expect(fakeApiClient.lastAnalyzedBarcode, '123456');
     });
 
-    test('analyze throws exception when image file is missing for camera mode', () async {
+    test('analyze throws exception when image file is missing for camera mode',
+        () async {
       expect(
-        () => analyzer.analyze(mode: CaptureMode.camera, file: null),
+        () => analyzer.analyze(mode: CaptureMode.camera),
         throwsException,
       );
     });

@@ -3,13 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Estado de reintentos de red
 class RetryState {
-  final bool isRetrying;
-  final int retryCount;
-
   const RetryState({
     this.isRetrying = false,
     this.retryCount = 0,
   });
+  final bool isRetrying;
+  final int retryCount;
 
   RetryState copyWith({
     bool? isRetrying,

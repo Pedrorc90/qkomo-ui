@@ -44,7 +44,6 @@ class EnvConfig {
   static bool get enableCloudSync {
     return const bool.fromEnvironment(
       'ENABLE_CLOUD_SYNC',
-      defaultValue: false,
     );
   }
 
@@ -60,7 +59,6 @@ class EnvConfig {
   static bool get syncOnlyOnWifi {
     return const bool.fromEnvironment(
       'SYNC_ONLY_ON_WIFI',
-      defaultValue: false,
     );
   }
 }

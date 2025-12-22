@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 
 /// Placeholder Firebase config.
 ///
@@ -57,11 +56,9 @@ class DefaultFirebaseOptions {
       'FIREBASE_STORAGE_BUCKET',
       defaultValue: 'qkomo-prod.firebasestorage.app',
     ),
-    iosClientId:
-        String.fromEnvironment('FIREBASE_IOS_CLIENT_ID', defaultValue: ''),
+    iosClientId: String.fromEnvironment('FIREBASE_IOS_CLIENT_ID'),
     iosBundleId: String.fromEnvironment('FIREBASE_IOS_BUNDLE_ID',
         defaultValue: 'com.qkomo.app'),
-    androidClientId:
-        String.fromEnvironment('FIREBASE_ANDROID_CLIENT_ID', defaultValue: ''),
+    androidClientId: String.fromEnvironment('FIREBASE_ANDROID_CLIENT_ID'),
   );
 }

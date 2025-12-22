@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/data/hive_adapters/meal_adapter.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
 
 class MenuHiveBoxes {
   static const meals = 'meals';

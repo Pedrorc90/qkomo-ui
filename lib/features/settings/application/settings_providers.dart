@@ -14,11 +14,10 @@ final userSettingsProvider =
 });
 
 class UserSettingsNotifier extends StateNotifier<AsyncValue<UserSettings>> {
-  final SettingsRepository _repository;
-
   UserSettingsNotifier(this._repository) : super(const AsyncValue.loading()) {
     _loadSettings();
   }
+  final SettingsRepository _repository;
 
   Future<void> _loadSettings() async {
     try {
@@ -39,7 +38,7 @@ class UserSettingsNotifier extends StateNotifier<AsyncValue<UserSettings>> {
       // Or just set error.
       state = AsyncValue.error(e, st);
       // Try to reload ensuring consistency
-      _loadSettings();
+      await _loadSettings();
     }
   }
 

@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:qkomo_ui/features/menu/application/menu_state.dart';
 import 'package:qkomo_ui/features/menu/data/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
-import 'package:qkomo_ui/features/menu/application/menu_state.dart';
 
 class MenuController extends StateNotifier<MenuState> {
   MenuController(this._repository) : super(MenuState());

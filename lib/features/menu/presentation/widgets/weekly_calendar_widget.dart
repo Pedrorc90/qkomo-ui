@@ -225,7 +225,6 @@ class _MealIndicator extends StatelessWidget {
         color: isActive ? color : Colors.transparent,
         border: Border.all(
           color: color.withAlpha((0.3 * 255).round()),
-          width: 1,
         ),
       ),
     );

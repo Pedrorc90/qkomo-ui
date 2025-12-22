@@ -151,18 +151,26 @@ class AppColors {
   /// Returns chart color palette appropriate for theme brightness
   static List<Color> getChartColors(Brightness brightness) {
     return brightness == Brightness.dark
-        ? [chartBlueDark, chartRedDark, chartGreenDark, chartOrangeDark, chartPurpleDark]
+        ? [
+            chartBlueDark,
+            chartRedDark,
+            chartGreenDark,
+            chartOrangeDark,
+            chartPurpleDark
+          ]
         : [chartBlue, chartRed, chartGreen, chartOrange, chartPurple];
   }
 
   // Warm theme color scheme (default)
   /// Warm theme with orange/coral primary colors and inviting surfaces
-  static const Color warmSurface = Color(0xFFF6F7FB); // Light lavender-tinted white
+  static const Color warmSurface =
+      Color(0xFFF6F7FB); // Light lavender-tinted white
   static const Color warmBackground = Color(0xFFFFFFFF);
   static const Color warmPrimary = primaryMain; // Orange
   static const Color warmSecondary = Color(0xFF6B5B95); // Purple accent
   static const Color warmOnSurface = neutralDark;
-  static const Color warmBorder = Color(0xFFE5D9FF); // Light purple-tinted border
+  static const Color warmBorder =
+      Color(0xFFE5D9FF); // Light purple-tinted border
 
   // Off-white theme color scheme
   /// Minimalist theme using grays and blacks

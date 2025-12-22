@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/theme/app_colors.dart';
 
 class TextEntryView extends ConsumerStatefulWidget {
@@ -234,7 +233,7 @@ class _TextEntryViewState extends ConsumerState<TextEntryView> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<MealType>(
-              value: _selectedMealType,
+              initialValue: _selectedMealType,
               decoration: InputDecoration(
                 labelText: 'Tipo de comida (opcional)',
                 border: OutlineInputBorder(

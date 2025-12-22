@@ -1,16 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qkomo_ui/features/auth/application/auth_controller.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/auth/domain/auth_failure.dart';
-import 'package:qkomo_ui/theme/theme_providers.dart';
-
 import 'package:qkomo_ui/features/auth/presentation/sign_in/auth_action_typedefs.dart';
 import 'package:qkomo_ui/features/auth/presentation/sign_in/email_auth_dialog.dart';
 import 'package:qkomo_ui/features/auth/presentation/sign_in/email_auth_result.dart';
 import 'package:qkomo_ui/features/auth/presentation/sign_in/sign_in_content.dart';
+import 'package:qkomo_ui/theme/theme_providers.dart';
 
 class SignInPage extends ConsumerWidget {
   const SignInPage({super.key});

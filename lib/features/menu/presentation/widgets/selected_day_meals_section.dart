@@ -1,14 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
-import 'dart:math';
-
+import 'package:qkomo_ui/core/animations/feedback_animations.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_card.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
-import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
 
 class SelectedDayMealsSection extends ConsumerWidget {
   const SelectedDayMealsSection({super.key});
@@ -28,8 +28,10 @@ class SelectedDayMealsSection extends ConsumerWidget {
               Icon(
                 Icons.calendar_today,
                 size: 64,
-                color:
-                    Theme.of(context).colorScheme.onSurfaceVariant.withAlpha((0.3 * 255).round()),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurfaceVariant
+                    .withAlpha((0.3 * 255).round()),
               ),
               const SizedBox(height: 16),
               Text(
@@ -48,7 +50,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
     final dateFormat = DateFormat('EEEE, d \'de\' MMMM', 'es');
     final formattedDate = dateFormat.format(selectedDay);
-    final capitalizedDate = formattedDate[0].toUpperCase() + formattedDate.substring(1);
+    final capitalizedDate =
+        formattedDate[0].toUpperCase() + formattedDate.substring(1);
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -58,7 +61,6 @@ class SelectedDayMealsSection extends ConsumerWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: Theme.of(context).colorScheme.outlineVariant,
-            width: 1,
           ),
         ),
         child: Column(
@@ -100,7 +102,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
                       Icons.auto_awesome,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                    onPressed: () => _autoGenerateMenu(context, ref, selectedDay),
+                    onPressed: () =>
+                        _autoGenerateMenu(context, ref, selectedDay),
                     tooltip: 'Generar menú automático',
                     visualDensity: VisualDensity.compact,
                   ),
@@ -157,8 +160,10 @@ class SelectedDayMealsSection extends ConsumerWidget {
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  color:
-                      Theme.of(context).colorScheme.primaryContainer.withAlpha((0.3 * 255).round()),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryContainer
+                      .withAlpha((0.3 * 255).round()),
                   child: InkWell(
                     onTap: () {
                       showDialog(
@@ -240,7 +245,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
       mealsByType.putIfAbsent(type, () => []).add(meal);
     }
 
-    final List<Widget> sections = [];
+    final sections = <Widget>[];
 
     for (final type in MealType.values) {
       if (!mealsByType.containsKey(type)) continue;
@@ -266,7 +271,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
     return sections;
   }
 
-  Future<void> _autoGenerateMenu(BuildContext context, WidgetRef ref, DateTime selectedDay) async {
+  Future<void> _autoGenerateMenu(
+      BuildContext context, WidgetRef ref, DateTime selectedDay) async {
     final controller = ref.read(menuControllerProvider.notifier);
 
     // Use preset recipes
@@ -292,27 +298,29 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
     // Generate menu: add one meal for each of the 4 types
     final random = Random();
-    int addedCount = 0;
-    final List<String> missingTypes = [];
+    var addedCount = 0;
+    final missingTypes = <String>[];
 
     // Default times for each meal type
     final defaultTimes = {
-      MealType.breakfast: const Duration(hours: 8, minutes: 0),
-      MealType.lunch: const Duration(hours: 14, minutes: 0),
-      MealType.snack: const Duration(hours: 17, minutes: 0),
-      MealType.dinner: const Duration(hours: 21, minutes: 0),
+      MealType.breakfast: const Duration(hours: 8),
+      MealType.lunch: const Duration(hours: 14),
+      MealType.snack: const Duration(hours: 17),
+      MealType.dinner: const Duration(hours: 21),
     };
 
     for (final mealType in MealType.values) {
       // Check if there are recipes of this type available
-      if (!recipesByType.containsKey(mealType) || recipesByType[mealType]!.isEmpty) {
+      if (!recipesByType.containsKey(mealType) ||
+          recipesByType[mealType]!.isEmpty) {
         missingTypes.add(mealType.displayName);
         continue;
       }
 
       // Select a random recipe of this type
       final recipesOfType = recipesByType[mealType]!;
-      final selectedRecipe = recipesOfType[random.nextInt(recipesOfType.length)];
+      final selectedRecipe =
+          recipesOfType[random.nextInt(recipesOfType.length)];
 
       // Get default time for this meal type
       final timeOfDay = defaultTimes[mealType]!;
@@ -328,7 +336,6 @@ class SelectedDayMealsSection extends ConsumerWidget {
         ingredients: selectedRecipe.ingredients,
         mealType: selectedRecipe.suggestedMealType,
         scheduledFor: scheduledDateTime,
-        notes: null,
         photoPath: selectedRecipe.photoPath,
       );
 
@@ -337,23 +344,21 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
     if (context.mounted) {
       if (addedCount == 4) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
+        await SuccessFeedback.show(
+          context,
+          message:
               'Menú completo generado: 4 comidas agregadas automáticamente',
-            ),
-            duration: Duration(seconds: 3),
-          ),
         );
       } else if (addedCount > 0) {
-        String message = 'Menú generado: $addedCount comida(s) agregada(s) automáticamente';
+        var message =
+            'Menú generado: $addedCount comida(s) agregada(s) automáticamente';
         if (missingTypes.isNotEmpty) {
-          message += '\n\nNo hay recetas disponibles de tipo: ${missingTypes.join(", ")}';
+          message +=
+              '\n\nNo hay recetas disponibles de tipo: ${missingTypes.join(", ")}';
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
-            duration: const Duration(seconds: 4),
           ),
         );
       } else {
@@ -369,13 +374,14 @@ class SelectedDayMealsSection extends ConsumerWidget {
     }
   }
 
-  void _clearDayMeals(BuildContext context, WidgetRef ref, DateTime selectedDay) {
+  void _clearDayMeals(
+      BuildContext context, WidgetRef ref, DateTime selectedDay) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Limpiar comidas'),
-        content:
-            const Text('¿Estás seguro de que quieres eliminar todas las comidas para este día?'),
+        content: const Text(
+            '¿Estás seguro de que quieres eliminar todas las comidas para este día?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
@@ -384,13 +390,13 @@ class SelectedDayMealsSection extends ConsumerWidget {
           FilledButton.tonal(
             onPressed: () async {
               Navigator.of(dialogContext).pop();
-              await ref.read(menuControllerProvider.notifier).deleteMealsForDay(selectedDay);
+              await ref
+                  .read(menuControllerProvider.notifier)
+                  .deleteMealsForDay(selectedDay);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Comidas eliminadas correctamente'),
-                    duration: Duration(seconds: 2),
-                  ),
+                await SuccessFeedback.show(
+                  context,
+                  message: 'Comidas eliminadas correctamente',
                 );
               }
             },
@@ -404,7 +410,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
   void _generateSuggestions(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Función de sugerencias con IA será implementada en la próxima versión'),
+        content: Text(
+            'Función de sugerencias con IA será implementada en la próxima versión'),
         duration: Duration(seconds: 2),
       ),
     );

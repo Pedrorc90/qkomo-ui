@@ -42,7 +42,7 @@ class AllergenToggleList extends StatelessWidget {
 
         if (selectedAllergens.isEmpty)
           Card(
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -94,7 +94,7 @@ class AllergenToggleList extends StatelessWidget {
               ),
             ),
           );
-        }).toList(),
+        }),
 
         const SizedBox(height: 8),
         Text(

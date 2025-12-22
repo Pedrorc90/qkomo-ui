@@ -6,7 +6,6 @@ import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 
 class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
   DirectAnalyzeController(
@@ -43,7 +42,6 @@ class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
       final entry = Entry(
         id: result.jobId,
         result: result,
-        syncStatus: SyncStatus.pending,
         lastModifiedAt: DateTime.now(),
       );
       await _entryRepository.saveEntry(entry);

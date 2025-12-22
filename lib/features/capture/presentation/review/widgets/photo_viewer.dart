@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
-
-import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/core/widgets/meal_type_chip.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
-import 'package:qkomo_ui/theme/design_tokens.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/theme/app_colors.dart';
+import 'package:qkomo_ui/theme/design_tokens.dart';
 
 /// Provider for photo URL from backend
-final photoUrlProvider = FutureProvider.family<String?, String?>((ref, photoId) async {
+final photoUrlProvider =
+    FutureProvider.family<String?, String?>((ref, photoId) async {
   if (photoId == null || photoId.isEmpty) return null;
 
   // Check if it's already a URL
@@ -106,7 +106,8 @@ class PhotoViewer extends ConsumerWidget {
               child: CircularProgressIndicator(
                 value: event == null
                     ? 0
-                    : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
+                    : event.cumulativeBytesLoaded /
+                        (event.expectedTotalBytes ?? 1),
               ),
             ),
             errorBuilder: (context, error, stackTrace) {
@@ -147,7 +148,8 @@ class PhotoViewer extends ConsumerWidget {
               child: CircularProgressIndicator(
                 value: event == null
                     ? 0
-                    : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
+                    : event.cumulativeBytesLoaded /
+                        (event.expectedTotalBytes ?? 1),
               ),
             ),
             errorBuilder: (context, error, stackTrace) {
@@ -190,8 +192,8 @@ class PhotoViewer extends ConsumerWidget {
           Text(
             _formatTimestamp(capturedAt),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
+                  color: scheme.onSurfaceVariant,
+                ),
           ),
           if (estimatedPortionG != null) ...[
             const SizedBox(width: 16),
@@ -204,8 +206,8 @@ class PhotoViewer extends ConsumerWidget {
             Text(
               '~${estimatedPortionG}g',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
+                    color: scheme.onSurfaceVariant,
+                  ),
             ),
           ],
         ],
@@ -220,8 +222,8 @@ class PhotoViewer extends ConsumerWidget {
         Text(
           'Tipo de comida',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+                fontWeight: FontWeight.w600,
+              ),
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -262,7 +264,7 @@ class PhotoViewer extends ConsumerWidget {
     return Container(
       height: 300,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
+import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
+import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
-
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
-import 'package:qkomo_ui/features/menu/presentation/widgets/weekly_calendar_widget.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/selected_day_meals_section.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/weekly_calendar_widget.dart';
 
 class WeeklyMenuPage extends ConsumerWidget {
   const WeeklyMenuPage({super.key});
@@ -17,7 +17,8 @@ class WeeklyMenuPage extends ConsumerWidget {
     final dateFormat = DateFormat('d MMM', 'es');
 
     final weekEnd = weekStart.add(const Duration(days: 6));
-    final weekRange = '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
+    final weekRange =
+        '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -42,8 +43,8 @@ class WeeklyMenuPage extends ConsumerWidget {
                           weekStart.subtract(const Duration(days: 7));
                       ref.read(selectedDayProvider.notifier).state = null;
                     },
-                    tooltip: 'Semana anterior',
-                  ),
+                    tooltip: SemanticLabels.previousWeek,
+                  ).withMinimumTouchTarget(),
                   Expanded(
                     child: Text(
                       'Semana del $weekRange',
@@ -53,7 +54,7 @@ class WeeklyMenuPage extends ConsumerWidget {
                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                       textAlign: TextAlign.center,
-                    ),
+                    ).withSemantics(isHeader: true),
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -61,7 +62,8 @@ class WeeklyMenuPage extends ConsumerWidget {
                       IconButton(
                         icon: Icon(
                           Icons.today,
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                         onPressed: () {
                           final now = DateTime.now();
@@ -70,20 +72,21 @@ class WeeklyMenuPage extends ConsumerWidget {
                           ref.read(selectedDayProvider.notifier).state =
                               DateTime(now.year, now.month, now.day);
                         },
-                        tooltip: 'Semana actual',
-                      ),
+                        tooltip: SemanticLabels.currentWeek,
+                      ).withMinimumTouchTarget(),
                       IconButton(
                         icon: Icon(
                           Icons.chevron_right,
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                         onPressed: () {
                           ref.read(currentWeekStartProvider.notifier).state =
                               weekStart.add(const Duration(days: 7));
                           ref.read(selectedDayProvider.notifier).state = null;
                         },
-                        tooltip: 'Semana siguiente',
-                      ),
+                        tooltip: SemanticLabels.nextWeek,
+                      ).withMinimumTouchTarget(),
                     ],
                   ),
                 ],

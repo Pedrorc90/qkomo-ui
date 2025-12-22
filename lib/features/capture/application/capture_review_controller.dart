@@ -1,10 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 /// State for the capture review screen
@@ -256,7 +254,7 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
       return false;
     }
 
-    state = state.copyWith(isSaving: true, error: null);
+    state = state.copyWith(isSaving: true);
 
     try {
       final updatedResult = state.result!.copyWith(
@@ -276,7 +274,6 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
       final entry = Entry(
         id: updatedResult.jobId,
         result: updatedResult,
-        syncStatus: SyncStatus.pending,
         lastModifiedAt: DateTime.now(),
       );
       await _entryRepository.saveEntry(entry);
@@ -307,7 +304,6 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
         editedMealType: state.result!.mealType,
         editedNotes: state.result!.notes,
         hasChanges: false,
-        error: null,
       );
     }
   }

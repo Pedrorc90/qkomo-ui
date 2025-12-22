@@ -127,7 +127,7 @@ class AppButton extends StatelessWidget {
     // Create style with custom radius if provided
     final style = _getButtonStyle(context);
 
-    return switch (variant) {
+    final button = switch (variant) {
       AppButtonVariant.filled => FilledButton(
           onPressed: isLoading ? null : onPressed,
           style: style,
@@ -144,6 +144,14 @@ class AppButton extends StatelessWidget {
           child: _buildButtonContent(context),
         ),
     };
+
+    return Semantics(
+      button: true,
+      label: isLoading ? 'Cargando, por favor espere' : label,
+      enabled: !isLoading && onPressed != null,
+      onTap: isLoading ? null : onPressed,
+      child: button,
+    );
   }
 
   /// Get the button style with custom border radius if provided

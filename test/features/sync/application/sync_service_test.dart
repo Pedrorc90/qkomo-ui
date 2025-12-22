@@ -65,7 +65,7 @@ void main() {
     service.init();
 
     // Wait for initial failure handling
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     // Check we tried at least once (or twice due to race)
     verify(mockRepo.sync()).called(greaterThanOrEqualTo(1));

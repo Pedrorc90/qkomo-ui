@@ -1,24 +1,23 @@
-import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_image_constants.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class PresetRecipe {
-  final String name;
-  final List<String> ingredients;
-  final String photoPath;
-  final MealType suggestedMealType;
-
   const PresetRecipe({
     required this.name,
     required this.ingredients,
     required this.photoPath,
     required this.suggestedMealType,
   });
+  final String name;
+  final List<String> ingredients;
+  final String photoPath;
+  final MealType suggestedMealType;
 }
 
 class PresetRecipes {
   static final List<PresetRecipe> all = [
     // Desayunos
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Tostadas con Tomate',
       ingredients: [
         'Pan',
@@ -30,7 +29,7 @@ class PresetRecipes {
       photoPath: MealImages.tostadas,
       suggestedMealType: MealType.breakfast,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Café con Leche y Galletas',
       ingredients: [
         'Café',
@@ -41,7 +40,7 @@ class PresetRecipes {
       photoPath: MealImages.cafeGalletas,
       suggestedMealType: MealType.breakfast,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Churros con Chocolate',
       ingredients: [
         'Churros',
@@ -52,7 +51,7 @@ class PresetRecipes {
       suggestedMealType: MealType.breakfast,
     ),
     // Comidas
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Paella Valenciana',
       ingredients: [
         'Arroz',
@@ -67,7 +66,7 @@ class PresetRecipes {
       photoPath: MealImages.paella,
       suggestedMealType: MealType.lunch,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Gazpacho',
       ingredients: [
         'Tomates',
@@ -82,7 +81,7 @@ class PresetRecipes {
       photoPath: MealImages.gazpacho,
       suggestedMealType: MealType.lunch,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Ensalada Mixta',
       ingredients: [
         'Lechuga',
@@ -97,7 +96,7 @@ class PresetRecipes {
       photoPath: MealImages.ensalada,
       suggestedMealType: MealType.lunch,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Pollo al Horno',
       ingredients: [
         'Pollo',
@@ -112,7 +111,7 @@ class PresetRecipes {
       photoPath: MealImages.pollo,
       suggestedMealType: MealType.lunch,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Lentejas Estofadas',
       ingredients: [
         'Lentejas',
@@ -128,7 +127,7 @@ class PresetRecipes {
       suggestedMealType: MealType.lunch,
     ),
     // Meriendas
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Bocadillo de Jamón',
       ingredients: [
         'Pan',
@@ -139,7 +138,7 @@ class PresetRecipes {
       photoPath: MealImages.bocadilloJamon,
       suggestedMealType: MealType.snack,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Frutas y Yogur',
       ingredients: [
         'Yogur natural',
@@ -150,7 +149,7 @@ class PresetRecipes {
       photoPath: MealImages.frutasYogur,
       suggestedMealType: MealType.snack,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Magdalenas Caseras',
       ingredients: [
         'Harina',
@@ -164,7 +163,7 @@ class PresetRecipes {
       suggestedMealType: MealType.snack,
     ),
     // Cenas
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Tortilla Española',
       ingredients: [
         'Huevos',
@@ -176,7 +175,7 @@ class PresetRecipes {
       photoPath: MealImages.tortilla,
       suggestedMealType: MealType.dinner,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Sopa de Verduras',
       ingredients: [
         'Zanahoria',
@@ -190,7 +189,7 @@ class PresetRecipes {
       photoPath: MealImages.sopaVerduras,
       suggestedMealType: MealType.dinner,
     ),
-    PresetRecipe(
+    const PresetRecipe(
       name: 'Pescado a la Plancha',
       ingredients: [
         'Pescado blanco',

@@ -5,9 +5,8 @@ import 'package:qkomo_ui/core/http/retry_state_notifier.dart';
 
 /// Interceptor para notificar al usuario cuando se están haciendo reintentos
 class RetryNotificationInterceptor extends Interceptor {
-  final Ref ref;
-
   RetryNotificationInterceptor({required this.ref});
+  final Ref ref;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -36,7 +35,8 @@ class RetryNotificationInterceptor extends Interceptor {
       }
     } else {
       // Error no recuperable: limpiar la notificación
-      debugPrint('Error no recuperable (${err.type}). Limpiando estado de reintentos.');
+      debugPrint(
+          'Error no recuperable (${err.type}). Limpiando estado de reintentos.');
       ref.read(retryStateProvider.notifier).endRetry();
     }
 

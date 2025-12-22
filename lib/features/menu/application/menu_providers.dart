@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
+import 'package:qkomo_ui/features/menu/application/menu_state.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
-import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
-import 'package:qkomo_ui/features/menu/application/menu_state.dart';
 
 // Box provider
 final mealBoxProvider = Provider<Box<Meal>>((ref) {
@@ -32,7 +31,7 @@ final mealsProvider = StreamProvider<List<Meal>>((ref) {
   final box = ref.watch(mealBoxProvider);
   final controller = StreamController<List<Meal>>();
 
-  List<Meal> _filtered() {
+  List<Meal> filtered() {
     final user = ref.read(firebaseAuthProvider).currentUser;
     final userId = user?.uid ?? '';
     final items = box.values.where((meal) => meal.userId == userId).toList();
@@ -40,8 +39,8 @@ final mealsProvider = StreamProvider<List<Meal>>((ref) {
     return items;
   }
 
-  controller.add(_filtered());
-  final sub = box.watch().listen((_) => controller.add(_filtered()));
+  controller.add(filtered());
+  final sub = box.watch().listen((_) => controller.add(filtered()));
 
   ref.onDispose(() {
     sub.cancel();
@@ -65,7 +64,8 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
   final weekEnd = weekStart.add(const Duration(days: 7));
 
   return allMeals.where((meal) {
-    return meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
+    return meal.scheduledFor
+            .isAfter(weekStart.subtract(const Duration(days: 1))) &&
         meal.scheduledFor.isBefore(weekEnd);
   }).toList();
 });
@@ -100,7 +100,9 @@ final todayMealsProvider = Provider<List<Meal>>((ref) {
 
   return allMeals.where((meal) {
     final mealDate = meal.scheduledFor;
-    return mealDate.year == now.year && mealDate.month == now.month && mealDate.day == now.day;
+    return mealDate.year == now.year &&
+        mealDate.month == now.month &&
+        mealDate.day == now.day;
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });
@@ -112,7 +114,8 @@ final allMealsProvider = Provider<List<Meal>>((ref) {
 });
 
 // Controller provider
-final menuControllerProvider = StateNotifierProvider<MenuController, MenuState>((ref) {
+final menuControllerProvider =
+    StateNotifierProvider<MenuController, MenuState>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
   return MenuController(repository);
 });

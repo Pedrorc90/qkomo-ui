@@ -79,7 +79,8 @@ void main() {
 
     // Enter credentials
     await tester.enterText(
-        find.nm_widget_by_key(const Key('email_field')), 'test@example.com');
+        find.widgetByKey(const Key('email_field')), 'test@example.com');
+
     // Wait, I don't know the keys. searching by type or label is safer if I didn't verify keys.
     // I'll use input type or label.
 
@@ -100,5 +101,5 @@ void main() {
 
 // Extension to find by key easier?
 extension FinderX on CommonFinders {
-  Finder nm_widget_by_key(Key key) => byKey(key);
+  Finder widgetByKey(Key key) => byKey(key);
 }

@@ -54,7 +54,6 @@ class LocalEntryRepository {
       id: result.jobId,
       result: result,
       lastModifiedAt: result.savedAt,
-      syncStatus: SyncStatus.pending,
     );
     await saveEntry(entry);
   }

@@ -22,7 +22,7 @@ class CaptureApiClient {
     late MultipartFile multipartFile;
 
     // Compress image to reduce upload size
-    XFile imageToUpload = file;
+    var imageToUpload = file;
     if (!kIsWeb) {
       imageToUpload = await ImageCompressor.compressImage(file);
     }
@@ -35,7 +35,8 @@ class CaptureApiClient {
       );
     } else {
       if (!await File(imageToUpload.path).exists()) {
-        throw Exception('El archivo de imagen no existe en ${imageToUpload.path}');
+        throw Exception(
+            'El archivo de imagen no existe en ${imageToUpload.path}');
       }
       multipartFile = MultipartFileRecreatable.fromFileSync(
         imageToUpload.path,
@@ -88,7 +89,7 @@ class CaptureApiClient {
     late MultipartFile multipartFile;
 
     // Compress image to reduce upload size
-    XFile imageToUpload = file;
+    var imageToUpload = file;
     if (!kIsWeb) {
       imageToUpload = await ImageCompressor.compressImage(file);
     }
@@ -101,7 +102,8 @@ class CaptureApiClient {
       );
     } else {
       if (!await File(imageToUpload.path).exists()) {
-        throw Exception('El archivo de imagen no existe en ${imageToUpload.path}');
+        throw Exception(
+            'El archivo de imagen no existe en ${imageToUpload.path}');
       }
       multipartFile = MultipartFileRecreatable.fromFileSync(
         imageToUpload.path,

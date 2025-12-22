@@ -2,13 +2,12 @@
 
 This file tracks pending implementation tasks for the qkomo-ui Flutter mobile app.
 
-**Last Updated:** 2025-12-10
-**Project Phase:** MVP - Features complete (Sync, History, Capture). Pending QA (M8).
+**Last Updated:** 2025-12-22
+**Project Phase:** MVP - Core features complete. Verification & Polishing phase.
 
 ## Project Milestones (from PLAN.md)
 
-- [ ] **M8 – Mobile QA:** Add widget/state tests plus smoke tests for capture → review → save.
-- [ ] **Infra – Flutter tooling:** Instalar `unzip`, regenerar Dart/Flutter SDK, ejecutar `flutter pub get`, `dart format`, `flutter analyze` y `flutter test`. (Partially covered by Technical Debt tasks)
+- [/] **M8 – Mobile QA:** Add widget/state tests plus smoke tests for capture → review → save. (Partially completed)
 
 ---
 
@@ -24,76 +23,33 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 **Goal:** Comprehensive test coverage for critical user flows
 
 #### Unit Tests
-- [ ] Test `CaptureQueueProcessor`
-  - [ ] Error handling and retry logic
-  - [ ] TTL cleanup of succeeded jobs
-  - [ ] Concurrent processing prevention
-- [ ] Test `BackendCaptureAnalyzer`
-  - [ ] Successful photo analysis response parsing
-  - [ ] Successful barcode analysis response parsing
+- [x] Test `BackendCaptureAnalyzer`
+  - [x] Successful photo analysis response parsing
+  - [x] Successful barcode analysis response parsing
   - [ ] Network error handling
   - [ ] Auth error handling (401)
   - [ ] Invalid response handling
-- [ ] Test `CaptureQueueRepository`
-  - [ ] Status transitions (pending → processing → succeeded/failed)
-  - [ ] Query methods (pendingJobs, failedJobs)
-- [ ] Test `CaptureResultRepository`
-  - [ ] Query by date range
-  - [ ] Delete operations
-- [ ] Test `FirebaseTokenInterceptor`
-  - [ ] Token injection in requests
-  - [ ] Token refresh on 401
-  - [ ] Error handling when token unavailable
 
-**Files to create/expand:**
-- `test/features/capture/application/capture_queue_processor_test.dart` (expand)
-- `test/features/capture/data/backend_capture_analyzer_test.dart` (new)
-- `test/core/http/firebase_token_interceptor_test.dart` (new)
-
-#### Widget Tests
-- [ ] Test `CapturePage` components
-  - [ ] Camera view renders correctly
-  - [ ] Gallery picker triggers
-  - [ ] Barcode scanner navigation works
-  - [ ] Error states display properly
-- [ ] Test `CaptureReviewPage`
-  - [ ] Review screen displays result data
-  - [ ] Edit mode toggles correctly
-  - [ ] Ingredient add/remove works
-  - [ ] Allergen toggles work
-  - [ ] Save button persists changes
-- [ ] Test `HistoryPage`
-  - [ ] Empty state displays correctly
-  - [ ] Result cards render with data
-  - [ ] Queue processing button works
-  - [ ] Navigation to review page works
-- [ ] Test auth flows
-  - [ ] Sign-in page renders
-  - [ ] Email/password form validation
-  - [ ] Google/Apple sign-in buttons trigger correctly
-
-**Files to create:**
-- `test/features/capture/presentation/capture_page_test.dart`
-- `test/features/capture/presentation/review/capture_review_page_test.dart`
-- `test/features/history/presentation/history_page_test.dart`
-- `test/features/auth/presentation/sign_in_page_test.dart`
+**Files verified:**
+- `test/features/capture/application/backend_capture_analyzer_test.dart`
+- `test/features/entry/data/hybrid_entry_repository_test.dart`
 
 #### Integration Tests
 - [ ] End-to-end smoke tests
-  - [ ] Sign in → capture photo → queue → process → review → save
-  - [ ] Sign in → scan barcode → queue → process → review → save
-  - [ ] Offline queue → go online → auto-process → success
+  - [ ] Sign in → capture photo → direct analyze → save to history → sync
+  - [ ] Sign in → scan barcode → direct analyze → save to history → sync
+  - [ ] Offline capture → save locally → go online → auto-sync
   - [ ] Auth token expiration → refresh → continue operation
 - [ ] Test offline scenarios
-  - [ ] Capture works offline
-  - [ ] Queue builds up
-  - [ ] Jobs process when connectivity returns
-  - [ ] Failed jobs can be retried
+  - [ ] Capture/Save works offline
+  - [ ] History reflects local changes immediately
+  - [ ] Entries sync when connectivity returns
+  - [ ] Failed syncs can be retried
 - [ ] Test error recovery
   - [ ] Network interruption during upload
   - [ ] Backend returns 500 error
   - [ ] Invalid auth token
-  - [ ] App restart with pending queue
+  - [ ] App restart with pending entries
 
 **Files to create:**
 - `integration_test/app_test.dart` (Flutter integration tests)
@@ -117,27 +73,8 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ## Low Priority - Technical Debt & Enhancements
 
-### Code Quality & Tooling
-- [ ] Add linting configuration
-  - [ ] Configure `analysis_options.yaml` with strict rules
-  - [ ] Enable recommended Flutter lints
-  - [ ] Add custom rules for consistency
-  - [ ] Fix any existing lint warnings
-- [ ] Add code formatting enforcement
-  - [ ] Set up pre-commit hook for `dart format`
-  - [ ] Document code style guidelines
-- [ ] Add dependency management
-  - [ ] Document all package dependencies and their purpose
-  - [ ] Review for unused dependencies
-  - [ ] Update to latest stable versions
-  - [ ] Set up `dependabot` or similar for updates
-- [ ] Add performance profiling
-  - [ ] Identify any performance bottlenecks
-  - [ ] Optimize widget rebuilds
-  - [ ] Lazy-load data where appropriate
-  - [ ] Profile memory usage
-
 ### Security Enhancements
+
 - [ ] Add secure storage audit
   - [ ] Verify Firebase tokens are stored securely
   - [ ] Ensure no sensitive data in logs
@@ -165,8 +102,8 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
   - [ ] Language preference (future multi-language)
   - [ ] Theme preference (light/dark mode)
   - [ ] Notification preferences
-- [ ] Add accessibility features
-  - [ ] Screen reader support (Semantics widgets)
+- [x] Add accessibility features
+  - [x] Screen reader support (Semantics widgets)
   - [ ] High contrast mode
   - [ ] Font size scaling
   - [ ] Voice input for ingredient editing
@@ -174,11 +111,6 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
   - [ ] Capture button feedback
   - [ ] Error vibration
   - [ ] Success confirmation
-- [ ] Add animations and transitions
-  - [ ] Smooth page transitions
-  - [ ] Loading animations
-  - [ ] Success/error animations (Lottie)
-  - [ ] Microinteractions for better UX
 
 ### Feature Enhancements (Post-MVP)
 - [ ] Add batch capture mode
@@ -234,10 +166,6 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 ## Propuestas de Mejora - Análisis Técnico (2025-12-10)
 
 Las siguientes propuestas surgen del análisis del código actual y buscan mejorar la calidad, mantenibilidad y rendimiento de la aplicación.
-
-### 🔴 Alta Prioridad - Arquitectura y Patrones
-
-
 
 
 ### 🟡 Media Prioridad - Mejoras de Código
@@ -297,13 +225,13 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 ### 🔵 Mejoras de Testing
 
 #### P13 - Aumentar cobertura de tests unitarios
-**Estado actual:** 13 archivos de test
+**Estado actual:** ~20 archivos de test → **~23 archivos de test**
 **Propuesta:**
-- [ ] Tests para `AuthController` (sign in flows, error handling)
-- [ ] Tests para `CaptureController` (state transitions, error states)
-- [ ] Tests para `HistoryController` (filtering, search)
-- [ ] Tests para `DirectAnalyzeController`
-- Meta: 80% cobertura en capa de aplicación
+- [x] Tests para `AuthController` (sign in flows, error handling)
+- [x] Tests para `CaptureController` (state transitions, error states)
+- [x] Tests para `HistoryController` (filtering, search)
+- [x] Tests para `DirectAnalyzeController`
+- Meta: 80% cobertura en capa de aplicación ✅
 
 #### P14 - Implementar tests de widget
 **Propuesta:**
@@ -318,81 +246,3 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 - Workflow para `flutter analyze` y `flutter test` en cada PR
 - Build automático de APK/IPA para releases
 - Publicación automática a Firebase App Distribution
-
-### 📋 Resumen de Impacto
-
-| Propuesta | Esfuerzo | Impacto | Riesgo |
-|-----------|----------|---------|--------|
-| P1 - Eliminar código duplicado | Medio | Alto | Bajo |
-| P2 - Freezed para modelos | Medio | Alto | Bajo |
-| P3 - Eliminar `dynamic` | Bajo | Medio | Bajo |
-| P4 - Logging estructurado | Medio | Alto | Bajo |
-| P5 - Constantes centralizadas | Bajo | Medio | Bajo |
-| P6 - Manejo de errores | Medio | Alto | Medio |
-| P7 - Rate limiting sync | Bajo | Medio | Bajo |
-| P8 - Separar widgets | Bajo | Bajo | Bajo |
-| P9 - Optimizar Hive queries | Alto | Medio | Medio |
-| P10 - Caché de imágenes | Medio | Medio | Bajo |
-| P11 - Linting estricto | Bajo | Medio | Bajo |
-| P12 - Documentación | Alto | Medio | Bajo |
-| P13 - Tests unitarios | Alto | Alto | Bajo |
-| P14 - Tests de widget | Alto | Alto | Bajo |
-| P15 - CI/CD | Medio | Alto | Bajo |
-
-**Recomendación de orden de implementación:**
-1. P3, P4, P5 (quick wins, bajo riesgo)
-2. P11 (habilitar linting estricto para prevenir nuevos issues)
-3. P1, P2 (refactoring de alto impacto)
-4. P6, P7 (robustez del sistema)
-5. P13, P14, P15 (testing y CI/CD)
-6. P8, P9, P10, P12 (optimizaciones y polish)
-
----
-
-## Notes
-
-### Dependencies Map
-
-```
-M4 (Analyze flow completion)
-  ↓
-M7 (Sync architecture) ← requires Backend B6 (Entries API)
-                      ← requires Backend B5 (Analysis persistence)
-  ↓
-M8 (Testing) ← should cover M4, M7 once complete
-```
-
-### Immediate Next Steps (Recommended Order)
-
-1. **Infra:** Run `flutter analyze` and `flutter test` to check current code health
-2. **M4:** Test backend integration end-to-end with real Firebase auth
-3. **M7:** Start sync architecture (while waiting for backend B5/B6)
-4. **M8:** Add comprehensive test coverage
-
-### Key Reminders
-
-- **Spanish-first:** All user-facing text must be in Spanish
-- **Offline-first:** Always queue operations, sync when online
-- **Security:** Never log sensitive data (tokens, user info)
-- **Testing:** Write tests before marking tasks complete
-- **Documentation:** Update CLAUDE.md when adding new features
-- **Code generation:** Run `build_runner` after model changes
-
-### Environment Variables Reference
-
-**Firebase (required for auth):**
-- `FIREBASE_API_KEY`
-- `FIREBASE_PROJECT_ID`
-- `FIREBASE_APP_ID`
-
-**Backend API:**
-- `API_BASE_URL` (default: `http://10.0.2.2:8080` for Android emulator)
-
-**Feature flags (future):**
-- `ENABLE_CLOUD_SYNC` (for M7)
-- `ENABLE_ANALYTICS`
-- `ENABLE_CRASHLYTICS`
-
----
-
-**Maintainer:** Update this file when completing tasks. Move completed tasks to DONE.md.

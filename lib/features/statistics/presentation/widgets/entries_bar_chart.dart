@@ -38,14 +38,17 @@ class EntriesBarChart extends StatelessWidget {
                     barTouchData: BarTouchData(
                       enabled: true,
                       touchTooltipData: BarTouchTooltipData(
-                        getTooltipColor: (_) => Theme.of(context).colorScheme.inverseSurface,
+                        getTooltipColor: (_) =>
+                            Theme.of(context).colorScheme.inverseSurface,
                         tooltipPadding: const EdgeInsets.all(8),
                         tooltipMargin: 8,
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           return BarTooltipItem(
                             rod.toY.round().toString(),
                             TextStyle(
-                              color: Theme.of(context).colorScheme.onInverseSurface,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onInverseSurface,
                               fontWeight: FontWeight.bold,
                             ),
                           );
@@ -53,7 +56,6 @@ class EntriesBarChart extends StatelessWidget {
                       ),
                     ),
                     titlesData: FlTitlesData(
-                      show: true,
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
@@ -72,7 +74,9 @@ class EntriesBarChart extends StatelessWidget {
                                       dayName.substring(
                                           1), // Capitalize first letter
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                   ),
@@ -84,18 +88,11 @@ class EntriesBarChart extends StatelessWidget {
                           reservedSize: 30,
                         ),
                       ),
-                      leftTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      topTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
+                      leftTitles: const AxisTitles(),
+                      topTitles: const AxisTitles(),
+                      rightTitles: const AxisTitles(),
                     ),
                     gridData: const FlGridData(
-                      show: true,
                       drawVerticalLine: false,
                       horizontalInterval: 1,
                     ),

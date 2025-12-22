@@ -37,7 +37,8 @@ class PresetRecipeDialog extends StatelessWidget {
                             return Container(
                               width: 80,
                               height: 80,
-                              color: Theme.of(context).colorScheme.outlineVariant,
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant,
                               child: const Icon(Icons.restaurant),
                             );
                           },
@@ -65,7 +66,9 @@ class PresetRecipeDialog extends StatelessWidget {
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                             ),
                             const SizedBox(height: 4),
@@ -75,8 +78,9 @@ class PresetRecipeDialog extends StatelessWidget {
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                             ),
                           ],

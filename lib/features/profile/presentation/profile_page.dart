@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
-
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/user_summary_card.dart';
-import 'package:qkomo_ui/features/profile/presentation/theme_selection_page.dart';
-import 'package:qkomo_ui/features/profile/presentation/widgets/profile_option_card.dart';
 import 'package:qkomo_ui/features/profile/presentation/allergens_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/dietary_page.dart';
-import 'package:qkomo_ui/features/settings/application/settings_providers.dart';
+import 'package:qkomo_ui/features/profile/presentation/theme_selection_page.dart';
+import 'package:qkomo_ui/features/profile/presentation/widgets/profile_option_card.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -104,7 +101,8 @@ class ProfilePage extends ConsumerWidget {
               onTap: () {
                 Navigator.of(
                   context,
-                ).push(MaterialPageRoute(builder: (context) => const ThemeSelectionPage()));
+                ).push(MaterialPageRoute(
+                    builder: (context) => const ThemeSelectionPage()));
               },
             ),
             const SizedBox(height: 24),
@@ -127,45 +125,6 @@ class ProfilePage extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _NotificationOption extends ConsumerWidget {
-  const _NotificationOption();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(userSettingsProvider).asData?.value;
-    final enabled = settings?.enableNotifications ?? false;
-
-    return Card(
-      child: SwitchListTile(
-        title: const Text('Notificaciones'),
-        subtitle: const Text('Activar recordatorios diarios'),
-        secondary: Icon(
-          enabled ? Icons.notifications_active : Icons.notifications_off,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        value: enabled,
-        onChanged: (value) {
-          ref.read(userSettingsProvider.notifier).setNotificationsEnabled(value);
-        },
-      ),
-    );
-  }
-}
-
-class _LanguageOption extends StatelessWidget {
-  const _LanguageOption();
-
-  @override
-  Widget build(BuildContext context) {
-    return ProfileOptionCard(
-      title: 'Idioma',
-      icon: Icons.language,
-      subtitle: 'Español (España)',
-      onTap: () {},
     );
   }
 }

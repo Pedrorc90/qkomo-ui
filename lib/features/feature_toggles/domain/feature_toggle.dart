@@ -11,5 +11,6 @@ class FeatureToggle with _$FeatureToggle {
     String? description,
   }) = _FeatureToggle;
 
-  factory FeatureToggle.fromJson(Map<String, dynamic> json) => _$FeatureToggleFromJson(json);
+  factory FeatureToggle.fromJson(Map<String, dynamic> json) =>
+      _$FeatureToggleFromJson(json);
 }

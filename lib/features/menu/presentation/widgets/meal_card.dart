@@ -1,12 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
+import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
+import 'package:qkomo_ui/core/widgets/widgets.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
-import 'package:qkomo_ui/theme/app_colors.dart';
 
 class MealCard extends ConsumerStatefulWidget {
   const MealCard({
@@ -28,33 +30,36 @@ class _MealCardState extends ConsumerState<MealCard> {
     final colorScheme = Theme.of(context).colorScheme;
     final mealTypeColor = _getMealTypeColor(context, widget.meal.mealType);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: Card(
-        elevation: _isHovered ? 8 : 2,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: _isHovered
-                  ? mealTypeColor.withAlpha((0.3 * 255).round())
-                  : colorScheme.outlineVariant,
-              width: _isHovered ? 2 : 1,
+    return Semantics(
+      label:
+          'Comida: ${widget.meal.name}. Tipo: ${widget.meal.mealType.displayName}. Ingredientes: ${widget.meal.ingredients.length}.',
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: AnimatedCard(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => MealFormDialog(
+                date: widget.meal.scheduledFor,
+                mealType: widget.meal.mealType,
+                existingMeal: widget.meal,
+              ),
+            );
+          },
+          elevation: _isHovered ? 8 : 2,
+          borderRadius: BorderRadius.circular(12),
+          padding: EdgeInsets.zero,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: _isHovered
+                    ? mealTypeColor.withAlpha((0.3 * 255).round())
+                    : colorScheme.outlineVariant,
+                width: _isHovered ? 2 : 1,
+              ),
             ),
-          ),
-          child: InkWell(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => MealFormDialog(
-                  date: widget.meal.scheduledFor,
-                  mealType: widget.meal.mealType,
-                  existingMeal: widget.meal,
-                ),
-              );
-            },
-            borderRadius: BorderRadius.circular(12),
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Row(
@@ -71,6 +76,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                                     width: 60,
                                     height: 60,
                                     fit: BoxFit.cover,
+                                    semanticLabel: SemanticLabels.mealImage,
                                     errorBuilder: (_, __, ___) =>
                                         _buildPlaceholder(context),
                                   )
@@ -79,6 +85,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                                     width: 60,
                                     height: 60,
                                     fit: BoxFit.cover,
+                                    semanticLabel: SemanticLabels.mealImage,
                                     errorBuilder: (_, __, ___) =>
                                         _buildPlaceholder(context),
                                   ))
@@ -102,7 +109,8 @@ class _MealCardState extends ConsumerState<MealCard> {
                           child: Icon(
                             _getMealIcon(widget.meal.mealType),
                             size: 14,
-                            color: AppColors.neutralWhite,
+                            color: Colors.white,
+                            semanticLabel: '', // Decorative within the card
                           ),
                         ),
                       ),
@@ -134,11 +142,12 @@ class _MealCardState extends ConsumerState<MealCard> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: mealTypeColor.withAlpha((0.15 * 255).round()),
+                                color: mealTypeColor
+                                    .withAlpha((0.15 * 255).round()),
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
-                                  color:
-                                      mealTypeColor.withAlpha((0.3 * 255).round()),
+                                  color: mealTypeColor
+                                      .withAlpha((0.3 * 255).round()),
                                 ),
                               ),
                               child: Text(
@@ -158,8 +167,9 @@ class _MealCardState extends ConsumerState<MealCard> {
                             Icon(
                               Icons.layers,
                               size: 14,
-                              color:
-                                  colorScheme.onSurfaceVariant.withAlpha((0.7 * 255).round()),
+                              color: colorScheme.onSurfaceVariant
+                                  .withAlpha((0.7 * 255).round()),
+                              semanticLabel: '',
                             ),
                             const SizedBox(width: 4),
                             Text(
@@ -184,7 +194,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                             ? colorScheme.error
                             : colorScheme.onSurfaceVariant,
                       ),
-                      tooltip: 'Eliminar comida',
+                      tooltip: SemanticLabels.deleteMeal,
                       onPressed: () async {
                         final confirmed = await showDialog<bool>(
                           context: context,
@@ -213,7 +223,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                               .deleteMeal(widget.meal.id);
                         }
                       },
-                    ),
+                    ).withMinimumTouchTarget(),
                   ),
                 ],
               ),

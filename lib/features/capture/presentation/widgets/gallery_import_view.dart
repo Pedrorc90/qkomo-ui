@@ -150,7 +150,6 @@ class _ImportButtonState extends State<_ImportButton>
       ),
       child: FilledButton.icon(
         onPressed: widget.onPressed,
-        onLongPress: null,
         icon: const Icon(Icons.photo_library_outlined),
         label: Text(widget.label),
       ),

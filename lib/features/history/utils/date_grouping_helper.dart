@@ -190,6 +190,6 @@ class DateGroupingHelper {
   /// Get start of this month
   static DateTime getStartOfThisMonth() {
     final now = DateTime.now();
-    return DateTime(now.year, now.month, 1);
+    return DateTime(now.year, now.month);
   }
 }

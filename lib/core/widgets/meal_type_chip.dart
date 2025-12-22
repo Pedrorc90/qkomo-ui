@@ -124,7 +124,7 @@ class MealTypeChip extends StatelessWidget {
     return FilterChip(
       selected: isSelected,
       onSelected: onTap != null ? (_) => onTap!() : null,
-      avatar: Icon(icon, size: 16),
+      avatar: Icon(icon, size: 16, semanticLabel: ''),
       label: Text(mealType.displayName),
       backgroundColor: color.withValues(alpha: 0.1),
       selectedColor: color.withValues(alpha: 0.3),
@@ -141,7 +141,7 @@ class MealTypeChip extends StatelessWidget {
     return FilterChip(
       selected: isSelected,
       onSelected: onTap != null ? (_) => onTap!() : null,
-      avatar: Icon(icon, size: 14),
+      avatar: Icon(icon, size: 14, semanticLabel: ''),
       label: Text(mealType.displayName),
       backgroundColor: color.withValues(alpha: 0.1),
       selectedColor: color.withValues(alpha: 0.3),
@@ -159,15 +159,21 @@ class MealTypeChip extends StatelessWidget {
 
   /// Builds the icon-only variant with circular background
   Widget _buildIconOnlyChip(IconData icon, Color color) {
-    return GestureDetector(
-      onTap: onTap,
-      child: CircleAvatar(
-        radius: 16,
-        backgroundColor: color.withValues(alpha: isSelected ? 0.3 : 0.1),
-        child: Icon(
-          icon,
-          color: isSelected ? color : color.withValues(alpha: 0.7),
-          size: 18,
+    return Container(
+      width: 48,
+      height: 48,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: onTap,
+        child: CircleAvatar(
+          radius: 18,
+          backgroundColor: color.withValues(alpha: isSelected ? 0.3 : 0.1),
+          child: Icon(
+            icon,
+            color: isSelected ? color : color.withValues(alpha: 0.7),
+            size: 20,
+            semanticLabel: '',
+          ),
         ),
       ),
     );

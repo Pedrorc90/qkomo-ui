@@ -99,7 +99,7 @@ class NutritionInfoCard extends StatelessWidget {
               _buildNutrientItem(
                 context,
                 'Fibra',
-                '${nutrition.fiberG!.toStringAsFixed(1)}',
+                nutrition.fiberG!.toStringAsFixed(1),
                 'g',
                 Icons.eco,
               ),
