@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:qkomo_ui/theme/app_colors.dart';
 import 'package:qkomo_ui/theme/app_typography.dart';
@@ -109,6 +110,12 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: AppTypography.titleLarge.copyWith(
           color: scheme.onSurface,
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness:
+              scheme.brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+          statusBarBrightness: scheme.brightness,
         ),
       ),
       cardTheme: CardThemeData(

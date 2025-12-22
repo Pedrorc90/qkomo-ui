@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/auth/presentation/sign_in/sign_in_page.dart';
 import 'package:qkomo_ui/features/shell/presentation/root_shell.dart';
+import 'package:qkomo_ui/features/initialization/presentation/loading_screen.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key, required this.child});
@@ -15,9 +16,7 @@ class AuthGate extends ConsumerWidget {
     final authState = ref.watch(authStateChangesProvider);
     return authState.when(
       data: (user) => user == null ? const SignInPage() : const RootShell(),
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () => const LoadingScreen(),
       error: (error, _) => Scaffold(
         body: Center(
           child: Padding(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
@@ -38,8 +40,7 @@ class UpcomingMealsSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color:
-                  colorScheme.secondaryContainer.withAlpha((0.3 * 255).round()),
+              color: colorScheme.secondaryContainer.withAlpha((0.3 * 255).round()),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -90,8 +91,7 @@ class UpcomingMealsSection extends StatelessWidget {
                           Icon(
                             Icons.event_busy,
                             size: 48,
-                            color: colorScheme.onSurfaceVariant
-                                .withAlpha((0.5 * 255).round()),
+                            color: colorScheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -170,10 +170,7 @@ class UpcomingMealsSection extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        leading: Icon(
-          _getMealIcon(meal.mealType),
-          color: colorScheme.secondary,
-        ),
+        leading: _buildMealImage(context, meal, colorScheme),
         title: Text(
           meal.name,
           style: const TextStyle(
@@ -189,6 +186,73 @@ class UpcomingMealsSection extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMealImage(
+    BuildContext context,
+    Meal meal,
+    ColorScheme colorScheme,
+  ) {
+    const size = 48.0;
+    final fallbackIcon = Icon(
+      _getMealIcon(meal.mealType),
+      color: colorScheme.secondary,
+      size: 24,
+    );
+
+    if (meal.photoPath == null) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: fallbackIcon,
+      );
+    }
+
+    final isAsset = meal.photoPath!.startsWith('assets/');
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: isAsset
+          ? Image.asset(
+              meal.photoPath!,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => _buildFallbackContainer(
+                colorScheme,
+                fallbackIcon,
+                size,
+              ),
+            )
+          : Image.file(
+              File(meal.photoPath!),
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => _buildFallbackContainer(
+                colorScheme,
+                fallbackIcon,
+                size,
+              ),
+            ),
+    );
+  }
+
+  Widget _buildFallbackContainer(
+    ColorScheme colorScheme,
+    Widget icon,
+    double size,
+  ) {
+    return Container(
+      width: size,
+      height: size,
+      color: colorScheme.surfaceContainerHighest,
+      child: icon,
     );
   }
 

@@ -127,93 +127,78 @@ class SelectedDayMealsSection extends ConsumerWidget {
                 ],
               ),
             ),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  if (meals.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Text(
-                        'No hay comidas planificadas para este día',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontStyle: FontStyle.italic,
-                        ),
-                        textAlign: TextAlign.center,
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              children: [
+                if (meals.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'No hay comidas planificadas para este día',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontStyle: FontStyle.italic,
                       ),
-                    )
-                  else
-                    ..._buildMealTypeSections(context, meals, selectedDay),
-                  const SizedBox(height: 12),
-                  // Add new meal button
-                  Card(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+                      textAlign: TextAlign.center,
                     ),
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryContainer
-                        .withAlpha((0.3 * 255).round()),
-                    child: InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => MealFormDialog(
-                            date: selectedDay,
-                          ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_circle,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 28,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Agregar comida',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
+                  )
+                else
+                  ..._buildMealTypeSections(context, meals, selectedDay),
+                const SizedBox(height: 12),
+                // Add new meal button
+                Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  color:
+                      Theme.of(context).colorScheme.primaryContainer.withAlpha((0.3 * 255).round()),
+                  child: InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => MealFormDialog(
+                          date: selectedDay,
                         ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_circle,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 28,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Agregar comida',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
-  }
-
-  IconData _getMealIcon(MealType type) {
-    switch (type) {
-      case MealType.breakfast:
-        return Icons.free_breakfast;
-      case MealType.lunch:
-        return Icons.restaurant;
-      case MealType.snack:
-        return Icons.cookie;
-      case MealType.dinner:
-        return Icons.dinner_dining;
-    }
   }
 
   Color _getMealTypeColor(BuildContext context, MealType type) {
@@ -261,56 +246,11 @@ class SelectedDayMealsSection extends ConsumerWidget {
       if (!mealsByType.containsKey(type)) continue;
 
       final mealsOfType = mealsByType[type]!;
-      final typeColor = _getMealTypeColor(context, type);
-      final timeContext = _getMealTimeContext(type);
 
       sections.add(
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Meal type header with time context
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-              child: Row(
-                children: [
-                  Container(
-                    width: 4,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: typeColor,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        type.displayName,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: typeColor,
-                        ),
-                      ),
-                      Text(
-                        timeContext,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Icon(
-                    _getMealIcon(type),
-                    size: 18,
-                    color: typeColor.withAlpha((0.6 * 255).round()),
-                  ),
-                ],
-              ),
-            ),
             // Meals for this type
             ...mealsOfType.map((meal) {
               return Padding(
@@ -318,15 +258,6 @@ class SelectedDayMealsSection extends ConsumerWidget {
                 child: MealCard(meal: meal),
               );
             }),
-            // Divider between sections
-            if (mealsOfType != meals.last)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Divider(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                  thickness: 1,
-                ),
-              ),
           ],
         ),
       );

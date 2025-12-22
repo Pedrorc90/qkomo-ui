@@ -17,86 +17,85 @@ class WeeklyMenuPage extends ConsumerWidget {
     final dateFormat = DateFormat('d MMM', 'es');
 
     final weekEnd = weekStart.add(const Duration(days: 6));
-    final weekRange =
-        '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
+    final weekRange = '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const QkomoNavBar(),
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.chevron_left,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
-                  onPressed: () {
-                    ref.read(currentWeekStartProvider.notifier).state =
-                        weekStart.subtract(const Duration(days: 7));
-                    ref.read(selectedDayProvider.notifier).state = null;
-                  },
-                  tooltip: 'Semana anterior',
-                ),
-                Expanded(
-                  child: Text(
-                    'Semana del $weekRange',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.chevron_left,
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
-                    textAlign: TextAlign.center,
+                    onPressed: () {
+                      ref.read(currentWeekStartProvider.notifier).state =
+                          weekStart.subtract(const Duration(days: 7));
+                      ref.read(selectedDayProvider.notifier).state = null;
+                    },
+                    tooltip: 'Semana anterior',
                   ),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.today,
+                  Expanded(
+                    child: Text(
+                      'Semana del $weekRange',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
-                      onPressed: () {
-                        final now = DateTime.now();
-                        ref.read(currentWeekStartProvider.notifier).state =
-                            now.subtract(Duration(days: now.weekday - 1));
-                        ref.read(selectedDayProvider.notifier).state =
-                            DateTime(now.year, now.month, now.day);
-                      },
-                      tooltip: 'Semana actual',
+                      textAlign: TextAlign.center,
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.chevron_right,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.today,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                        onPressed: () {
+                          final now = DateTime.now();
+                          ref.read(currentWeekStartProvider.notifier).state =
+                              now.subtract(Duration(days: now.weekday - 1));
+                          ref.read(selectedDayProvider.notifier).state =
+                              DateTime(now.year, now.month, now.day);
+                        },
+                        tooltip: 'Semana actual',
                       ),
-                      onPressed: () {
-                        ref.read(currentWeekStartProvider.notifier).state =
-                            weekStart.add(const Duration(days: 7));
-                        ref.read(selectedDayProvider.notifier).state = null;
-                      },
-                      tooltip: 'Semana siguiente',
-                    ),
-                  ],
-                ),
-              ],
+                      IconButton(
+                        icon: Icon(
+                          Icons.chevron_right,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                        onPressed: () {
+                          ref.read(currentWeekStartProvider.notifier).state =
+                              weekStart.add(const Duration(days: 7));
+                          ref.read(selectedDayProvider.notifier).state = null;
+                        },
+                        tooltip: 'Semana siguiente',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Upper half: Weekly Calendar
-          WeeklyCalendarWidget(weekStart: weekStart),
-          const Divider(height: 1),
-          // Lower half: Selected Day Meals
-          const Expanded(
-            child: SelectedDayMealsSection(),
-          ),
-        ],
+            // Upper half: Weekly Calendar
+            WeeklyCalendarWidget(weekStart: weekStart),
+            const Divider(height: 1),
+            // Lower half: Selected Day Meals
+            const SelectedDayMealsSection(),
+          ],
+        ),
       ),
     );
   }
