@@ -18,7 +18,7 @@ class DietaryPage extends ConsumerWidget {
           return GridView.builder(
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
+              crossAxisCount: 3,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
               childAspectRatio: 0.85,
@@ -26,14 +26,11 @@ class DietaryPage extends ConsumerWidget {
             itemCount: DietaryRestriction.values.length,
             itemBuilder: (context, index) {
               final restriction = DietaryRestriction.values[index];
-              final isSelected =
-                  settings.dietaryRestrictions.contains(restriction);
+              final isSelected = settings.dietaryRestrictions.contains(restriction);
 
               return GestureDetector(
                 onTap: () {
-                  ref
-                      .read(userSettingsProvider.notifier)
-                      .toggleDietaryRestriction(restriction);
+                  ref.read(userSettingsProvider.notifier).toggleDietaryRestriction(restriction);
                 },
                 child: Card(
                   elevation: 0,
@@ -47,10 +44,7 @@ class DietaryPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   color: isSelected
-                      ? Theme.of(context)
-                          .colorScheme
-                          .primaryContainer
-                          .withValues(alpha: 0.3)
+                      ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3)
                       : null,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -72,8 +66,7 @@ class DietaryPage extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 12,
-                            fontWeight:
-                                isSelected ? FontWeight.bold : FontWeight.normal,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
                       ),

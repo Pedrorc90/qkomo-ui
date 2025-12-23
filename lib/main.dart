@@ -10,6 +10,7 @@ import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/migration_service.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/feature_toggles/data/feature_toggle_hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart' as menu_hive;
 import 'package:qkomo_ui/features/settings/data/settings_hive_boxes.dart';
 import 'package:qkomo_ui/features/sync/application/background_sync_worker.dart';
@@ -29,6 +30,7 @@ void main() async {
   await HiveBoxes.init();
   await menu_hive.MenuHiveBoxes.init();
   await SettingsHiveBoxes.init();
+  await FeatureToggleHiveBoxes.init();
 
   // Run migration if needed
   await _runMigration();

@@ -18,7 +18,7 @@ class AllergensPage extends ConsumerWidget {
           return GridView.builder(
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
+              crossAxisCount: 3,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
               childAspectRatio: 0.85,

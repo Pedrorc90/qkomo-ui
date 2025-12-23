@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/animations/feedback_animations.dart';
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
@@ -17,6 +19,9 @@ class SelectedDayMealsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDay = ref.watch(selectedDayProvider);
     final meals = ref.watch(selectedDayMealsProvider);
+    final aiSuggestionsEnabled =
+        ref.watch(featureEnabledProvider('ai_suggestions'));
+    debugPrint('[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
 
     if (selectedDay == null) {
       return Center(
@@ -108,15 +113,16 @@ class SelectedDayMealsSection extends ConsumerWidget {
                     visualDensity: VisualDensity.compact,
                   ),
                   // Suggestions AI button
-                  IconButton(
-                    icon: Icon(
-                      Icons.lightbulb_outline,
-                      color: Theme.of(context).colorScheme.primary,
+                  if (aiSuggestionsEnabled)
+                    IconButton(
+                      icon: Icon(
+                        Icons.lightbulb_outline,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () => _generateSuggestions(context),
+                      tooltip: 'Sugerencias IA',
+                      visualDensity: VisualDensity.compact,
                     ),
-                    onPressed: () => _generateSuggestions(context),
-                    tooltip: 'Sugerencias IA',
-                    visualDensity: VisualDensity.compact,
-                  ),
                   // Clear meals button
                   IconButton(
                     icon: Icon(

@@ -20,8 +20,11 @@ FeatureToggle _$FeatureToggleFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$FeatureToggle {
+  @HiveField(0)
   String get key => throw _privateConstructorUsedError;
+  @HiveField(1)
   bool get enabled => throw _privateConstructorUsedError;
+  @HiveField(2)
   String? get description => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -36,7 +39,10 @@ abstract class $FeatureToggleCopyWith<$Res> {
           FeatureToggle value, $Res Function(FeatureToggle) then) =
       _$FeatureToggleCopyWithImpl<$Res, FeatureToggle>;
   @useResult
-  $Res call({String key, bool enabled, String? description});
+  $Res call(
+      {@HiveField(0) String key,
+      @HiveField(1) bool enabled,
+      @HiveField(2) String? description});
 }
 
 /// @nodoc
@@ -81,7 +87,10 @@ abstract class _$$FeatureToggleImplCopyWith<$Res>
       __$$FeatureToggleImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String key, bool enabled, String? description});
+  $Res call(
+      {@HiveField(0) String key,
+      @HiveField(1) bool enabled,
+      @HiveField(2) String? description});
 }
 
 /// @nodoc
@@ -118,18 +127,24 @@ class __$$FeatureToggleImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
+@HiveType(typeId: 24, adapterName: 'FeatureToggleAdapter')
 class _$FeatureToggleImpl implements _FeatureToggle {
   const _$FeatureToggleImpl(
-      {required this.key, required this.enabled, this.description});
+      {@HiveField(0) required this.key,
+      @HiveField(1) required this.enabled,
+      @HiveField(2) this.description});
 
   factory _$FeatureToggleImpl.fromJson(Map<String, dynamic> json) =>
       _$$FeatureToggleImplFromJson(json);
 
   @override
+  @HiveField(0)
   final String key;
   @override
+  @HiveField(1)
   final bool enabled;
   @override
+  @HiveField(2)
   final String? description;
 
   @override
@@ -168,18 +183,21 @@ class _$FeatureToggleImpl implements _FeatureToggle {
 
 abstract class _FeatureToggle implements FeatureToggle {
   const factory _FeatureToggle(
-      {required final String key,
-      required final bool enabled,
-      final String? description}) = _$FeatureToggleImpl;
+      {@HiveField(0) required final String key,
+      @HiveField(1) required final bool enabled,
+      @HiveField(2) final String? description}) = _$FeatureToggleImpl;
 
   factory _FeatureToggle.fromJson(Map<String, dynamic> json) =
       _$FeatureToggleImpl.fromJson;
 
   @override
+  @HiveField(0)
   String get key;
   @override
+  @HiveField(1)
   bool get enabled;
   @override
+  @HiveField(2)
   String? get description;
   @override
   @JsonKey(ignore: true)

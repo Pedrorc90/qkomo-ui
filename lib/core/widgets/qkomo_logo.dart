@@ -97,15 +97,18 @@ class _QkomoLogoPainter extends CustomPainter {
     final tinesPaint = Paint()
       ..color = const Color(0xFF2D5016)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.02
+      ..strokeWidth = size.width * 0.04
       ..strokeCap = StrokeCap.round;
 
-    canvas.drawLine(Offset(stemX - 10, center.dy - radius * 0.7),
-        Offset(stemX - 10, center.dy - radius * 0.55), tinesPaint);
-    canvas.drawLine(Offset(stemX, center.dy - radius * 0.7),
-        Offset(stemX, center.dy - radius * 0.55), tinesPaint);
-    canvas.drawLine(Offset(stemX + 10, center.dy - radius * 0.7),
-        Offset(stemX + 10, center.dy - radius * 0.55), tinesPaint);
+    final tineSpacing = size.width * 0.075;
+    final tineTopY = center.dy - radius * 0.6;
+    final tineBottomY = center.dy - radius * 0.35;
+
+    canvas.drawLine(Offset(stemX - tineSpacing, tineTopY), Offset(stemX - tineSpacing, tineBottomY),
+        tinesPaint);
+    canvas.drawLine(Offset(stemX, tineTopY), Offset(stemX, tineBottomY), tinesPaint);
+    canvas.drawLine(Offset(stemX + tineSpacing, tineTopY), Offset(stemX + tineSpacing, tineBottomY),
+        tinesPaint);
 
     // K Upper Arm (Carrot - Coral)
     final coralPaint = Paint()
