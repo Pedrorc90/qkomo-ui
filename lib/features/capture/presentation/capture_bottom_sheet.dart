@@ -7,6 +7,7 @@ import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/barcode_scanner_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_view.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/capture_option_card.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/capture_status_banner.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/gallery_import_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/text_entry_view.dart';
@@ -205,7 +206,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
-          _CaptureOptionCard(
+          CaptureOptionCard(
             icon: Icons.camera_alt_outlined,
             label: 'Cámara',
             description: 'Tomar una foto',
@@ -213,7 +214,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             onPressed: () => controller.setMode(CaptureMode.camera),
           ),
           const SizedBox(height: 10),
-          _CaptureOptionCard(
+          CaptureOptionCard(
             icon: Icons.photo_library_outlined,
             label: 'Galería',
             description: 'Elegir de tus fotos',
@@ -221,7 +222,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             onPressed: () => controller.setMode(CaptureMode.gallery),
           ),
           const SizedBox(height: 10),
-          _CaptureOptionCard(
+          CaptureOptionCard(
             icon: Icons.qr_code_2_outlined,
             label: 'Código QR',
             description: 'Escanear código',
@@ -229,7 +230,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
             onPressed: () => controller.setMode(CaptureMode.barcode),
           ),
           const SizedBox(height: 10),
-          _CaptureOptionCard(
+          CaptureOptionCard(
             icon: Icons.edit_note_outlined,
             label: 'Texto',
             description: 'Escribir ingredientes',
@@ -398,125 +399,6 @@ class _ModalHeader extends StatelessWidget {
             onPressed: onClose,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _CaptureOptionCard extends StatefulWidget {
-  const _CaptureOptionCard({
-    required this.icon,
-    required this.label,
-    required this.description,
-    required this.color,
-    required this.onPressed,
-  });
-
-  final IconData icon;
-  final String label;
-  final String description;
-  final Color color;
-  final VoidCallback onPressed;
-
-  @override
-  State<_CaptureOptionCard> createState() => _CaptureOptionCardState();
-}
-
-class _CaptureOptionCardState extends State<_CaptureOptionCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: Card(
-        elevation: 0,
-        color: scheme.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(
-            color: scheme.outlineVariant.withAlpha((0.3 * 255).round()),
-          ),
-        ),
-        child: InkWell(
-          onTap: () {
-            _controller.forward().then((_) {
-              _controller.reverse();
-              widget.onPressed();
-            });
-          },
-          onTapDown: (_) => _controller.forward(),
-          onTapUp: (_) => _controller.reverse(),
-          onTapCancel: () => _controller.reverse(),
-          borderRadius: BorderRadius.circular(14),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: widget.color.withAlpha((0.12 * 255).round()),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    widget.icon,
-                    size: 22,
-                    color: widget.color,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.label,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        widget.description,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: scheme.onSurfaceVariant,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  size: 18,
-                  color: scheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

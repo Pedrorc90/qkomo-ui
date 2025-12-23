@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 part 'user_settings.freezed.dart';
 part 'user_settings.g.dart';
@@ -15,8 +17,7 @@ class UserSettings with _$UserSettings {
     @HiveField(4) @Default(true) bool enableDailyReminders,
   }) = _UserSettings;
 
-  factory UserSettings.fromJson(Map<String, dynamic> json) =>
-      _$UserSettingsFromJson(json);
+  factory UserSettings.fromJson(Map<String, dynamic> json) => _$UserSettingsFromJson(json);
 }
 
 @HiveType(typeId: 21)
@@ -121,6 +122,66 @@ enum DietaryRestriction {
         return 'Sin gluten';
       case DietaryRestriction.dairyFree:
         return 'Sin lácteos';
+    }
+  }
+}
+
+/// Extension for Allergen enum to provide theme-appropriate icons
+extension AllergenIcon on Allergen {
+  IconData get icon {
+    switch (this) {
+      case Allergen.gluten:
+        return MdiIcons.grain;
+      case Allergen.lactose:
+        return MdiIcons.beerOutline;
+      case Allergen.egg:
+        return MdiIcons.egg;
+      case Allergen.nuts:
+        return MdiIcons.peanut;
+      case Allergen.soy:
+        return MdiIcons.leaf;
+      case Allergen.fish:
+        return MdiIcons.fish;
+      case Allergen.shellfish:
+        return MdiIcons.fish;
+      case Allergen.peanuts:
+        return MdiIcons.peanut;
+      case Allergen.sesame:
+        return MdiIcons.seed;
+      case Allergen.sulfites:
+        return MdiIcons.flaskOutline;
+      case Allergen.celery:
+        return MdiIcons.carrot;
+      case Allergen.mustard:
+        return MdiIcons.leaf;
+      case Allergen.lupin:
+        return MdiIcons.leaf;
+      case Allergen.molluscs:
+        return MdiIcons.close;
+    }
+  }
+}
+
+/// Extension for DietaryRestriction enum to provide theme-appropriate icons
+extension DietaryRestrictionIcon on DietaryRestriction {
+  IconData get icon {
+    switch (this) {
+      case DietaryRestriction.vegan:
+        return MdiIcons.leaf;
+      case DietaryRestriction.vegetarian:
+        return MdiIcons.sprout;
+      case DietaryRestriction.pescatarian:
+        return MdiIcons.fish;
+      case DietaryRestriction.keto:
+        return MdiIcons.egg;
+      case DietaryRestriction.paleo:
+        return MdiIcons.fire;
+      case DietaryRestriction.lowCarb:
+        return MdiIcons.grain;
+      case DietaryRestriction.glutenFree:
+        return MdiIcons.close;
+      case DietaryRestriction.dairyFree:
+        return MdiIcons.beerOutline;
     }
   }
 }

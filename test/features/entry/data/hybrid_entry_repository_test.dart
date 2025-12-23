@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:qkomo_ui/core/services/logger_service.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
@@ -10,8 +11,11 @@ import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 
 import 'hybrid_entry_repository_test.mocks.dart';
 
-@GenerateNiceMocks(
-    [MockSpec<LocalEntryRepository>(), MockSpec<RemoteEntryRepository>()])
+@GenerateNiceMocks([
+  MockSpec<LocalEntryRepository>(),
+  MockSpec<RemoteEntryRepository>(),
+  MockSpec<LogService>()
+])
 void main() {
   late HybridEntryRepository repository;
   late MockLocalEntryRepository mockLocalRepo;
@@ -116,6 +120,63 @@ void main() {
       verify(mockRemoteRepo.pushEntry(tPendingEntry));
       verify(mockLocalRepo.saveEntry(
           argThat(predicate<Entry>((e) => e.syncStatus == SyncStatus.synced))));
+    });
+
+    test('should continue push attempt even if pull fails', () async {
+      // Arrange
+      final tPendingEntry = tEntry.copyWith(syncStatus: SyncStatus.pending);
+      when(mockLocalRepo.getAllEntries()).thenReturn([]);
+      when(mockRemoteRepo.fetchEntries(from: anyNamed('from')))
+          .thenThrow(Exception('Network error'));
+      when(mockLocalRepo.getPendingEntries()).thenReturn([tPendingEntry]);
+      when(mockRemoteRepo.pushEntry(tPendingEntry))
+          .thenAnswer((_) async => {});
+
+      // Act & Assert - sync() should throw, but pushEntry should have been called
+      expect(
+        () => repository.sync(),
+        throwsException,
+      );
+
+      // Verify push was attempted despite pull failure
+      verify(mockRemoteRepo.pushEntry(tPendingEntry));
+    });
+
+    test('should propagate pull error to caller after push attempt', () async {
+      // Arrange
+      final testException = Exception('Pull failed: Network error');
+      when(mockLocalRepo.getAllEntries()).thenReturn([]);
+      when(mockRemoteRepo.fetchEntries(from: anyNamed('from')))
+          .thenThrow(testException);
+      when(mockLocalRepo.getPendingEntries()).thenReturn([]);
+
+      // Act & Assert
+      expect(
+        () => repository.sync(),
+        throwsA(isA<Exception>()),
+      );
+
+      // Verify error was logged
+      // Note: This would require passing LogService as dependency to verify,
+      // but the logging is happening via singleton LogService().e()
+    });
+
+    test('should mark entry as failed when push fails', () async {
+      // Arrange
+      final tPendingEntry = tEntry.copyWith(syncStatus: SyncStatus.pending);
+      when(mockLocalRepo.getAllEntries()).thenReturn([]);
+      when(mockRemoteRepo.fetchEntries(from: anyNamed('from')))
+          .thenAnswer((_) async => []);
+      when(mockLocalRepo.getPendingEntries()).thenReturn([tPendingEntry]);
+      when(mockRemoteRepo.pushEntry(tPendingEntry))
+          .thenThrow(Exception('Push failed: Server error'));
+
+      // Act
+      await repository.sync();
+
+      // Assert - entry should be marked as failed
+      verify(mockLocalRepo.saveEntry(argThat(predicate<Entry>(
+          (e) => e.syncStatus == SyncStatus.failed && e.id == tEntryId))));
     });
   });
 }

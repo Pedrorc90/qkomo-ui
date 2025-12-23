@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:qkomo_ui/core/services/logger_service.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
@@ -82,6 +83,8 @@ class HybridEntryRepository implements EntryRepository {
         .whereType<DateTime>()
         .fold<DateTime?>(null, (a, b) => a == null || b.isAfter(a) ? b : a);
 
+    Exception? syncError;
+
     try {
       final remoteEntries = await _remoteRepo.fetchEntries(from: lastSynced);
 
@@ -110,18 +113,26 @@ class HybridEntryRepository implements EntryRepository {
           }
         }
       }
-    } catch (e) {
-      // Pull failed - log and continue to push attempt?
-      // Often better to stop if pull fails to avoid pushing on stale state
-      // But for offline-first, we might still want to push our changes.
-      // We'll catch and log, then try to push.
-      // TODO: Log error
+    } catch (e, stackTrace) {
+      // Pull failed - log and continue to push attempt for offline-first behavior
+      LogService().e(
+        'Error al obtener entradas del servidor durante sync',
+        e,
+        stackTrace,
+      );
+      syncError = e is Exception ? e : Exception(e.toString());
+      // Continue to push attempt even if pull failed
     }
 
     // 2. PUSH: Send pending local changes
     final pending = _localRepo.getPendingEntries();
     for (final entry in pending) {
       await _syncSingle(entry);
+    }
+
+    // If pull failed, propagate error to caller for UI feedback
+    if (syncError != null) {
+      throw syncError;
     }
   }
 
@@ -150,17 +161,27 @@ class HybridEntryRepository implements EntryRepository {
         // If backend returns the saved entry with new version, we should use that
         // But pushEntry currently returns void.
       ));
-    } on ConflictException catch (_) {
-      // 409 Conflict -> Mark locally
+    } on ConflictException catch (e, stackTrace) {
+      // 409 Conflict -> Mark locally and log
+      LogService().w(
+        'Conflicto al sincronizar entry ${entry.id}',
+        e,
+        stackTrace,
+      );
       await _localRepo.saveEntry(entry.copyWith(
         syncStatus: SyncStatus.conflict,
       ));
-    } catch (e) {
-      // Mark as failed
+    } catch (e, stackTrace) {
+      // Mark as failed and log
+      LogService().e(
+        'Error al sincronizar entry ${entry.id}',
+        e,
+        stackTrace,
+      );
       await _localRepo.saveEntry(entry.copyWith(
         syncStatus: SyncStatus.failed,
       ));
-      // TODO: Log error
+      // Note: No rethrow here - this is called with unawaited() for background sync
     }
   }
 }

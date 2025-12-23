@@ -6,6 +6,7 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:qkomo_ui/core/services/logger_service.dart' as _i7;
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart' as _i5;
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart'
     as _i2;
@@ -145,4 +146,63 @@ class MockRemoteEntryRepository extends _i1.Mock
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
+}
+
+/// A class which mocks [LogService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLogService extends _i1.Mock implements _i7.LogService {
+  @override
+  void d(String? message) => super.noSuchMethod(
+        Invocation.method(
+          #d,
+          [message],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void i(String? message) => super.noSuchMethod(
+        Invocation.method(
+          #i,
+          [message],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void w(
+    String? message, [
+    dynamic error,
+    StackTrace? stackTrace,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #w,
+          [
+            message,
+            error,
+            stackTrace,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void e(
+    String? message, [
+    dynamic error,
+    StackTrace? stackTrace,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #e,
+          [
+            message,
+            error,
+            stackTrace,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
 }

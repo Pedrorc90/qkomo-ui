@@ -170,16 +170,6 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 
 ### 🟡 Media Prioridad - Mejoras de Código
 
-
-#### P6 - Mejorar manejo de errores en HybridEntryRepository
-**Ubicación:** `lib/features/entry/data/hybrid_entry_repository.dart:103-108`
-**Problema:** El catch silencia errores con un TODO comment, sin logging apropiado ni notificación al usuario.
-**Propuesta:**
-- Implementar `Result<T>` pattern o `Either<Failure, Success>`
-- Propagar errores de sync al usuario cuando sea relevante
-- Agregar logging estructurado
-- Beneficio: Mejor experiencia de usuario y debugging
-
 #### P7 - Implementar rate limiting para sync automático
 **Ubicación:** `lib/features/sync/application/sync_service.dart:46-61`
 **Problema:** Cada cambio de conectividad dispara sync, potencialmente causando muchas requests.
@@ -188,12 +178,6 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 - Agregar backoff exponencial cuando hay errores consecutivos
 - Beneficio: Reducción de carga en backend y batería del dispositivo
 
-#### P8 - Separar widgets en archivos más pequeños
-**Ubicación:** `lib/features/capture/presentation/capture_page.dart` (315 líneas)
-**Problema:** El archivo contiene `CapturePage` y `_CaptureOptionCard` en el mismo archivo, violando single-responsibility.
-**Propuesta:**
-- Extraer `_CaptureOptionCard` a `widgets/capture_option_card.dart`
-- Beneficio: Mejor organización, widgets reutilizables
 
 ### 🟢 Baja Prioridad - Optimizaciones
 

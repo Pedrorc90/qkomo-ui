@@ -15,49 +15,68 @@ class AllergensPage extends ConsumerWidget {
       appBar: const QkomoNavBar(title: 'Mis Alérgenos'),
       body: settingsAsync.when(
         data: (settings) {
-          return ListView.builder(
+          return GridView.builder(
             padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.85,
+            ),
             itemCount: Allergen.values.length,
             itemBuilder: (context, index) {
               final allergen = Allergen.values[index];
               final isSelected = settings.allergens.contains(allergen);
 
-              return Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                color: isSelected
-                    ? Theme.of(context)
-                        .colorScheme
-                        .primaryContainer
-                        .withOpacity(0.3)
-                    : null,
-                margin: const EdgeInsets.only(bottom: 8),
-                child: SwitchListTile(
-                  value: isSelected,
-                  onChanged: (value) {
-                    ref
-                        .read(userSettingsProvider.notifier)
-                        .toggleAllergen(allergen);
-                  },
-                  title: Text(
-                    allergen.displayName,
-                    style: TextStyle(
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
+              return GestureDetector(
+                onTap: () {
+                  ref
+                      .read(userSettingsProvider.notifier)
+                      .toggleAllergen(allergen);
+                },
+                child: Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.outlineVariant,
+                      width: isSelected ? 2 : 1,
                     ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  secondary: Icon(
-                    Icons.warning_amber_rounded,
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: isSelected
+                      ? Theme.of(context)
+                          .colorScheme
+                          .primaryContainer
+                          .withValues(alpha: 0.3)
+                      : null,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        allergen.icon,
+                        size: 40,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          allergen.displayName,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight:
+                                isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );

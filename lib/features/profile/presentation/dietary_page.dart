@@ -15,50 +15,69 @@ class DietaryPage extends ConsumerWidget {
       appBar: const QkomoNavBar(title: 'Preferencias dietéticas'),
       body: settingsAsync.when(
         data: (settings) {
-          return ListView.builder(
+          return GridView.builder(
             padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.85,
+            ),
             itemCount: DietaryRestriction.values.length,
             itemBuilder: (context, index) {
               final restriction = DietaryRestriction.values[index];
               final isSelected =
                   settings.dietaryRestrictions.contains(restriction);
 
-              return Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                color: isSelected
-                    ? Theme.of(context)
-                        .colorScheme
-                        .primaryContainer
-                        .withValues(alpha: 0.3)
-                    : null,
-                margin: const EdgeInsets.only(bottom: 8),
-                child: CheckboxListTile(
-                  value: isSelected,
-                  onChanged: (value) {
-                    ref
-                        .read(userSettingsProvider.notifier)
-                        .toggleDietaryRestriction(restriction);
-                  },
-                  title: Text(
-                    restriction.displayName,
-                    style: TextStyle(
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
+              return GestureDetector(
+                onTap: () {
+                  ref
+                      .read(userSettingsProvider.notifier)
+                      .toggleDietaryRestriction(restriction);
+                },
+                child: Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.outlineVariant,
+                      width: isSelected ? 2 : 1,
                     ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  secondary: Icon(
-                    Icons.restaurant_menu,
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: isSelected
+                      ? Theme.of(context)
+                          .colorScheme
+                          .primaryContainer
+                          .withValues(alpha: 0.3)
+                      : null,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        restriction.icon,
+                        size: 40,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          restriction.displayName,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight:
+                                isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
