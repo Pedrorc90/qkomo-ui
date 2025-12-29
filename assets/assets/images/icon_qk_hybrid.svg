@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Soft Nature Background -->
+  <rect width="512" height="512" rx="120" fill="#FBFBFB"/>
+  
+  <!-- The "Q" Plate -->
+  <circle cx="256" cy="240" r="180" stroke="#CCCCCC" stroke-width="8" fill="white"/>
+  <path d="M370 370L420 420" stroke="#CCCCCC" stroke-width="12" stroke-linecap="round"/>
+  
+  <!-- Outer Ring Detail (Q-accent) -->
+  <path d="M380 340C410 300 430 250 430 240C430 143.91 352.09 66 256 66C159.91 66 82 143.91 82 240C82 336.09 159.91 414 256 414C280 414 310 405 340 390" stroke="#2D5016" stroke-width="24" stroke-linecap="round"/>
+
+  <!-- The "K" Interior Construction -->
+  <!-- Fork Stem (Main K stem) -->
+  <path d="M200 120V360" stroke="#2D5016" stroke-width="30" stroke-linecap="round"/>
+  <!-- Fork Tines -->
+  <path d="M170 110L170 140" stroke="#2D5016" stroke-width="12" stroke-linecap="round"/>
+  <path d="M200 110V140" stroke="#2D5016" stroke-width="12" stroke-linecap="round"/>
+  <path d="M230 110L230 140" stroke="#2D5016" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- Carrot (Top K arm) -->
+  <path d="M200 240C200 240 280 200 360 140" stroke="#FF6F3C" stroke-width="35" stroke-linecap="round"/>
+  <path d="M340 155L370 130" stroke="#66BB6A" stroke-width="10" stroke-linecap="round"/> <!-- Carrot greens -->
+
+  <!-- Leaf (Bottom K arm) -->
+  <path d="M200 240C200 240 280 280 360 360" stroke="#66BB6A" stroke-width="35" stroke-linecap="round"/>
+  <path d="M360 360L320 320" stroke="white" stroke-width="4" stroke-linecap="round" opacity="0.4"/> <!-- Leaf detail -->
+  
+  <!-- Nature Accents -->
+  <circle cx="256" cy="240" r="15" fill="#2D5016" opacity="0.1"/>
+  <circle cx="150" cy="380" r="10" fill="#FF6F3C"/>
+</svg>
