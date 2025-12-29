@@ -1,17 +1,21 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
+import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_view.dart';
+import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
+import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 // Mock class for CaptureController
-class MockCaptureController extends StateNotifier<CaptureState>
-    implements CaptureController {
+class MockCaptureController extends StateNotifier<CaptureState> implements CaptureController {
   MockCaptureController() : super(const CaptureState());
 
   @override
@@ -21,17 +25,17 @@ class MockCaptureController extends StateNotifier<CaptureState>
 
   @override
   void clearMode() {
-    state = state.copyWith();
+    state = state.copyWith(mode: null);
   }
 
   @override
   void clearError() {
-    state = state.copyWith();
+    state = state.copyWith(error: null);
   }
 
   @override
   void clearMessage() {
-    state = state.copyWith();
+    state = state.copyWith(message: null);
   }
 
   // Stubs for other methods
@@ -54,6 +58,17 @@ class MockCaptureController extends StateNotifier<CaptureState>
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+// Dummy Mocks for repositories to avoid Hive/Firebase
+class MockCaptureResultRepository implements CaptureResultRepository {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class MockEntryRepository implements EntryRepository {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
   late MockCaptureController mockController;
 
@@ -61,47 +76,41 @@ void main() {
     mockController = MockCaptureController();
   });
 
-  testWidgets('CaptureBottomSheet renders initial options correctly',
-      (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          captureControllerProvider.overrideWith((ref) => mockController),
-          appGradientProvider.overrideWithValue(
-              const LinearGradient(colors: [Colors.white, Colors.white])),
-        ],
-        child: const MaterialApp(
-          home: Scaffold(
-            body: CaptureBottomSheet(),
-          ),
+  Widget buildTestWidget({CaptureState? initialState}) {
+    if (initialState != null) {
+      mockController.state = initialState;
+    }
+    return ProviderScope(
+      overrides: [
+        captureControllerProvider.overrideWith((ref) => mockController),
+        appGradientProvider
+            .overrideWithValue(const LinearGradient(colors: [Colors.white, Colors.white])),
+        dioProvider.overrideWithValue(Dio()),
+        captureResultRepositoryProvider
+            .overrideWithValue(MockCaptureResultRepository() as CaptureResultRepository),
+        entryRepositoryProvider.overrideWithValue(MockEntryRepository() as EntryRepository),
+      ],
+      child: const MaterialApp(
+        home: Scaffold(
+          body: CaptureBottomSheet(),
         ),
       ),
     );
+  }
+
+  testWidgets('CaptureBottomSheet renders initial options correctly', (tester) async {
+    await tester.pumpWidget(buildTestWidget());
 
     // Initial state: No mode selected, should show option cards
     expect(find.text('Cámara'), findsOneWidget);
     expect(find.text('Galería'), findsOneWidget);
-    expect(find.text('Código de barras'), findsOneWidget);
+    expect(find.text('Código QR'), findsOneWidget);
     expect(find.text('Texto'), findsOneWidget);
     expect(find.text('¿Cómo quieres registrar tu comida?'), findsOneWidget);
   });
 
-  testWidgets('Selecting Camera option updates mode and shows CameraView',
-      (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          captureControllerProvider.overrideWith((ref) => mockController),
-          appGradientProvider.overrideWithValue(
-              const LinearGradient(colors: [Colors.white, Colors.white])),
-        ],
-        child: const MaterialApp(
-          home: Scaffold(
-            body: CaptureBottomSheet(),
-          ),
-        ),
-      ),
-    );
+  testWidgets('Selecting Camera option updates mode and shows CameraView', (tester) async {
+    await tester.pumpWidget(buildTestWidget());
 
     // Tap Camera option
     await tester.tap(find.text('Cámara'));
@@ -118,20 +127,7 @@ void main() {
   });
 
   testWidgets('Close button is visible in initial mode', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          captureControllerProvider.overrideWith((ref) => mockController),
-          appGradientProvider.overrideWithValue(
-              const LinearGradient(colors: [Colors.white, Colors.white])),
-        ],
-        child: const MaterialApp(
-          home: Scaffold(
-            body: CaptureBottomSheet(),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget());
 
     // Verify Close button is present (since mode is null)
     expect(find.byIcon(Icons.close), findsOneWidget);

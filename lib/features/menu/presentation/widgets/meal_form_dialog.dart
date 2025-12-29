@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/capture/presentation/widgets/capture_option_card.dart';
 import 'package:qkomo_ui/features/menu/application/image_picker_service.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/preset_recipe_dialog.dart';
-import 'package:qkomo_ui/theme/app_colors.dart';
 
 class MealFormDialog extends ConsumerStatefulWidget {
   const MealFormDialog({
@@ -38,12 +38,12 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   String? _photoPath;
   bool _showForm = false;
   bool _isSavingAsRecipe = false;
+  bool _isCreatingCustom = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedMealType =
-        widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
+    _selectedMealType = widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
 
     // Listen to name changes to update the bookmark button visibility
     _nameController.addListener(() {
@@ -52,6 +52,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
 
     if (widget.existingMeal != null) {
       _showForm = true; // Show form when editing existing meal
+      _isCreatingCustom = true; // Allow editing photo for existing meals
       _nameController.text = widget.existingMeal!.name;
       _notesController.text = widget.existingMeal!.notes ?? '';
       _photoPath = widget.existingMeal!.photoPath;
@@ -135,6 +136,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     if (selected != null) {
       setState(() {
         _showForm = true; // Show form when recipe is selected
+        _isCreatingCustom = false; // Hide photo section for preset recipes
 
         // Handle both PresetRecipe and custom recipe Map
         if (selected is PresetRecipe) {
@@ -154,8 +156,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         } else if (selected is Map<String, dynamic>) {
           // Custom recipe
           _nameController.text = selected['name'] as String? ?? '';
-          _selectedMealType =
-              selected['mealType'] as MealType? ?? MealType.breakfast;
+          _selectedMealType = selected['mealType'] as MealType? ?? MealType.breakfast;
           _photoPath = selected['photoPath'] as String?;
 
           // Clear current ingredients and add from recipe
@@ -176,10 +177,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveMeal() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients = _ingredientControllers
-        .map((c) => c.text.trim())
-        .where((text) => text.isNotEmpty)
-        .toList();
+    final ingredients =
+        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
 
     if (ingredients.isEmpty) {
       // Form validation should catch this now with the validator on the first field
@@ -197,9 +196,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty
-            ? null
-            : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     } else {
@@ -209,9 +206,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty
-            ? null
-            : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     }
@@ -224,10 +219,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveAsRecipe() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients = _ingredientControllers
-        .map((c) => c.text.trim())
-        .where((text) => text.isNotEmpty)
-        .toList();
+    final ingredients =
+        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
 
     if (ingredients.isEmpty) {
       return;
@@ -285,12 +278,10 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     if (existsInCustom) return true;
 
     // Check preset recipes (excluding deleted ones)
-    final deletedPresetRecipes =
-        ref.read(deletedPresetRecipesStreamProvider).value ?? [];
+    final deletedPresetRecipes = ref.read(deletedPresetRecipesStreamProvider).value ?? [];
     final existsInPreset = PresetRecipes.all.any(
       (recipe) =>
-          recipe.name.toLowerCase() == trimmedName &&
-          !deletedPresetRecipes.contains(recipe.name),
+          recipe.name.toLowerCase() == trimmedName && !deletedPresetRecipes.contains(recipe.name),
     );
 
     return existsInPreset;
@@ -303,9 +294,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
       title: Text(
-        widget.existingMeal != null
-            ? 'Editar ${_selectedMealType.displayName}'
-            : 'Agregar comida',
+        widget.existingMeal != null ? 'Editar ${_selectedMealType.displayName}' : 'Agregar comida',
       ),
       content: SizedBox(
         width: double.maxFinite,
@@ -316,114 +305,32 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Photo Section
-                Center(
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 180,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12),
-                          image: _photoPath != null
-                              ? DecorationImage(
-                                  image: _photoPath!.startsWith('assets/')
-                                      ? AssetImage(_photoPath!) as ImageProvider
-                                      : FileImage(File(_photoPath!)),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                        ),
-                        child: _photoPath == null
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.camera_alt,
-                                      size: 40,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Añadir foto',
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant),
-                                  ),
-                                ],
-                              )
-                            : null,
-                      ),
-                      Positioned.fill(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: _showImageSourceDialog,
-                          ),
-                        ),
-                      ),
-                      if (_photoPath != null)
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: CircleAvatar(
-                            backgroundColor: AppColors.overlayBlack50,
-                            radius: 16,
-                            child: IconButton(
-                              icon: const Icon(Icons.close,
-                                  size: 16, color: AppColors.neutralWhite),
-                              onPressed: () {
-                                setState(() {
-                                  _photoPath = null;
-                                });
-                              },
-                              padding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-
                 // Action Buttons (only for new meals)
                 if (widget.existingMeal == null && !_showForm)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: _showPresetRecipes,
-                            icon: const Icon(Icons.restaurant_menu),
-                            label: const Text('Mi lista'),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: FilledButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _showForm = true;
-                              });
-                            },
-                            icon: const Icon(Icons.add),
-                            label: const Text('Añadir'),
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  Column(
+                    children: [
+                      CaptureOptionCard(
+                        icon: Icons.restaurant_menu,
+                        label: 'Mis recetas',
+                        description: 'Selecciona una comida de tu lista personal',
+                        color: Theme.of(context).colorScheme.primary,
+                        onPressed: _showPresetRecipes,
+                      ),
+                      const SizedBox(height: 8),
+                      CaptureOptionCard(
+                        icon: Icons.add_circle_outline,
+                        label: 'Crear nueva',
+                        description: 'Añade una comida personalizada manualmente',
+                        color: Theme.of(context).colorScheme.secondary,
+                        onPressed: () {
+                          setState(() {
+                            _showForm = true;
+                            _isCreatingCustom = true;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                   ),
 
                 // Form content (shown when editing or when user clicks "Añadir")
@@ -489,8 +396,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                               ),
                               validator: index == 0
                                   ? (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
+                                      if (value == null || value.trim().isEmpty) {
                                         return 'Agrega al menos un ingrediente';
                                       }
                                       return null;
@@ -521,14 +427,84 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                     ),
                     maxLines: 2,
                   ),
+                  if (_isCreatingCustom) ...[
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Foto (opcional)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: GestureDetector(
+                        onTap: _showImageSourceDialog,
+                        child: Container(
+                          width: double.infinity,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withAlpha(128),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outline.withAlpha(77),
+                            ),
+                          ),
+                          child: _photoPath != null
+                              ? Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(
+                                        File(_photoPath!),
+                                        width: double.infinity,
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: IconButton.filled(
+                                        onPressed: () => setState(() => _photoPath = null),
+                                        icon: const Icon(Icons.close, size: 20),
+                                        style: IconButton.styleFrom(
+                                          backgroundColor: Colors.black54,
+                                          foregroundColor: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_a_photo_outlined,
+                                      size: 32,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Añadir foto',
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.primary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ], // End of _showForm
 
                 if (menuState.errorMessage != null) ...[
                   const SizedBox(height: 16),
                   Text(
                     menuState.errorMessage!,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                 ],
               ],
@@ -538,18 +514,13 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: menuState.isLoading || _isSavingAsRecipe
-              ? null
-              : () => Navigator.of(context).pop(),
+          onPressed:
+              menuState.isLoading || _isSavingAsRecipe ? null : () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
-        if (widget.existingMeal == null &&
-            _showForm &&
-            !_recipeAlreadyExists(_nameController.text)) ...[
+        if (_showForm && !_recipeAlreadyExists(_nameController.text)) ...[
           IconButton(
-            onPressed: (menuState.isLoading || _isSavingAsRecipe)
-                ? null
-                : _saveAsRecipe,
+            onPressed: (menuState.isLoading || _isSavingAsRecipe) ? null : _saveAsRecipe,
             icon: _isSavingAsRecipe
                 ? const SizedBox(
                     width: 16,
@@ -560,8 +531,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
           )
         ],
         FilledButton(
-          onPressed:
-              (menuState.isLoading || _isSavingAsRecipe) ? null : _saveMeal,
+          onPressed: (menuState.isLoading || _isSavingAsRecipe) ? null : _saveMeal,
           child: menuState.isLoading
               ? const SizedBox(
                   width: 16,

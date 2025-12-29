@@ -217,12 +217,12 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 - [x] Tests para `DirectAnalyzeController`
 - Meta: 80% cobertura en capa de aplicación ✅
 
-#### P14 - Implementar tests de widget
+#### P14 - Implementar tests de widget [DONE]
 **Propuesta:**
-- [ ] `CapturePage` - renderizado de opciones, navegación
-- [ ] `CaptureReviewPage` - edición de ingredientes, guardado
-- [ ] `HistoryPage` - filtros, agrupación, empty states
-- [ ] `SignInPage` - formularios, validación
+- [x] `CapturePage` - renderizado de opciones, navegación
+- [x] `CaptureReviewPage` - edición de ingredientes, guardado
+- [x] `HistoryPage` - filtros, agrupación, empty states
+- [x] `SignInPage` - formularios, validación
 - Meta: Cobertura de flujos críticos de usuario
 
 #### P15 - Configurar CI/CD con GitHub Actions

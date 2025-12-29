@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:qkomo_ui/features/auth/application/auth_controller.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/auth/presentation/sign_in/email_auth_dialog.dart';
 import 'package:qkomo_ui/features/auth/presentation/sign_in/sign_in_page.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
-// Mock AuthController
-class MockAuthController extends Mock implements AuthController {
+// Fakes
+class FakeAuthController implements AuthController {
   @override
   Future<void> signInWithGoogle() async {}
 
@@ -16,90 +16,64 @@ class MockAuthController extends Mock implements AuthController {
   Future<void> signInWithApple() async {}
 
   @override
-  Future<void> signInWithEmail(String email, String password,
-      {bool register = false}) async {}
+  Future<void> signInWithEmail(String email, String password, {bool register = false}) async {}
+
+  @override
+  Future<void> signOut() async {}
+
+  @override
+  Future<void> refreshIdToken() async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {
-  late MockAuthController mockAuthController;
+  late FakeAuthController mockController;
 
   setUp(() {
-    mockAuthController = MockAuthController();
+    mockController = FakeAuthController();
   });
 
-  testWidgets('SignInPage renders buttons correctly', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authControllerProvider.overrideWithValue(mockAuthController),
-          appGradientProvider.overrideWithValue(
-              const LinearGradient(colors: [Colors.white, Colors.white])),
-        ],
-        child: const MaterialApp(
-          home: SignInPage(),
+  Widget buildTestWidget({bool inProgress = false}) {
+    return ProviderScope(
+      overrides: [
+        authControllerProvider.overrideWithValue(mockController),
+        authInProgressProvider.overrideWith((ref) => inProgress),
+        appGradientProvider.overrideWithValue(
+          const LinearGradient(colors: [Colors.white, Colors.white]),
         ),
+      ],
+      child: const MaterialApp(
+        home: SignInPage(),
       ),
     );
+  }
 
-    // Verify Google button (Platform default usually assumes Android-like in test unless specified)
-    // Actually, "Continuar con Google" text might depend on the implementation of SignInContent.
-    // Let's look for text "Google".
+  testWidgets('SignInPage renders Google and Email buttons', (tester) async {
+    await tester.pumpWidget(buildTestWidget());
+
     expect(find.text('Continuar con Google'), findsOneWidget);
-
-    // Email button
-    expect(find.text('Continuar con Email'), findsOneWidget);
-
-    // Loading indicator should not be visible initially
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.text('Continuar con email'), findsOneWidget);
+    expect(find.text('Tu copiloto nutricional'), findsOneWidget);
   });
 
-  testWidgets('Tapping Email button opens dialog and calls signInWithEmail',
-      (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authControllerProvider.overrideWithValue(mockAuthController),
-          appGradientProvider.overrideWithValue(
-              const LinearGradient(colors: [Colors.white, Colors.white])),
-        ],
-        child: const MaterialApp(
-          home: SignInPage(),
-        ),
-      ),
-    );
+  testWidgets('Tapping Email button opens EmailAuthDialog', (tester) async {
+    await tester.pumpWidget(buildTestWidget());
 
     // Tap Email button
-    await tester.tap(find.text('Continuar con Email'));
-    await tester.pumpAndSettle(); // Wait for dialog animation
+    await tester.tap(find.text('Continuar con email'));
+    await tester.pumpAndSettle();
 
-    // Verify Dialog is open
-    expect(find.text('Iniciar Sesión'), findsOneWidget); // Dialog title
-    expect(find.text('Email'), findsOneWidget);
-    expect(find.text('Contraseña'), findsOneWidget);
-
-    // Enter credentials
-    await tester.enterText(
-        find.widgetByKey(const Key('email_field')), 'test@example.com');
-
-    // Wait, I don't know the keys. searching by type or label is safer if I didn't verify keys.
-    // I'll use input type or label.
-
-    // Actually, let's just assume I can find by Type TextFormField.
-    // First one is usually Email, second is Password.
-
-    // Easier: Enter text into fields found by hintText or labelText?
-    // Let's assume the implementation uses standard InputDecorations.
-
-    // I will skip entering text step if I am not sure about keys, OR I will verify the code first.
-    // But I can try to find by input type.
-
-    // For now, let's just verify the dialog opened, which implies the interaction flow works up to "Prompt".
-    // Testing the inner dialog logic might be better in a separate test (unit test of the dialog or dedicated widget test),
-    // but verifying the page opens it is good integration.
+    // Verify dialog is shown
+    expect(find.byType(EmailAuthDialog), findsOneWidget);
+    expect(find.text('Bienvenido de nuevo'), findsOneWidget);
   });
-}
 
-// Extension to find by key easier?
-extension FinderX on CommonFinders {
-  Finder widgetByKey(Key key) => byKey(key);
+  testWidgets('Shows loading state when in progress', (tester) async {
+    await tester.pumpWidget(buildTestWidget(inProgress: true));
+
+    // Should show progress indicator instead of buttons or overlaid
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
 }
