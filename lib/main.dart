@@ -11,6 +11,7 @@ import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/migration_service.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/feature_toggles/data/feature_toggle_hive_boxes.dart';
+import 'package:qkomo_ui/features/profile/data/companion_hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart' as menu_hive;
 import 'package:qkomo_ui/features/settings/data/settings_hive_boxes.dart';
 import 'package:qkomo_ui/features/sync/application/background_sync_worker.dart';
@@ -31,9 +32,11 @@ void main() async {
   await menu_hive.MenuHiveBoxes.init();
   await SettingsHiveBoxes.init();
   await FeatureToggleHiveBoxes.init();
+  await CompanionHiveBoxes.init();
 
-  // Run migration if needed
+  // Run migrations if needed
   await _runMigration();
+  await _runMealMigration();
 
   // Initialize background sync worker
   await BackgroundSyncWorker.init();
@@ -81,4 +84,11 @@ Future<void> _runMigration() async {
   if (await migrationService.needsMigration()) {
     await migrationService.migrate();
   }
+}
+
+/// Run migration from Meal V1 to Meal V2 (with sync fields)
+Future<void> _runMealMigration() async {
+  // Migration no longer needed - box is always opened with V2 adapter
+  // Old data will be incompatible and need manual re-entry
+  return;
 }

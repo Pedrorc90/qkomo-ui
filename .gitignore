@@ -10,7 +10,8 @@ web/
 coverage/
 android/.kotlin/errors/
 pubspec.lock
-
+.flutter-plugins
+.flutter-plugins-dependencies
 # IDE
 .idea/
 .vscode/

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/menu/application/image_picker_service.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
@@ -36,12 +37,18 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   late MealType _selectedMealType;
   String? _photoPath;
   bool _showForm = false;
+  bool _isSavingAsRecipe = false;
 
   @override
   void initState() {
     super.initState();
     _selectedMealType =
         widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
+
+    // Listen to name changes to update the bookmark button visibility
+    _nameController.addListener(() {
+      setState(() {});
+    });
 
     if (widget.existingMeal != null) {
       _showForm = true; // Show form when editing existing meal
@@ -120,7 +127,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   }
 
   Future<void> _showPresetRecipes() async {
-    final selected = await showDialog<PresetRecipe>(
+    final selected = await showDialog<dynamic>(
       context: context,
       builder: (context) => const PresetRecipeDialog(),
     );
@@ -128,18 +135,39 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     if (selected != null) {
       setState(() {
         _showForm = true; // Show form when recipe is selected
-        _nameController.text = selected.name;
-        _selectedMealType = selected.suggestedMealType;
-        _photoPath = selected.photoPath;
 
-        // Clear current ingredients and add from recipe
-        for (var controller in _ingredientControllers) {
-          controller.dispose();
-        }
-        _ingredientControllers.clear();
+        // Handle both PresetRecipe and custom recipe Map
+        if (selected is PresetRecipe) {
+          _nameController.text = selected.name;
+          _selectedMealType = selected.suggestedMealType;
+          _photoPath = selected.photoPath;
 
-        for (final ingredient in selected.ingredients) {
-          _ingredientControllers.add(TextEditingController(text: ingredient));
+          // Clear current ingredients and add from recipe
+          for (var controller in _ingredientControllers) {
+            controller.dispose();
+          }
+          _ingredientControllers.clear();
+
+          for (final ingredient in selected.ingredients) {
+            _ingredientControllers.add(TextEditingController(text: ingredient));
+          }
+        } else if (selected is Map<String, dynamic>) {
+          // Custom recipe
+          _nameController.text = selected['name'] as String? ?? '';
+          _selectedMealType =
+              selected['mealType'] as MealType? ?? MealType.breakfast;
+          _photoPath = selected['photoPath'] as String?;
+
+          // Clear current ingredients and add from recipe
+          for (var controller in _ingredientControllers) {
+            controller.dispose();
+          }
+          _ingredientControllers.clear();
+
+          final ingredients = selected['ingredients'] as List<dynamic>? ?? [];
+          for (final ingredient in ingredients.cast<String>()) {
+            _ingredientControllers.add(TextEditingController(text: ingredient));
+          }
         }
       });
     }
@@ -159,6 +187,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     }
 
     final controller = ref.read(menuControllerProvider.notifier);
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    final userId = user?.uid ?? '';
 
     if (widget.existingMeal != null) {
       await controller.updateMeal(
@@ -174,6 +204,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       );
     } else {
       await controller.createMeal(
+        userId: userId,
         name: _nameController.text.trim(),
         ingredients: ingredients,
         mealType: _selectedMealType,
@@ -188,6 +219,81 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     if (mounted) {
       Navigator.of(context).pop();
     }
+  }
+
+  Future<void> _saveAsRecipe() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final ingredients = _ingredientControllers
+        .map((c) => c.text.trim())
+        .where((text) => text.isNotEmpty)
+        .toList();
+
+    if (ingredients.isEmpty) {
+      return;
+    }
+
+    setState(() {
+      _isSavingAsRecipe = true;
+    });
+
+    final controller = ref.read(menuControllerProvider.notifier);
+
+    await controller.saveAsRecipe(
+      name: _nameController.text.trim(),
+      ingredients: ingredients,
+      mealType: _selectedMealType,
+      photoPath: _photoPath,
+    );
+
+    setState(() {
+      _isSavingAsRecipe = false;
+    });
+
+    final updatedState = ref.read(menuControllerProvider);
+
+    if (mounted) {
+      if (updatedState.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${updatedState.errorMessage}'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        // Show confirmation message and close dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Receta guardada en tu lista'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  bool _recipeAlreadyExists(String name) {
+    final trimmedName = name.trim().toLowerCase();
+
+    // Check custom recipes
+    final customRecipes = ref.read(userRecipesProvider).value ?? [];
+    final existsInCustom = customRecipes.any(
+      (recipe) => recipe.name.toLowerCase() == trimmedName,
+    );
+
+    if (existsInCustom) return true;
+
+    // Check preset recipes (excluding deleted ones)
+    final deletedPresetRecipes =
+        ref.read(deletedPresetRecipesStreamProvider).value ?? [];
+    final existsInPreset = PresetRecipes.all.any(
+      (recipe) =>
+          recipe.name.toLowerCase() == trimmedName &&
+          !deletedPresetRecipes.contains(recipe.name),
+    );
+
+    return existsInPreset;
   }
 
   @override
@@ -374,8 +480,9 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                               controller: controller,
                               onChanged: (value) {
                                 // Trigger validation of first field when typing in others
-                                if (index != 0)
+                                if (index != 0) {
                                   _formKey.currentState?.validate();
+                                }
                               },
                               decoration: InputDecoration(
                                 hintText: 'Ingrediente ${index + 1}',
@@ -431,19 +538,37 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed:
-              menuState.isLoading ? null : () => Navigator.of(context).pop(),
+          onPressed: menuState.isLoading || _isSavingAsRecipe
+              ? null
+              : () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
+        if (widget.existingMeal == null &&
+            _showForm &&
+            !_recipeAlreadyExists(_nameController.text)) ...[
+          IconButton(
+            onPressed: (menuState.isLoading || _isSavingAsRecipe)
+                ? null
+                : _saveAsRecipe,
+            icon: _isSavingAsRecipe
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.bookmark_add),
+          )
+        ],
         FilledButton(
-          onPressed: menuState.isLoading ? null : _saveMeal,
+          onPressed:
+              (menuState.isLoading || _isSavingAsRecipe) ? null : _saveMeal,
           child: menuState.isLoading
               ? const SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Guardar'),
+              : Text(widget.existingMeal != null ? 'Guardar' : 'Añadir'),
         ),
       ],
     );

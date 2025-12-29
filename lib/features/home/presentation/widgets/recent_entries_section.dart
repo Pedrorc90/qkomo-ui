@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/animations/page_transitions.dart';
 import 'package:qkomo_ui/core/widgets/widgets.dart';
+import 'package:qkomo_ui/core/widgets/platform_image.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
@@ -159,18 +158,7 @@ class RecentEntriesSection extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     // Check if we should try to display an image
-    var hasImage = false;
-    File? imageFile;
-
-    try {
-      if (!entry.isManualEntry && entry.jobId.isNotEmpty) {
-        imageFile = File(entry.jobId);
-        hasImage = imageFile.existsSync();
-      }
-    } catch (e) {
-      // If there's any error accessing the file, just don't show the image
-      hasImage = false;
-    }
+    final hasImage = !entry.isManualEntry && entry.jobId.isNotEmpty;
 
     // Get title - prefer custom title, then first 3 ingredients
     final titleText = entry.title ??
@@ -193,11 +181,11 @@ class RecentEntriesSection extends StatelessWidget {
         ),
         child: Row(
           children: [
-            hasImage && imageFile != null
+            hasImage
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      imageFile,
+                    child: PlatformImage(
+                      path: entry.jobId,
                       width: 60,
                       height: 60,
                       fit: BoxFit.cover,

@@ -6,8 +6,11 @@ import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/sync/domain/syncable_repository.dart';
 
-class HybridEntryRepository implements EntryRepository {
+class HybridEntryRepository implements EntryRepository, SyncableRepository {
+  @override
+  String get repositoryName => 'Entry';
   HybridEntryRepository({
     required LocalEntryRepository localRepo,
     required RemoteEntryRepository remoteRepo,

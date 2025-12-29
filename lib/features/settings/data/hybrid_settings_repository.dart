@@ -1,0 +1,179 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:qkomo_ui/features/settings/data/local_settings_repository.dart';
+import 'package:qkomo_ui/features/settings/data/remote_settings_repository.dart';
+import 'package:qkomo_ui/features/settings/domain/settings_repository.dart';
+import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+
+/// Hybrid implementation combining local and remote settings repositories
+///
+/// Implements offline-first pattern:
+/// - Always returns local data immediately
+/// - Syncs with backend asynchronously in background
+/// - First sync after app update: pushes local settings to backend
+/// - Subsequent syncs: fetches from backend (server authoritative)
+class HybridSettingsRepository implements SettingsRepository {
+  HybridSettingsRepository({
+    required LocalSettingsRepository localRepo,
+    required RemoteSettingsRepository remoteRepo,
+    this.enableCloudSync = false,
+  })  : _localRepo = localRepo,
+        _remoteRepo = remoteRepo;
+
+  final LocalSettingsRepository _localRepo;
+  final RemoteSettingsRepository _remoteRepo;
+  final bool enableCloudSync;
+
+  @override
+  Future<UserSettings> loadSettings() async {
+    // 1. Always return local immediately (Offline-first)
+    final localSettings = await _localRepo.loadSettings();
+
+    // 2. Sync with backend in background (fire-and-forget)
+    if (enableCloudSync) {
+      unawaited(_syncFromBackend(localSettings));
+    }
+
+    return localSettings;
+  }
+
+  @override
+  Future<void> saveSettings(UserSettings settings) async {
+    // 1. Save locally first (Optimistic update)
+    await _localRepo.saveSettings(settings);
+
+    // 2. Push to backend async (fire-and-forget)
+    if (enableCloudSync) {
+      unawaited(_pushToBackend(settings));
+    }
+  }
+
+  @override
+  Future<void> clearSettings() async {
+    // 1. Clear locally
+    await _localRepo.clearSettings();
+
+    // 2. Delete from backend async (fire-and-forget)
+    if (enableCloudSync) {
+      unawaited(_deleteFromBackend());
+    }
+  }
+
+  /// Sync settings from backend in background
+  ///
+  /// First sync: Push local settings to backend (migration)
+  /// Subsequent syncs: Fetch from backend and update local (server wins)
+  Future<void> _syncFromBackend(UserSettings localSettings) async {
+    try {
+      final isFirstSync = !(await _localRepo.isFirstSyncCompleted());
+
+      if (isFirstSync) {
+        // First sync: Push local data to backend (migration)
+        if (kDebugMode) {
+          print('[HybridSettingsRepo] Primera sync: enviando settings locales al backend');
+        }
+
+        await _remoteRepo.pushPreferences(localSettings);
+        await _localRepo.markFirstSyncCompleted();
+
+        if (kDebugMode) {
+          print('[HybridSettingsRepo] Primera sync completada');
+        }
+      } else {
+        // Subsequent syncs: Fetch from backend (server authoritative)
+        final remoteSettings = await _remoteRepo.fetchPreferences();
+
+        if (remoteSettings != null) {
+          // Preserve local-only fields from current settings
+          final mergedSettings = remoteSettings.copyWith(
+            languageCode: localSettings.languageCode,
+            enableNotifications: localSettings.enableNotifications,
+            enableDailyReminders: localSettings.enableDailyReminders,
+          );
+
+          await _localRepo.saveSettings(mergedSettings);
+
+          if (kDebugMode) {
+            print('[HybridSettingsRepo] Settings actualizados desde backend');
+          }
+        }
+      }
+    } catch (e, stackTrace) {
+      // Silent failure - don't block user
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Error al sincronizar settings: $e');
+        print(stackTrace);
+      }
+    }
+  }
+
+  /// Push settings to backend in background
+  Future<void> _pushToBackend(UserSettings settings) async {
+    try {
+      await _remoteRepo.pushPreferences(settings);
+
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Settings enviados al backend');
+      }
+    } catch (e, stackTrace) {
+      // Silent failure - don't block user
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Error al enviar settings al backend: $e');
+        print(stackTrace);
+      }
+
+      // TODO: Implement retry queue for failed pushes
+      // For now, changes remain local and will sync on next app start
+    }
+  }
+
+  /// Delete settings from backend in background
+  Future<void> _deleteFromBackend() async {
+    try {
+      await _remoteRepo.deletePreferences();
+
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Settings eliminados del backend');
+      }
+    } catch (e, stackTrace) {
+      // Silent failure - don't block user
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Error al eliminar settings del backend: $e');
+        print(stackTrace);
+      }
+    }
+  }
+
+  /// Manually trigger sync (useful for "Sync Now" button in UI)
+  ///
+  /// Unlike automatic background sync, this method throws errors for UI feedback.
+  Future<void> manualSync() async {
+    if (!enableCloudSync) {
+      throw Exception('Cloud sync está deshabilitado');
+    }
+
+    final localSettings = await _localRepo.loadSettings();
+    final isFirstSync = !(await _localRepo.isFirstSyncCompleted());
+
+    if (isFirstSync) {
+      // First sync: Push local to backend
+      await _remoteRepo.pushPreferences(localSettings);
+      await _localRepo.markFirstSyncCompleted();
+    } else {
+      // Subsequent syncs: Fetch from backend
+      final remoteSettings = await _remoteRepo.fetchPreferences();
+
+      if (remoteSettings != null) {
+        // Preserve local-only fields
+        final mergedSettings = remoteSettings.copyWith(
+          languageCode: localSettings.languageCode,
+          enableNotifications: localSettings.enableNotifications,
+          enableDailyReminders: localSettings.enableDailyReminders,
+        );
+
+        await _localRepo.saveSettings(mergedSettings);
+      }
+    }
+  }
+}

@@ -44,8 +44,7 @@ class FeatureToggleRepository {
       final metadataBox = Hive.box<FeatureToggleCacheMetadata>(
         FeatureToggleHiveBoxes.metadataBox,
       );
-      final metadata =
-          metadataBox.get(FeatureToggleHiveBoxes.metadataKey);
+      final metadata = metadataBox.get(FeatureToggleHiveBoxes.metadataKey);
       if (metadata == null) return null;
 
       final age = DateTime.now().difference(metadata.lastUpdated);
@@ -60,6 +59,7 @@ class FeatureToggleRepository {
   /// Returns fetched toggles or empty list on error.
   /// Handles both network errors and API errors gracefully.
   /// Uses 3s timeout for faster failure detection on unavailable backends.
+  /// Marked as silent request to prevent retry overlay from blocking UI.
   Future<List<FeatureToggle>> refreshFromApi() async {
     try {
       debugPrint('[FeatureToggleRepository] Fetching feature toggles from API...');
@@ -68,6 +68,7 @@ class FeatureToggleRepository {
         options: Options(
           sendTimeout: const Duration(seconds: 3),
           receiveTimeout: const Duration(seconds: 3),
+          extra: {'silent_request': true}, // No mostrar overlay de reintentos
         ),
       );
 
@@ -137,6 +138,23 @@ class FeatureToggleRepository {
       }
     }
 
+    // Parse Features toggles (Nested structure features -> api -> companion)
+    if (data['features'] is Map<String, dynamic>) {
+      final features = data['features'] as Map<String, dynamic>;
+      if (features['api'] is Map<String, dynamic>) {
+        final api = features['api'] as Map<String, dynamic>;
+
+        // Handle companion toggle
+        if (api.containsKey('companion') && api['companion'] is bool) {
+          toggles.add(FeatureToggle(
+            key: 'features.api.companion',
+            enabled: api['companion'] as bool,
+            description: 'Enable/Disable Companion (Community) features',
+          ));
+        }
+      }
+    }
+
     return toggles;
   }
 
@@ -159,8 +177,7 @@ class FeatureToggleRepository {
   Future<void> _saveToCache(List<FeatureToggle> toggles) async {
     try {
       final box = Hive.box<FeatureToggle>(FeatureToggleHiveBoxes.togglesBox);
-      final metadataBox =
-          Hive.box<FeatureToggleCacheMetadata>(FeatureToggleHiveBoxes.metadataBox);
+      final metadataBox = Hive.box<FeatureToggleCacheMetadata>(FeatureToggleHiveBoxes.metadataBox);
 
       // Clear and repopulate box (atomic update)
       await box.clear();
@@ -184,8 +201,7 @@ class FeatureToggleRepository {
   Future<void> clearCache() async {
     try {
       final box = Hive.box<FeatureToggle>(FeatureToggleHiveBoxes.togglesBox);
-      final metadataBox =
-          Hive.box<FeatureToggleCacheMetadata>(FeatureToggleHiveBoxes.metadataBox);
+      final metadataBox = Hive.box<FeatureToggleCacheMetadata>(FeatureToggleHiveBoxes.metadataBox);
 
       await box.clear();
       await metadataBox.clear();

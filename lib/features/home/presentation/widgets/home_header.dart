@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/core/animations/page_transitions.dart';
+import 'package:qkomo_ui/core/widgets/platform_image.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
@@ -211,8 +210,7 @@ class HomeHeader extends ConsumerWidget {
   ) {
     final textTheme = Theme.of(context).textTheme;
     final String? imagePath = lastAnalysis.imagePath ?? lastAnalysis.jobId;
-    final hasImage =
-        imagePath != null && (imagePath.startsWith('assets/') || File(imagePath).existsSync());
+    final hasImage = imagePath != null;
 
     return _HeroCard(
       onTap: () => _showCaptureDialog(context),
@@ -271,8 +269,8 @@ class HomeHeader extends ConsumerWidget {
             Container(color: scheme.surfaceContainerHighest),
       );
     } else {
-      return Image.file(
-        File(path),
+      return PlatformImage(
+        path: path,
         fit: BoxFit.cover,
         semanticLabel: SemanticLabels.mealImage,
         errorBuilder: (context, error, stackTrace) =>

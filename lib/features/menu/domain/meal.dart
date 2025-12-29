@@ -1,54 +1,33 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
+import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
-class Meal {
-  // Path to local image or asset
+part 'meal.freezed.dart';
+part 'meal.g.dart';
 
-  Meal({
-    required this.id,
-    required this.userId,
-    required this.name,
-    required this.ingredients,
-    required this.mealType,
-    required this.scheduledFor,
-    required this.createdAt,
-    this.updatedAt,
-    this.notes,
-    this.photoPath,
-  });
-  final String id;
-  final String userId;
-  final String name;
-  final List<String> ingredients;
-  final MealType mealType;
-  final DateTime scheduledFor;
-  final DateTime createdAt;
-  final DateTime? updatedAt;
-  final String? notes;
-  final String? photoPath;
+@freezed
+class Meal with _$Meal {
+  @HiveType(typeId: 6, adapterName: 'MealV2Adapter')
+  const factory Meal({
+    @HiveField(0) required String id,
+    @HiveField(1) required String userId,
+    @HiveField(2) required String name,
+    @HiveField(3) required List<String> ingredients,
+    @HiveField(4) required MealType mealType,
+    @HiveField(5) required DateTime scheduledFor,
+    @HiveField(6) required DateTime createdAt,
+    @HiveField(7) DateTime? updatedAt,
+    @HiveField(8) String? notes,
+    @HiveField(9) String? photoPath,
+    // Sync fields
+    @HiveField(10) @Default(SyncStatus.pending) SyncStatus syncStatus,
+    @HiveField(11) required DateTime lastModifiedAt,
+    @HiveField(12) DateTime? lastSyncedAt,
+    @HiveField(13) @Default(false) bool isDeleted,
+    @HiveField(14) int? cloudVersion,
+    @HiveField(15) Map<String, dynamic>? pendingChanges,
+  }) = _Meal;
 
-  Meal copyWith({
-    String? id,
-    String? userId,
-    String? name,
-    List<String>? ingredients,
-    MealType? mealType,
-    DateTime? scheduledFor,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? notes,
-    String? photoPath,
-  }) {
-    return Meal(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      name: name ?? this.name,
-      ingredients: ingredients ?? this.ingredients,
-      mealType: mealType ?? this.mealType,
-      scheduledFor: scheduledFor ?? this.scheduledFor,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      notes: notes ?? this.notes,
-      photoPath: photoPath ?? this.photoPath,
-    );
-  }
+  factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
 }

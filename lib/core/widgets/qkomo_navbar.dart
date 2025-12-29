@@ -64,7 +64,9 @@ class QkomoNavBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       actions: allActions,
       backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       elevation: 0,
+      scrolledUnderElevation: 0,
     );
   }
 }

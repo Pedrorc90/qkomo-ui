@@ -8,6 +8,7 @@
 /// - AnimatedCard: Card with tap scale animation
 /// - QkomoLogo: Custom Qkomo brand logo
 /// - QkomoNavBar: Top navigation bar with branding
+/// - PlatformImage: Cross-platform image display (handles web compatibility)
 ///
 /// Example:
 /// ```dart
@@ -19,6 +20,7 @@
 /// EmptyState(icon: Icons.inbox_outlined, title: 'No items')
 /// AppButton(label: 'Save', onPressed: save)
 /// AnimatedCard(onTap: navigate, child: widget)
+/// PlatformImage(path: '/path/to/image.jpg')
 /// ```
 library core_widgets;
 
@@ -27,5 +29,6 @@ export 'animated_card.dart';
 export 'app_button.dart';
 export 'empty_state.dart';
 export 'meal_type_chip.dart';
+export 'platform_image.dart';
 export 'qkomo_logo.dart';
 export 'qkomo_navbar.dart';

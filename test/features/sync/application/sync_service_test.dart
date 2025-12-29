@@ -29,7 +29,7 @@ void main() {
         .thenAnswer((_) => Stream.value([ConnectivityResult.wifi]));
 
     service = SyncService(
-      repository: mockRepo,
+      repositories: [mockRepo],
       connectivity: mockConnectivity,
     );
   });

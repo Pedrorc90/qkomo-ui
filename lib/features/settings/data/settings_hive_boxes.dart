@@ -10,9 +10,8 @@ class SettingsHiveBoxes {
       ..registerAdapter(AllergenAdapter())
       ..registerAdapter(DietaryRestrictionAdapter());
 
-    // We don't open the box here necessarily, as the repo manages it,
-
-    // but opening it early doesn't hurt.
-    await Hive.openBox<UserSettings>(userSettings);
+    // Open as dynamic box since it stores both UserSettings and bool values
+    // (current_settings and first_sync_completed flag)
+    await Hive.openBox<dynamic>(userSettings);
   }
 }

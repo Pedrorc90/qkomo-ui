@@ -1,9 +1,33 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/features/settings/data/settings_repository.dart';
+import 'package:qkomo_ui/config/env.dart';
+import 'package:qkomo_ui/core/http/dio_provider.dart';
+import 'package:qkomo_ui/features/settings/data/hybrid_settings_repository.dart';
+import 'package:qkomo_ui/features/settings/data/local_settings_repository.dart';
+import 'package:qkomo_ui/features/settings/data/remote_settings_repository.dart';
+import 'package:qkomo_ui/features/settings/domain/settings_repository.dart';
 import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
 
+/// Provider for local settings repository (Hive storage)
+final localSettingsRepositoryProvider = Provider<LocalSettingsRepository>((ref) {
+  return LocalSettingsRepository();
+});
+
+/// Provider for remote settings repository (API client)
+final remoteSettingsRepositoryProvider = Provider<RemoteSettingsRepository>((ref) {
+  final dio = ref.watch(dioProvider);
+  return RemoteSettingsRepository(dio: dio);
+});
+
+/// Provider for hybrid settings repository (combines local + remote)
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
-  return SettingsRepository();
+  final localRepo = ref.watch(localSettingsRepositoryProvider);
+  final remoteRepo = ref.watch(remoteSettingsRepositoryProvider);
+
+  return HybridSettingsRepository(
+    localRepo: localRepo,
+    remoteRepo: remoteRepo,
+    enableCloudSync: EnvConfig.enableCloudSync,
+  );
 });
 
 final userSettingsProvider =

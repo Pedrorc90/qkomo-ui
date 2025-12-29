@@ -19,6 +19,18 @@ class RetryNotificationInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
+    // Verificar si la request está marcada como silenciosa
+    final isSilent =
+        err.requestOptions.extra['silent_request'] as bool? ?? false;
+
+    // Si es una request silenciosa, no mostrar overlay de reintentos
+    if (isSilent) {
+      debugPrint(
+          '[RetryNotificationInterceptor] Request silenciosa, no se mostrará overlay');
+      super.onError(err, handler);
+      return;
+    }
+
     // Incrementar el contador de reintentos
     final currentRetryCount =
         (err.requestOptions.extra['_retry_count'] as int?) ?? 0;

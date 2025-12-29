@@ -2,52 +2,64 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:qkomo_ui/config/env.dart';
+import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
 import 'package:qkomo_ui/features/menu/application/menu_state.dart';
+import 'package:qkomo_ui/features/menu/data/custom_recipe_repository.dart';
+import 'package:qkomo_ui/features/menu/data/deleted_preset_recipes_repository.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart';
-import 'package:qkomo_ui/features/menu/data/meal_repository.dart';
+import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
+import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
+import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
 
 // Box provider
 final mealBoxProvider = Provider<Box<Meal>>((ref) {
   return Hive.box<Meal>(MenuHiveBoxes.meals);
 });
 
-// Repository provider
-final mealRepositoryProvider = Provider<MealRepository>((ref) {
+// Local repository provider
+final localMealRepositoryProvider = Provider<LocalMealRepository>((ref) {
   final box = ref.watch(mealBoxProvider);
-  final user = ref.watch(firebaseAuthProvider).currentUser;
-
-  // If no user is logged in, use empty string as userId
-  // This ensures meals are isolated even when not logged in
+  final user = ref.watch(authStateChangesProvider).value;
   final userId = user?.uid ?? '';
 
-  return MealRepository(mealBox: box, userId: userId);
+  return LocalMealRepository(mealBox: box, userId: userId);
+});
+
+// Remote repository provider
+final remoteMealRepositoryProvider = Provider<RemoteMealRepository>((ref) {
+  final dio = ref.watch(dioProvider);
+  return RemoteMealRepository(dio: dio);
+});
+
+// Hybrid repository provider (main interface)
+final mealRepositoryProvider = Provider<MealRepository>((ref) {
+  final localRepo = ref.watch(localMealRepositoryProvider);
+  final remoteRepo = ref.watch(remoteMealRepositoryProvider);
+
+  return HybridMealRepository(
+    localRepo: localRepo,
+    remoteRepo: remoteRepo,
+    enableCloudSync: EnvConfig.enableCloudSync,
+  );
+});
+
+// Pending sync count provider
+final mealPendingSyncCountProvider = FutureProvider<int>((ref) async {
+  final repo = ref.watch(mealRepositoryProvider);
+  return repo.getPendingSyncCount();
 });
 
 // Stream provider for reactive updates
 final mealsProvider = StreamProvider<List<Meal>>((ref) {
-  final box = ref.watch(mealBoxProvider);
-  final controller = StreamController<List<Meal>>();
-
-  List<Meal> filtered() {
-    final user = ref.read(firebaseAuthProvider).currentUser;
-    final userId = user?.uid ?? '';
-    final items = box.values.where((meal) => meal.userId == userId).toList();
-    items.sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
-    return items;
-  }
-
-  controller.add(filtered());
-  final sub = box.watch().listen((_) => controller.add(filtered()));
-
-  ref.onDispose(() {
-    sub.cancel();
-    controller.close();
-  });
-
-  return controller.stream;
+  final repo = ref.watch(mealRepositoryProvider);
+  return repo.watchMeals();
 });
 
 // Current week provider
@@ -64,8 +76,7 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
   final weekEnd = weekStart.add(const Duration(days: 7));
 
   return allMeals.where((meal) {
-    return meal.scheduledFor
-            .isAfter(weekStart.subtract(const Duration(days: 1))) &&
+    return meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
         meal.scheduledFor.isBefore(weekEnd);
   }).toList();
 });
@@ -100,9 +111,7 @@ final todayMealsProvider = Provider<List<Meal>>((ref) {
 
   return allMeals.where((meal) {
     final mealDate = meal.scheduledFor;
-    return mealDate.year == now.year &&
-        mealDate.month == now.month &&
-        mealDate.day == now.day;
+    return mealDate.year == now.year && mealDate.month == now.month && mealDate.day == now.day;
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });
@@ -113,9 +122,153 @@ final allMealsProvider = Provider<List<Meal>>((ref) {
   return allMeals;
 });
 
+// User recipes box provider
+final userRecipeBoxProvider = Provider<Box<dynamic>?>((ref) {
+  try {
+    if (Hive.isBoxOpen(MenuHiveBoxes.userRecipes)) {
+      return Hive.box<dynamic>(MenuHiveBoxes.userRecipes);
+    }
+    return null;
+  } catch (e) {
+    // If box is not available, return null
+    print('Error accessing userRecipes box: $e');
+    return null;
+  }
+});
+
+// Deleted preset recipes box provider
+final deletedPresetRecipesBoxProvider = Provider<Box<String>?>((ref) {
+  try {
+    if (Hive.isBoxOpen(MenuHiveBoxes.deletedPresetRecipes)) {
+      return Hive.box<String>(MenuHiveBoxes.deletedPresetRecipes);
+    }
+    return null;
+  } catch (e) {
+    print('Error accessing deletedPresetRecipes box: $e');
+    return null;
+  }
+});
+
+// Deleted preset recipes repository provider
+final deletedPresetRecipesRepositoryProvider = Provider<DeletedPresetRecipesRepository?>((ref) {
+  try {
+    final box = ref.watch(deletedPresetRecipesBoxProvider);
+    if (box == null) {
+      return null;
+    }
+    return DeletedPresetRecipesRepository(box: box);
+  } catch (e) {
+    print('Error creating deleted preset recipes repository: $e');
+    return null;
+  }
+});
+
+// Custom recipe repository provider
+final customRecipeRepositoryProvider = Provider<CustomRecipeRepository?>((ref) {
+  try {
+    final box = ref.watch(userRecipeBoxProvider);
+
+    if (box == null) {
+      return null;
+    }
+
+    final user = ref.watch(firebaseAuthProvider).currentUser;
+    final userId = user?.uid ?? '';
+
+    return CustomRecipeRepository(recipeBox: box, userId: userId);
+  } catch (e) {
+    // If repository creation fails, return null
+    return null;
+  }
+});
+
+// Stream provider for custom recipes
+final userRecipesProvider = StreamProvider<List<UserRecipe>>((ref) {
+  final box = ref.watch(userRecipeBoxProvider);
+  final controller = StreamController<List<UserRecipe>>();
+
+  if (box == null) {
+    controller.add([]);
+    ref.onDispose(() {
+      controller.close();
+    });
+    return controller.stream;
+  }
+
+  List<UserRecipe> filtered() {
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    final userId = user?.uid ?? '';
+
+    final items = box.values
+        .whereType<Map<dynamic, dynamic>>()
+        .where((data) => data['userId'] == userId)
+        .map((data) {
+      return UserRecipe(
+        id: data['id'] as String? ?? '',
+        userId: data['userId'] as String? ?? '',
+        name: data['name'] as String? ?? '',
+        ingredients: (data['ingredients'] as List?)?.cast<String>() ?? [],
+        mealType: data['mealType'] != null
+            ? MealType.values[data['mealType'] as int]
+            : MealType.breakfast,
+        createdAt: data['createdAt'] != null
+            ? DateTime.parse(data['createdAt'] as String)
+            : DateTime.now(),
+        photoPath: data['photoPath'] as String?,
+      );
+    }).toList();
+
+    items.sort((a, b) => a.name.compareTo(b.name));
+    return items;
+  }
+
+  controller.add(filtered());
+  final sub = box.watch().listen((_) => controller.add(filtered()));
+
+  ref.onDispose(() {
+    sub.cancel();
+    controller.close();
+  });
+
+  return controller.stream;
+});
+
+// Stream provider for deleted preset recipes
+final deletedPresetRecipesStreamProvider = StreamProvider<List<String>>((ref) {
+  final box = ref.watch(deletedPresetRecipesBoxProvider);
+  final controller = StreamController<List<String>>();
+
+  if (box == null) {
+    controller.add([]);
+    ref.onDispose(() {
+      controller.close();
+    });
+    return controller.stream;
+  }
+
+  List<String> getDeleted() {
+    return box.values.toList();
+  }
+
+  controller.add(getDeleted());
+  final sub = box.watch().listen((_) => controller.add(getDeleted()));
+
+  ref.onDispose(() {
+    sub.cancel();
+    controller.close();
+  });
+
+  return controller.stream;
+});
+
 // Controller provider
-final menuControllerProvider =
-    StateNotifierProvider<MenuController, MenuState>((ref) {
+final menuControllerProvider = StateNotifierProvider<MenuController, MenuState>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
-  return MenuController(repository);
+  final customRecipeRepository = ref.watch(customRecipeRepositoryProvider);
+  final deletedPresetRecipesRepository = ref.watch(deletedPresetRecipesRepositoryProvider);
+  return MenuController(
+    repository,
+    customRecipeRepository: customRecipeRepository,
+    deletedPresetRecipesRepository: deletedPresetRecipesRepository,
+  );
 });

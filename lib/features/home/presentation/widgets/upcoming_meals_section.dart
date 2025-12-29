@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
+import 'package:qkomo_ui/core/widgets/platform_image.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
@@ -229,8 +227,8 @@ class UpcomingMealsSection extends StatelessWidget {
                 size,
               ),
             )
-          : Image.file(
-              File(meal.photoPath!),
+          : PlatformImage(
+              path: meal.photoPath!,
               width: size,
               height: size,
               fit: BoxFit.cover,

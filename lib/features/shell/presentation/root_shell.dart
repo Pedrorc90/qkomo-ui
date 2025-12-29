@@ -53,6 +53,7 @@ class RootShell extends ConsumerWidget {
           elevation: 3,
           borderRadius: BorderRadius.circular(20),
           color: Theme.of(context).colorScheme.surface,
+          surfaceTintColor: Colors.transparent,
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(

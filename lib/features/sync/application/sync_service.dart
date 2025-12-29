@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qkomo_ui/core/config/feature_flags.dart';
-import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart';
+import 'package:qkomo_ui/features/sync/domain/syncable_repository.dart';
 
 /// Sync status enum
 enum SyncStatus {
@@ -16,12 +16,12 @@ enum SyncStatus {
 
 class SyncService {
   SyncService({
-    required HybridEntryRepository repository,
+    required List<SyncableRepository> repositories,
     required Connectivity connectivity,
-  })  : _repository = repository,
+  })  : _repositories = repositories,
         _connectivity = connectivity;
 
-  final HybridEntryRepository _repository;
+  final List<SyncableRepository> _repositories;
   final Connectivity _connectivity;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
@@ -74,7 +74,12 @@ class SyncService {
     _updateStatus(SyncStatus.syncing);
 
     try {
-      await _repository.sync();
+      // Sync all repositories sequentially
+      for (final repo in _repositories) {
+        debugPrint('Syncing ${repo.repositoryName}...');
+        await repo.sync();
+      }
+
       _lastSyncTime = DateTime.now();
       _lastSyncTimeController.add(_lastSyncTime);
       _updateStatus(SyncStatus.success);
@@ -121,9 +126,13 @@ class SyncService {
     });
   }
 
-  /// Get pending sync count
+  /// Get pending sync count across all repositories
   Future<int> getPendingSyncCount() async {
-    return _repository.getPendingSyncCount();
+    int total = 0;
+    for (final repo in _repositories) {
+      total += await repo.getPendingSyncCount();
+    }
+    return total;
   }
 
   void _updateStatus(SyncStatus status) {

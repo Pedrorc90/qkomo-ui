@@ -3,15 +3,16 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
-import 'package:connectivity_plus/connectivity_plus.dart' as _i5;
+import 'package:connectivity_plus/connectivity_plus.dart' as _i6;
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart'
-    as _i6;
+    as _i7;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i3;
 import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart'
     as _i2;
-import 'package:qkomo_ui/features/entry/domain/entry.dart' as _i4;
+import 'package:qkomo_ui/features/entry/domain/entry.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -39,7 +40,20 @@ class MockHybridEntryRepository extends _i1.Mock
       ) as bool);
 
   @override
-  _i3.Future<List<_i4.Entry>> getEntries({
+  String get repositoryName => (super.noSuchMethod(
+        Invocation.getter(#repositoryName),
+        returnValue: _i3.dummyValue<String>(
+          this,
+          Invocation.getter(#repositoryName),
+        ),
+        returnValueForMissingStub: _i3.dummyValue<String>(
+          this,
+          Invocation.getter(#repositoryName),
+        ),
+      ) as String);
+
+  @override
+  _i4.Future<List<_i5.Entry>> getEntries({
     DateTime? from,
     DateTime? to,
   }) =>
@@ -52,96 +66,96 @@ class MockHybridEntryRepository extends _i1.Mock
             #to: to,
           },
         ),
-        returnValue: _i3.Future<List<_i4.Entry>>.value(<_i4.Entry>[]),
+        returnValue: _i4.Future<List<_i5.Entry>>.value(<_i5.Entry>[]),
         returnValueForMissingStub:
-            _i3.Future<List<_i4.Entry>>.value(<_i4.Entry>[]),
-      ) as _i3.Future<List<_i4.Entry>>);
+            _i4.Future<List<_i5.Entry>>.value(<_i5.Entry>[]),
+      ) as _i4.Future<List<_i5.Entry>>);
 
   @override
-  _i3.Future<_i4.Entry?> getEntryById(String? id) => (super.noSuchMethod(
+  _i4.Future<_i5.Entry?> getEntryById(String? id) => (super.noSuchMethod(
         Invocation.method(
           #getEntryById,
           [id],
         ),
-        returnValue: _i3.Future<_i4.Entry?>.value(),
-        returnValueForMissingStub: _i3.Future<_i4.Entry?>.value(),
-      ) as _i3.Future<_i4.Entry?>);
+        returnValue: _i4.Future<_i5.Entry?>.value(),
+        returnValueForMissingStub: _i4.Future<_i5.Entry?>.value(),
+      ) as _i4.Future<_i5.Entry?>);
 
   @override
-  _i3.Future<void> saveEntry(_i4.Entry? entry) => (super.noSuchMethod(
+  _i4.Future<void> saveEntry(_i5.Entry? entry) => (super.noSuchMethod(
         Invocation.method(
           #saveEntry,
           [entry],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<void> deleteEntry(String? id) => (super.noSuchMethod(
+  _i4.Future<void> deleteEntry(String? id) => (super.noSuchMethod(
         Invocation.method(
           #deleteEntry,
           [id],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Stream<List<_i4.Entry>> watchEntries() => (super.noSuchMethod(
+  _i4.Stream<List<_i5.Entry>> watchEntries() => (super.noSuchMethod(
         Invocation.method(
           #watchEntries,
           [],
         ),
-        returnValue: _i3.Stream<List<_i4.Entry>>.empty(),
-        returnValueForMissingStub: _i3.Stream<List<_i4.Entry>>.empty(),
-      ) as _i3.Stream<List<_i4.Entry>>);
+        returnValue: _i4.Stream<List<_i5.Entry>>.empty(),
+        returnValueForMissingStub: _i4.Stream<List<_i5.Entry>>.empty(),
+      ) as _i4.Stream<List<_i5.Entry>>);
 
   @override
-  _i3.Future<void> sync() => (super.noSuchMethod(
+  _i4.Future<void> sync() => (super.noSuchMethod(
         Invocation.method(
           #sync,
           [],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<int> getPendingSyncCount() => (super.noSuchMethod(
+  _i4.Future<int> getPendingSyncCount() => (super.noSuchMethod(
         Invocation.method(
           #getPendingSyncCount,
           [],
         ),
-        returnValue: _i3.Future<int>.value(0),
-        returnValueForMissingStub: _i3.Future<int>.value(0),
-      ) as _i3.Future<int>);
+        returnValue: _i4.Future<int>.value(0),
+        returnValueForMissingStub: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
 }
 
 /// A class which mocks [Connectivity].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockConnectivity extends _i1.Mock implements _i5.Connectivity {
+class MockConnectivity extends _i1.Mock implements _i6.Connectivity {
   @override
-  _i3.Stream<List<_i6.ConnectivityResult>> get onConnectivityChanged =>
+  _i4.Stream<List<_i7.ConnectivityResult>> get onConnectivityChanged =>
       (super.noSuchMethod(
         Invocation.getter(#onConnectivityChanged),
-        returnValue: _i3.Stream<List<_i6.ConnectivityResult>>.empty(),
+        returnValue: _i4.Stream<List<_i7.ConnectivityResult>>.empty(),
         returnValueForMissingStub:
-            _i3.Stream<List<_i6.ConnectivityResult>>.empty(),
-      ) as _i3.Stream<List<_i6.ConnectivityResult>>);
+            _i4.Stream<List<_i7.ConnectivityResult>>.empty(),
+      ) as _i4.Stream<List<_i7.ConnectivityResult>>);
 
   @override
-  _i3.Future<List<_i6.ConnectivityResult>> checkConnectivity() =>
+  _i4.Future<List<_i7.ConnectivityResult>> checkConnectivity() =>
       (super.noSuchMethod(
         Invocation.method(
           #checkConnectivity,
           [],
         ),
-        returnValue: _i3.Future<List<_i6.ConnectivityResult>>.value(
-            <_i6.ConnectivityResult>[]),
+        returnValue: _i4.Future<List<_i7.ConnectivityResult>>.value(
+            <_i7.ConnectivityResult>[]),
         returnValueForMissingStub:
-            _i3.Future<List<_i6.ConnectivityResult>>.value(
-                <_i6.ConnectivityResult>[]),
-      ) as _i3.Future<List<_i6.ConnectivityResult>>);
+            _i4.Future<List<_i7.ConnectivityResult>>.value(
+                <_i7.ConnectivityResult>[]),
+      ) as _i4.Future<List<_i7.ConnectivityResult>>);
 }

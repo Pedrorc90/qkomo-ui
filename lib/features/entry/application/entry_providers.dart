@@ -9,6 +9,8 @@ import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
+import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
 import 'package:qkomo_ui/features/sync/application/sync_service.dart';
 
 /// Provider for the Hive box storing entries
@@ -57,13 +59,14 @@ final pendingSyncCountProvider = FutureProvider<int>((ref) async {
   return repo.getPendingSyncCount();
 });
 
-/// Provider for SyncService
+/// Provider for SyncService (multi-repository sync)
 final syncServiceProvider = Provider<SyncService>((ref) {
-  final repo = ref.watch(entryRepositoryProvider) as HybridEntryRepository;
+  final entryRepo = ref.watch(entryRepositoryProvider) as HybridEntryRepository;
+  final mealRepo = ref.watch(mealRepositoryProvider) as HybridMealRepository;
   final connectivity = ref.watch(connectivityProvider);
 
   final service = SyncService(
-    repository: repo,
+    repositories: [entryRepo, mealRepo], // Multi-repository sync
     connectivity: connectivity,
   );
 

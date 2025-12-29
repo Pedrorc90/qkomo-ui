@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/animations/feedback_animations.dart';
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_card.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_type_selector_dialog.dart';
 
 class SelectedDayMealsSection extends ConsumerWidget {
   const SelectedDayMealsSection({super.key});
@@ -21,7 +23,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
     final meals = ref.watch(selectedDayMealsProvider);
     final aiSuggestionsEnabled =
         ref.watch(featureEnabledProvider('ai_suggestions'));
-    debugPrint('[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
+    debugPrint(
+        '[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
 
     if (selectedDay == null) {
       return Center(
@@ -279,7 +282,19 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
   Future<void> _autoGenerateMenu(
       BuildContext context, WidgetRef ref, DateTime selectedDay) async {
+    // Show meal type selector dialog
+    final selectedMealTypes = await showDialog<List<MealType>>(
+      context: context,
+      builder: (context) => const MealTypeSelectorDialog(),
+    );
+
+    if (selectedMealTypes == null || selectedMealTypes.isEmpty) {
+      return;
+    }
+
     final controller = ref.read(menuControllerProvider.notifier);
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    final userId = user?.uid ?? '';
 
     // Use preset recipes
     final presetRecipes = PresetRecipes.all;
@@ -302,7 +317,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
       recipesByType.putIfAbsent(recipe.suggestedMealType, () => []).add(recipe);
     }
 
-    // Generate menu: add one meal for each of the 4 types
+    // Generate menu: add one meal for each selected type
     final random = Random();
     var addedCount = 0;
     final missingTypes = <String>[];
@@ -315,7 +330,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
       MealType.dinner: const Duration(hours: 21),
     };
 
-    for (final mealType in MealType.values) {
+    for (final mealType in selectedMealTypes) {
       // Check if there are recipes of this type available
       if (!recipesByType.containsKey(mealType) ||
           recipesByType[mealType]!.isEmpty) {
@@ -338,6 +353,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
       // Add the meal to the current day
       await controller.createMeal(
+        userId: userId,
         name: selectedRecipe.name,
         ingredients: selectedRecipe.ingredients,
         mealType: selectedRecipe.suggestedMealType,
@@ -349,11 +365,11 @@ class SelectedDayMealsSection extends ConsumerWidget {
     }
 
     if (context.mounted) {
-      if (addedCount == 4) {
+      if (addedCount == selectedMealTypes.length) {
         await SuccessFeedback.show(
           context,
           message:
-              'Menú completo generado: 4 comidas agregadas automáticamente',
+              'Menú generado: $addedCount comida(s) agregada(s) automáticamente',
         );
       } else if (addedCount > 0) {
         var message =

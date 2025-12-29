@@ -7,6 +7,11 @@ import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
+
+import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
+import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
+import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:workmanager/workmanager.dart';
 
 const String syncTaskName = 'qkomo_sync_task';
@@ -22,28 +27,48 @@ void callbackDispatcher() {
         // Initialize Hive for background isolate
         await Hive.initFlutter();
 
-        // Register adapters if needed (check if they are already registered)
+        // Register adapters if needed (V2 FIRST for Meal)
         if (!Hive.isAdapterRegistered(0)) {
           Hive.registerAdapter(CaptureResultAdapter());
         }
-        if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(EntryAdapter());
-        // Add other adapters as needed...
+        if (!Hive.isAdapterRegistered(1)) {
+          Hive.registerAdapter(EntryAdapter());
+        }
+        if (!Hive.isAdapterRegistered(6)) {
+          Hive.registerAdapter(MealV2Adapter()); // Meal V2 adapter (ALWAYS)
+        }
+        // Note: V1 adapter NOT registered in background worker
+        // (migration only runs in foreground)
 
         // Open boxes
         final entryBox = await Hive.openBox<Entry>('entries');
+        final mealBox = await Hive.openBox<Meal>('meals');
 
-        // Setup repositories
-        final localRepo = LocalEntryRepository(entryBox: entryBox);
-        final remoteRepo =
-            RemoteEntryRepository(dio: Dio()); // Configure Dio as needed
-        final hybridRepo = HybridEntryRepository(
-          localRepo: localRepo,
-          remoteRepo: remoteRepo,
+        // Setup Entry repositories
+        final localEntryRepo = LocalEntryRepository(entryBox: entryBox);
+        final remoteEntryRepo = RemoteEntryRepository(dio: Dio());
+        final hybridEntryRepo = HybridEntryRepository(
+          localRepo: localEntryRepo,
+          remoteRepo: remoteEntryRepo,
           enableCloudSync: true,
         );
 
-        // Run sync
-        await hybridRepo.sync();
+        // Setup Meal repositories
+        // TODO: Get userId from secure storage in background context
+        final localMealRepo = LocalMealRepository(
+          mealBox: mealBox,
+          userId: '', // Background sync needs userId from auth
+        );
+        final remoteMealRepo = RemoteMealRepository(dio: Dio());
+        final hybridMealRepo = HybridMealRepository(
+          localRepo: localMealRepo,
+          remoteRepo: remoteMealRepo,
+          enableCloudSync: true,
+        );
+
+        // Run sync for both repositories
+        await hybridEntryRepo.sync();
+        await hybridMealRepo.sync();
 
         return Future.value(true);
       } catch (e) {

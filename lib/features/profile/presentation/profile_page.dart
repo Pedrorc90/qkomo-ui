@@ -8,6 +8,9 @@ import 'package:qkomo_ui/features/profile/presentation/allergens_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/dietary_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/theme_selection_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/widgets/profile_option_card.dart';
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/profile/application/companion_controller.dart';
+import 'package:qkomo_ui/features/profile/presentation/widgets/add_companion_dialog.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -26,6 +29,8 @@ class ProfilePage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             UserSummaryCard(user: user),
+            const SizedBox(height: 24),
+            const _CompanionSection(),
             const SizedBox(height: 24),
             Text(
               'Datos',
@@ -101,8 +106,7 @@ class ProfilePage extends ConsumerWidget {
               onTap: () {
                 Navigator.of(
                   context,
-                ).push(MaterialPageRoute(
-                    builder: (context) => const ThemeSelectionPage()));
+                ).push(MaterialPageRoute(builder: (context) => const ThemeSelectionPage()));
               },
             ),
             const SizedBox(height: 24),
@@ -125,6 +129,116 @@ class ProfilePage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CompanionSection extends ConsumerWidget {
+  const _CompanionSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Check feature toggle for companion section
+    // If not found, defaults to false in safe mode, but we want it enabled by default?
+    // User requested "oculta ... dependendiendo del feature features.api.companion"
+    // Usually features are opt-in or opt-out.
+    // Assuming if key is missing -> disabled (safe default in provider).
+    // If key exists and is false -> disabled.
+    // If key exists and is true -> enabled.
+    final isEnabled = ref.watch(featureEnabledProvider('features.api.companion'));
+
+    if (!isEnabled) {
+      return const SizedBox.shrink();
+    }
+
+    final companionListAsync = ref.watch(companionListProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Comunidad',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
+        const SizedBox(height: 12),
+        companionListAsync.when(
+          data: (companions) {
+            if (companions.isEmpty) {
+              return ProfileOptionCard(
+                title: 'Añadir Compañero',
+                icon: Icons.person_add_alt_1_outlined,
+                subtitle: 'Comparte tu menú semanal',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const AddCompanionDialog(),
+                  );
+                },
+              );
+            }
+
+            final companion = companions.first;
+            return Card(
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundImage:
+                      companion.photoUrl != null ? NetworkImage(companion.photoUrl!) : null,
+                  child: companion.photoUrl == null ? const Icon(Icons.person) : null,
+                ),
+                title: Text(companion.displayName ?? companion.email),
+                subtitle: Text(
+                  companion.isPending ? 'Invitación enviada' : 'Compañero',
+                  style: TextStyle(
+                    color: companion.isPending
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Desvincular compañero'),
+                        content: Text(
+                            '¿Seguro que quieres eliminar a ${companion.displayName ?? companion.email}? Dejarán de compartir el menú semanal.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text('Desvincular'),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm == true) {
+                      await ref
+                          .read(companionControllerProvider.notifier)
+                          .removeCompanion(companion.id);
+                      ref.invalidate(companionListProvider);
+                    }
+                  },
+                ),
+              ),
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => ProfileOptionCard(
+            title: 'Error de conexión',
+            icon: Icons.error_outline,
+            subtitle: 'No se pudo cargar la información',
+            onTap: () => ref.invalidate(companionListProvider),
+          ),
+        ),
+      ],
     );
   }
 }
