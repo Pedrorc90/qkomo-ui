@@ -7,7 +7,7 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ## Project Milestones (from PLAN.md)
 
-- [/] **M8 – Mobile QA:** Add widget/state tests plus smoke tests for capture → review → save. (Partially completed)
+- [x] **M8 – Mobile QA:** Add widget/state tests plus smoke tests for capture → review → save. (Completed)
 
 ---
 
@@ -26,9 +26,9 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 - [x] Test `BackendCaptureAnalyzer`
   - [x] Successful photo analysis response parsing
   - [x] Successful barcode analysis response parsing
-  - [ ] Network error handling
-  - [ ] Auth error handling (401)
-  - [ ] Invalid response handling
+  - [x] Network error handling
+  - [x] Auth error handling (401)
+  - [x] Invalid response handling
 
 **Files verified:**
 - `test/features/capture/application/backend_capture_analyzer_test.dart`

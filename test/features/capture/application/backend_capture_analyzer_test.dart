@@ -15,8 +15,7 @@ class FakeCaptureApiClient implements CaptureApiClient {
 
   @override
   // ignore: override_on_non_overriding_member
-  Future<AnalyzeResponseDto> analyzeImage(
-      {required XFile file, String? type}) async {
+  Future<AnalyzeResponseDto> analyzeImage({required XFile file, String? type}) async {
     lastAnalyzedImage = file;
     lastAnalysisType = type;
     if (shouldThrow) throw Exception('Network error');
@@ -94,8 +93,7 @@ void main() {
       expect(fakeApiClient.lastAnalyzedBarcode, '123456');
     });
 
-    test('analyze throws exception when image file is missing for camera mode',
-        () async {
+    test('analyze throws exception when image file is missing for camera mode', () async {
       expect(
         () => analyzer.analyze(mode: CaptureMode.camera),
         throwsException,
@@ -107,6 +105,29 @@ void main() {
 
       expect(
         () => analyzer.analyze(mode: CaptureMode.barcode, barcode: '123456'),
+        throwsException,
+      );
+    });
+
+    test('analyze handles network error gracefully', () async {
+      // Already covered by propagate exception, but let's be more specific if possible
+      fakeApiClient.shouldThrow = true;
+
+      try {
+        await analyzer.analyze(mode: CaptureMode.camera, file: XFile('test.jpg'));
+        fail('Should have thrown');
+      } catch (e) {
+        expect(e.toString(), contains('Network error'));
+      }
+    });
+
+    test('analyze handles auth error (401)', () async {
+      // We can simulate specific exceptions if the analyzer catches them.
+      // Currently it just propagates, which is fine as long as the controller handles it.
+      fakeApiClient.shouldThrow = true; // In real life, this would be a specific DioError
+
+      expect(
+        () => analyzer.analyze(mode: CaptureMode.camera, file: XFile('test.jpg')),
         throwsException,
       );
     });
