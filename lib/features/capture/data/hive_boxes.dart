@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_result_adapter.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
@@ -9,13 +10,15 @@ class HiveBoxes {
   static const captureResults = 'capture_results';
   static const entries = 'entries';
 
-  static Future<void> init() async {
+  static Future<void> init([Uint8List? encryptionKey]) async {
     Hive.registerAdapter(CaptureResultAdapter());
     Hive.registerAdapter(MealTypeAdapter());
     Hive.registerAdapter(EntryAdapter());
     Hive.registerAdapter(SyncStatusAdapter());
 
-    await Hive.openBox<CaptureResult>(captureResults);
-    await Hive.openBox<Entry>(entries);
+    final cipher = encryptionKey != null ? HiveAesCipher(encryptionKey) : null;
+
+    await Hive.openBox<CaptureResult>(captureResults, encryptionCipher: cipher);
+    await Hive.openBox<Entry>(entries, encryptionCipher: cipher);
   }
 }

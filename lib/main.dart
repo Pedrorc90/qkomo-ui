@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qkomo_ui/app.dart';
+import 'package:qkomo_ui/core/security/hive_encryption_service.dart';
 import 'package:qkomo_ui/features/capture/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
@@ -27,12 +28,16 @@ void main() async {
   await Hive.initFlutter();
   await initializeDateFormatting('es');
 
+  // Initialize Hive encryption
+  final encryptionService = HiveEncryptionService();
+  final encryptionKey = await encryptionService.getEncryptionKey();
+
   // Initialize Hive boxes
-  await HiveBoxes.init();
-  await menu_hive.MenuHiveBoxes.init();
-  await SettingsHiveBoxes.init();
-  await FeatureToggleHiveBoxes.init();
-  await CompanionHiveBoxes.init();
+  await HiveBoxes.init(encryptionKey);
+  await menu_hive.MenuHiveBoxes.init(encryptionKey);
+  await SettingsHiveBoxes.init(encryptionKey);
+  await FeatureToggleHiveBoxes.init(encryptionKey);
+  await CompanionHiveBoxes.init(encryptionKey);
 
   // Run migrations if needed
   await _runMigration();

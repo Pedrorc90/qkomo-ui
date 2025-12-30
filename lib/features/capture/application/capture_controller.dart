@@ -5,8 +5,7 @@ import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
 
 class CaptureController extends StateNotifier<CaptureState> {
-  CaptureController(this._imagePicker, this._permissions)
-      : super(CaptureState.initial());
+  CaptureController(this._imagePicker, this._permissions) : super(CaptureState.initial());
 
   final ImagePicker _imagePicker;
   final CapturePermissions _permissions;
@@ -47,8 +46,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.camera,
@@ -62,6 +60,29 @@ class CaptureController extends StateNotifier<CaptureState> {
         );
         return;
       }
+
+      // Validar tamaño (máx 10MB)
+      final length = await file.length();
+      if (length > 10 * 1024 * 1024) {
+        state = state.copyWith(
+          isProcessing: false,
+          error: 'La imagen es demasiado grande. El límite es de 10MB.',
+          clearImage: true,
+        );
+        return;
+      }
+
+      // Validar tipo (solo imágenes)
+      final mimeType = file.mimeType;
+      if (mimeType != null && !mimeType.startsWith('image/')) {
+        state = state.copyWith(
+          isProcessing: false,
+          error: 'El archivo seleccionado no es una imagen válida.',
+          clearImage: true,
+        );
+        return;
+      }
+
       state = state.copyWith(
         imageFile: file,
         isProcessing: false,
@@ -88,8 +109,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.gallery,
@@ -103,6 +123,29 @@ class CaptureController extends StateNotifier<CaptureState> {
         );
         return;
       }
+
+      // Validar tamaño (máx 10MB)
+      final length = await file.length();
+      if (length > 10 * 1024 * 1024) {
+        state = state.copyWith(
+          isProcessing: false,
+          error: 'La imagen es demasiado grande. El límite es de 10MB.',
+          clearImage: true,
+        );
+        return;
+      }
+
+      // Validar tipo (solo imágenes)
+      final mimeType = file.mimeType;
+      if (mimeType != null && !mimeType.startsWith('image/')) {
+        state = state.copyWith(
+          isProcessing: false,
+          error: 'El archivo seleccionado no es una imagen válida.',
+          clearImage: true,
+        );
+        return;
+      }
+
       state = state.copyWith(
         imageFile: file,
         isProcessing: false,
@@ -141,11 +184,22 @@ class CaptureController extends StateNotifier<CaptureState> {
       );
       return;
     }
-    state = state.copyWith(
-        isProcessing: true, clearError: true, clearMessage: true);
+    state = state.copyWith(isProcessing: true, clearError: true, clearMessage: true);
   }
 
   void onBarcodeScanned(String barcode) {
+    // Validar formato de código de barras (mínimo 8 caracteres, numérico)
+    // Esto es una validación básica para evitar basura
+    final isNumeric = RegExp(r'^[0-9]+$').hasMatch(barcode);
+    if (barcode.length < 8 || !isNumeric) {
+      state = state.copyWith(
+        isProcessing: false,
+        error: 'Formato de código de barras no válido.',
+        clearBarcode: true,
+      );
+      return;
+    }
+
     state = state.copyWith(
       scannedBarcode: barcode,
       isProcessing: false,

@@ -53,20 +53,20 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ### Security Enhancements
 
-- [ ] Add secure storage audit
-  - [ ] Verify Firebase tokens are stored securely
-  - [ ] Ensure no sensitive data in logs
-  - [ ] Review Hive encryption needs
-  - [ ] Implement Hive encryption for sensitive data if needed
-- [ ] Add input validation
-  - [ ] Validate file types before upload
-  - [ ] Validate file sizes (max 10MB)
-  - [ ] Sanitize user input in edit forms
-  - [ ] Validate barcode format
-- [ ] Add network security
-  - [ ] Enforce HTTPS for all API calls
-  - [ ] Implement certificate pinning (production)
-  - [ ] Add request timeout limits
+- [x] Add secure storage audit
+  - [x] Verify Firebase tokens are stored securely
+  - [x] Ensure no sensitive data in logs
+  - [x] Review Hive encryption needs
+  - [x] Implement Hive encryption for sensitive data if needed
+- [x] Add input validation
+  - [x] Validate file types before upload
+  - [x] Validate file sizes (max 10MB)
+  - [x] Sanitize user input in edit forms
+  - [x] Validate barcode format
+- [x] Add network security
+  - [x] Enforce HTTPS for all API calls
+  - [x] Implement certificate pinning (production)
+  - [x] Add request timeout limits
 
 ### UX Improvements
 - [ ] Add onboarding flow

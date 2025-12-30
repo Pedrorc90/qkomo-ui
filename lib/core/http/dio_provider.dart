@@ -22,6 +22,17 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   );
 
+  // Enforce HTTPS for non-local environments
+  if (EnvConfig.environment != Environment.local && !baseUrl.startsWith('https://')) {
+    throw Exception('Security Error: API calls MUST use HTTPS in ${EnvConfig.appEnv}');
+  }
+
+  // TODO: Implement Certificate Pinning with real fingerprints for production
+  // This requires the SHA-256 fingerprint of the server's SSL certificate.
+  // if (EnvConfig.environment == Environment.prod) {
+  //   dio.interceptors.add(CertificatePinningInterceptor(allowedFingerprints: ['...']));
+  // }
+
   // Add Firebase token interceptor for automatic authentication
   dio.interceptors.add(
     FirebaseTokenInterceptor(

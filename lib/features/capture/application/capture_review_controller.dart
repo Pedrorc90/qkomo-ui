@@ -4,6 +4,7 @@ import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/core/utils/sanitizer.dart';
 
 /// State for the capture review screen
 class CaptureReviewState {
@@ -96,11 +97,9 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
     }
   }
 
-  /// Add a new ingredient
   void addIngredient(String ingredient) {
-    if (ingredient.trim().isEmpty) return;
-
-    final trimmed = ingredient.trim();
+    final trimmed = Sanitizer.sanitize(ingredient);
+    if (trimmed.isEmpty) return;
     if (state.editedIngredients.contains(trimmed)) return;
 
     final newIngredients = [...state.editedIngredients, trimmed];
@@ -117,8 +116,7 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
 
   /// Remove an ingredient
   void removeIngredient(String ingredient) {
-    final newIngredients =
-        state.editedIngredients.where((i) => i != ingredient).toList();
+    final newIngredients = state.editedIngredients.where((i) => i != ingredient).toList();
 
     state = state.copyWith(
       editedIngredients: newIngredients,
@@ -131,17 +129,14 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
     );
   }
 
-  /// Update an ingredient
   void updateIngredient(String oldIngredient, String newIngredient) {
-    if (newIngredient.trim().isEmpty) {
+    final trimmed = Sanitizer.sanitize(newIngredient);
+    if (trimmed.isEmpty) {
       removeIngredient(oldIngredient);
       return;
     }
-
-    final trimmed = newIngredient.trim();
-    final newIngredients = state.editedIngredients
-        .map((i) => i == oldIngredient ? trimmed : i)
-        .toList();
+    final newIngredients =
+        state.editedIngredients.map((i) => i == oldIngredient ? trimmed : i).toList();
 
     state = state.copyWith(
       editedIngredients: newIngredients,
@@ -186,8 +181,9 @@ class CaptureReviewController extends StateNotifier<CaptureReviewState> {
 
   /// Set notes
   void setNotes(String? notes) {
+    final sanitizedNotes = notes != null ? Sanitizer.sanitize(notes) : null;
     state = state.copyWith(
-      editedNotes: notes,
+      editedNotes: sanitizedNotes,
       hasChanges: _hasChanges(
         state.editedIngredients,
         state.editedAllergens,

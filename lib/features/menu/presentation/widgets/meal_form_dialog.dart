@@ -10,6 +10,7 @@ import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/preset_recipe_dialog.dart';
+import 'package:qkomo_ui/core/utils/sanitizer.dart';
 
 class MealFormDialog extends ConsumerStatefulWidget {
   const MealFormDialog({
@@ -192,7 +193,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     if (widget.existingMeal != null) {
       await controller.updateMeal(
         id: widget.existingMeal!.id,
-        name: _nameController.text.trim(),
+        name: Sanitizer.sanitize(_nameController.text),
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
@@ -202,7 +203,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     } else {
       await controller.createMeal(
         userId: userId,
-        name: _nameController.text.trim(),
+        name: Sanitizer.sanitize(_nameController.text),
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
@@ -233,7 +234,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     final controller = ref.read(menuControllerProvider.notifier);
 
     await controller.saveAsRecipe(
-      name: _nameController.text.trim(),
+      name: Sanitizer.sanitize(_nameController.text),
       ingredients: ingredients,
       mealType: _selectedMealType,
       photoPath: _photoPath,
