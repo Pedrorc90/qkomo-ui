@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'theme_type.g.dart';
 
-@HiveType(typeId: 23)
+@HiveType(typeId: 10)
 enum AppThemeType {
   @HiveField(0)
   warm, // Naranja cálido e invitador

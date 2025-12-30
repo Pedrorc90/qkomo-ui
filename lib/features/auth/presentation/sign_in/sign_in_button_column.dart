@@ -9,6 +9,7 @@ class SignInButtonColumn extends StatelessWidget {
     super.key,
     required this.controller,
     required this.isLoading,
+    required this.googleEnabled,
     required this.appleEnabled,
     required this.runAuthAction,
     required this.onEmailRequested,
@@ -16,6 +17,7 @@ class SignInButtonColumn extends StatelessWidget {
 
   final AuthController controller;
   final bool isLoading;
+  final bool googleEnabled;
   final bool appleEnabled;
   final AuthActionRunner runAuthAction;
   final VoidCallback onEmailRequested;
@@ -33,48 +35,44 @@ class SignInButtonColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        FilledButton.icon(
-          onPressed: isLoading
-              ? null
-              : () => runAuthAction(controller.signInWithGoogle),
-          icon: const Icon(Icons.login),
-          label: const Text('Continuar con Google'),
-          style: buttonStyle,
-        ),
-        if (appleEnabled) ...[
-          const SizedBox(height: 16),
+        if (googleEnabled)
           FilledButton.icon(
-            onPressed: isLoading
-                ? null
-                : () => runAuthAction(controller.signInWithApple),
+            onPressed: isLoading ? null : () => runAuthAction(controller.signInWithGoogle),
+            icon: const Icon(Icons.login),
+            label: const Text('Continuar con Google'),
+            style: buttonStyle,
+          ),
+        if (appleEnabled) ...[
+          if (googleEnabled) const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: isLoading ? null : () => runAuthAction(controller.signInWithApple),
             icon: const Icon(Icons.apple),
             label: const Text('Continuar con Apple'),
             style: buttonStyle,
           ),
         ],
-        const SizedBox(height: 24),
-        Row(
-          children: [
-            Expanded(child: Divider(color: scheme.outlineVariant)),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'o',
-                style: TextStyle(color: scheme.onSurfaceVariant),
-              ),
-            ),
-            Expanded(child: Divider(color: scheme.outlineVariant)),
-          ],
-        ),
-        const SizedBox(height: 24),
+        // const SizedBox(height: 24),
+        // Row(
+        //   children: [
+        //     Expanded(child: Divider(color: scheme.outlineVariant)),
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 16),
+        //       child: Text(
+        //         'o',
+        //         style: TextStyle(color: scheme.onSurfaceVariant),
+        //       ),
+        //     ),
+        //     Expanded(child: Divider(color: scheme.outlineVariant)),
+        //   ],
+        // ),
+        //const SizedBox(height: 24),
         OutlinedButton.icon(
           onPressed: isLoading ? null : onEmailRequested,
           icon: const Icon(Icons.mail_outline),
           label: const Text('Continuar con email'),
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             side: BorderSide(color: scheme.outline),
           ),
         ),

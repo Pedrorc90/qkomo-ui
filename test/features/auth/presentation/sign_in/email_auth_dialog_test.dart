@@ -53,14 +53,14 @@ void main() {
     );
 
     // Initial title
-    expect(find.text('Bienvenido de nuevo'), findsOneWidget);
+    expect(find.text('Bienvenid@ de nuevo'), findsOneWidget);
 
     // Tap toggle text (in EmailAuthForm)
     await tester.tap(find.text('¿No tienes cuenta? Regístrate'));
     await tester.pumpAndSettle();
 
     // New title
-    expect(find.text('Únete a qkomo'), findsOneWidget);
+    expect(find.text('Únete a QKomo'), findsOneWidget);
     expect(find.text('Crear cuenta'), findsOneWidget);
   });
 

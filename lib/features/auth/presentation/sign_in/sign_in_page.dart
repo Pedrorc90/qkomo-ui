@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qkomo_ui/core/config/feature_flags.dart';
 import 'package:qkomo_ui/features/auth/application/auth_controller.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/auth/domain/auth_failure.dart';
@@ -31,6 +32,7 @@ class SignInPage extends ConsumerWidget {
                 child: SignInContent(
                   controller: controller,
                   isLoading: isLoading,
+                  googleEnabled: FeatureFlags.googleAuth,
                   appleEnabled: _appleSignInAvailable,
                   runAuthAction: (action) =>
                       _runAuthAction(context, ref, action),

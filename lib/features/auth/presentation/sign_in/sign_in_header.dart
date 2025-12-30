@@ -33,12 +33,9 @@ class SignInHeader extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Text(
-            'Captura ingredientes, analiza etiquetas y entiende lo que comes con IA.',
+            'Entiende lo que comes y planifica tu semana',
             style: textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurfaceVariant
-                  .withAlpha((0.8 * 255).round()),
+              color: Theme.of(context).colorScheme.onSurfaceVariant.withAlpha((0.8 * 255).round()),
               height: 1.5,
             ),
             textAlign: TextAlign.center,

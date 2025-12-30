@@ -67,7 +67,7 @@ void main() {
 
     // Verify dialog is shown
     expect(find.byType(EmailAuthDialog), findsOneWidget);
-    expect(find.text('Bienvenido de nuevo'), findsOneWidget);
+    expect(find.text('Bienvenid@ de nuevo'), findsOneWidget);
   });
 
   testWidgets('Shows loading state when in progress', (tester) async {

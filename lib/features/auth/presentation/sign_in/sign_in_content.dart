@@ -11,6 +11,7 @@ class SignInContent extends StatelessWidget {
     super.key,
     required this.controller,
     required this.isLoading,
+    required this.googleEnabled,
     required this.appleEnabled,
     required this.runAuthAction,
     required this.onEmailRequested,
@@ -18,6 +19,7 @@ class SignInContent extends StatelessWidget {
 
   final AuthController controller;
   final bool isLoading;
+  final bool googleEnabled;
   final bool appleEnabled;
   final AuthActionRunner runAuthAction;
   final VoidCallback onEmailRequested;
@@ -29,10 +31,11 @@ class SignInContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SignInHeader(),
-        const SizedBox(height: 48),
+        const SizedBox(height: 24),
         SignInButtonColumn(
           controller: controller,
           isLoading: isLoading,
+          googleEnabled: googleEnabled,
           appleEnabled: appleEnabled,
           runAuthAction: runAuthAction,
           onEmailRequested: onEmailRequested,

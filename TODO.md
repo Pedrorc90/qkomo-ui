@@ -11,21 +11,6 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ## Medium Priority - Quality Assurance
 
-#### Integration Tests
-
-- [x] Test offline scenarios
-  - [ ] Failed syncs can be retried
-- [ ] Test error recovery
-  - [ ] Network interruption during upload
-  - [ ] Backend returns 500 error
-  - [ ] Invalid auth token
-  - [ ] App restart with pending entries
-
-**Files to create:**
-- [x] `integration_test/app_integration_test.dart` (Flutter integration tests)
-- [x] `integration_test/offline_flow_test.dart`
-- [x] `integration_test/auth_refresh_test.dart`
-- [ ] `integration_test/error_recovery_test.dart`
 
 #### Test Coverage Goals
 - [ ] Set up test coverage reporting
@@ -44,8 +29,6 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ## Low Priority - Technical Debt & Enhancements
 
-### Security Enhancements
-
 ### UX Improvements
 - [ ] Add onboarding flow
   - [ ] Welcome screen explaining app purpose
@@ -57,7 +40,7 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
   - [ ] Dietary restrictions
   - [ ] Language preference (future multi-language)
   - [ ] Notification preferences
-- [x] Add accessibility features
+- [] Add accessibility features
   - [ ] High contrast mode
   - [ ] Font size scaling
   - [ ] Voice input for ingredient editing

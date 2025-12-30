@@ -55,15 +55,11 @@ class _EmailAuthDialogState extends State<EmailAuthDialog> {
               onPressed: () => _submit(context),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
               child: Text(
-                _mode == EmailAuthMode.signIn
-                    ? 'Iniciar sesión'
-                    : 'Crear cuenta',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                _mode == EmailAuthMode.signIn ? 'Iniciar sesión' : 'Crear cuenta',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -72,14 +68,11 @@ class _EmailAuthDialogState extends State<EmailAuthDialog> {
     );
   }
 
-  String get _title =>
-      _mode == EmailAuthMode.signIn ? 'Bienvenido de nuevo' : 'Únete a qkomo';
+  String get _title => _mode == EmailAuthMode.signIn ? 'Bienvenid@ de nuevo' : 'Únete a QKomo';
 
   void _toggleMode() {
     setState(() {
-      _mode = _mode == EmailAuthMode.signIn
-          ? EmailAuthMode.register
-          : EmailAuthMode.signIn;
+      _mode = _mode == EmailAuthMode.signIn ? EmailAuthMode.register : EmailAuthMode.signIn;
     });
   }
 
