@@ -12,15 +12,8 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 ## Medium Priority - Quality Assurance
 
 #### Integration Tests
-- [x] End-to-end smoke tests
-  - [x] Sign in → capture photo → direct analyze → save to history → sync
-  - [x] Sign in → scan barcode → direct analyze → save to history → sync
-  - [x] Offline capture → save locally → go online → auto-sync
-  - [x] Auth token expiration → refresh → continue operation
+
 - [x] Test offline scenarios
-  - [x] Capture/Save works offline
-  - [x] History reflects local changes immediately
-  - [x] Entries sync when connectivity returns
   - [ ] Failed syncs can be retried
 - [ ] Test error recovery
   - [ ] Network interruption during upload
@@ -53,21 +46,6 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ### Security Enhancements
 
-- [x] Add secure storage audit
-  - [x] Verify Firebase tokens are stored securely
-  - [x] Ensure no sensitive data in logs
-  - [x] Review Hive encryption needs
-  - [x] Implement Hive encryption for sensitive data if needed
-- [x] Add input validation
-  - [x] Validate file types before upload
-  - [x] Validate file sizes (max 10MB)
-  - [x] Sanitize user input in edit forms
-  - [x] Validate barcode format
-- [x] Add network security
-  - [x] Enforce HTTPS for all API calls
-  - [x] Implement certificate pinning (production)
-  - [x] Add request timeout limits
-
 ### UX Improvements
 - [ ] Add onboarding flow
   - [ ] Welcome screen explaining app purpose
@@ -78,10 +56,8 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
   - [ ] Allergen profile (common allergens to watch)
   - [ ] Dietary restrictions
   - [ ] Language preference (future multi-language)
-  - [ ] Theme preference (light/dark mode)
   - [ ] Notification preferences
 - [x] Add accessibility features
-  - [x] Screen reader support (Semantics widgets)
   - [ ] High contrast mode
   - [ ] Font size scaling
   - [ ] Voice input for ingredient editing
@@ -185,23 +161,6 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 - Beneficio: Mejor mantenibilidad y onboarding
 
 ### 🔵 Mejoras de Testing
-
-#### P13 - Aumentar cobertura de tests unitarios
-**Estado actual:** ~20 archivos de test → **~23 archivos de test**
-**Propuesta:**
-- [x] Tests para `AuthController` (sign in flows, error handling)
-- [x] Tests para `CaptureController` (state transitions, error states)
-- [x] Tests para `HistoryController` (filtering, search)
-- [x] Tests para `DirectAnalyzeController`
-- Meta: 80% cobertura en capa de aplicación ✅
-
-#### P14 - Implementar tests de widget [DONE]
-**Propuesta:**
-- [x] `CapturePage` - renderizado de opciones, navegación
-- [x] `CaptureReviewPage` - edición de ingredientes, guardado
-- [x] `HistoryPage` - filtros, agrupación, empty states
-- [x] `SignInPage` - formularios, validación
-- Meta: Cobertura de flujos críticos de usuario
 
 #### P15 - Configurar CI/CD con GitHub Actions
 **Propuesta:**

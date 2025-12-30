@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qkomo_ui/features/settings/application/settings_providers.dart';
 import 'package:qkomo_ui/theme/app_theme.dart';
 import 'package:qkomo_ui/theme/theme_type.dart';
 
-final themeTypeProvider =
-    StateProvider<AppThemeType>((_) => AppThemeType.forest);
+final themeTypeProvider = Provider<AppThemeType>((ref) {
+  final settingsAsync = ref.watch(userSettingsProvider);
+  return settingsAsync.when(
+    data: (settings) => settings.themeType,
+    loading: () => AppThemeType.forest,
+    error: (_, __) => AppThemeType.forest,
+  );
+});
 
 final appThemeProvider = Provider<ThemeData>((ref) {
   final type = ref.watch(themeTypeProvider);

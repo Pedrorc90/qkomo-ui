@@ -31,6 +31,8 @@ mixin _$UserSettings {
   bool get enableNotifications => throw _privateConstructorUsedError;
   @HiveField(4)
   bool get enableDailyReminders => throw _privateConstructorUsedError;
+  @HiveField(5)
+  AppThemeType get themeType => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,7 +51,8 @@ abstract class $UserSettingsCopyWith<$Res> {
       @HiveField(1) List<DietaryRestriction> dietaryRestrictions,
       @HiveField(2) String languageCode,
       @HiveField(3) bool enableNotifications,
-      @HiveField(4) bool enableDailyReminders});
+      @HiveField(4) bool enableDailyReminders,
+      @HiveField(5) AppThemeType themeType});
 }
 
 /// @nodoc
@@ -70,6 +73,7 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
     Object? languageCode = null,
     Object? enableNotifications = null,
     Object? enableDailyReminders = null,
+    Object? themeType = null,
   }) {
     return _then(_value.copyWith(
       allergens: null == allergens
@@ -92,6 +96,10 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
           ? _value.enableDailyReminders
           : enableDailyReminders // ignore: cast_nullable_to_non_nullable
               as bool,
+      themeType: null == themeType
+          ? _value.themeType
+          : themeType // ignore: cast_nullable_to_non_nullable
+              as AppThemeType,
     ) as $Val);
   }
 }
@@ -109,7 +117,8 @@ abstract class _$$UserSettingsImplCopyWith<$Res>
       @HiveField(1) List<DietaryRestriction> dietaryRestrictions,
       @HiveField(2) String languageCode,
       @HiveField(3) bool enableNotifications,
-      @HiveField(4) bool enableDailyReminders});
+      @HiveField(4) bool enableDailyReminders,
+      @HiveField(5) AppThemeType themeType});
 }
 
 /// @nodoc
@@ -128,6 +137,7 @@ class __$$UserSettingsImplCopyWithImpl<$Res>
     Object? languageCode = null,
     Object? enableNotifications = null,
     Object? enableDailyReminders = null,
+    Object? themeType = null,
   }) {
     return _then(_$UserSettingsImpl(
       allergens: null == allergens
@@ -150,6 +160,10 @@ class __$$UserSettingsImplCopyWithImpl<$Res>
           ? _value.enableDailyReminders
           : enableDailyReminders // ignore: cast_nullable_to_non_nullable
               as bool,
+      themeType: null == themeType
+          ? _value.themeType
+          : themeType // ignore: cast_nullable_to_non_nullable
+              as AppThemeType,
     ));
   }
 }
@@ -164,7 +178,8 @@ class _$UserSettingsImpl implements _UserSettings {
       final List<DietaryRestriction> dietaryRestrictions = const [],
       @HiveField(2) this.languageCode = 'es',
       @HiveField(3) this.enableNotifications = true,
-      @HiveField(4) this.enableDailyReminders = true})
+      @HiveField(4) this.enableDailyReminders = true,
+      @HiveField(5) this.themeType = AppThemeType.forest})
       : _allergens = allergens,
         _dietaryRestrictions = dietaryRestrictions;
 
@@ -204,10 +219,14 @@ class _$UserSettingsImpl implements _UserSettings {
   @JsonKey()
   @HiveField(4)
   final bool enableDailyReminders;
+  @override
+  @JsonKey()
+  @HiveField(5)
+  final AppThemeType themeType;
 
   @override
   String toString() {
-    return 'UserSettings(allergens: $allergens, dietaryRestrictions: $dietaryRestrictions, languageCode: $languageCode, enableNotifications: $enableNotifications, enableDailyReminders: $enableDailyReminders)';
+    return 'UserSettings(allergens: $allergens, dietaryRestrictions: $dietaryRestrictions, languageCode: $languageCode, enableNotifications: $enableNotifications, enableDailyReminders: $enableDailyReminders, themeType: $themeType)';
   }
 
   @override
@@ -224,7 +243,9 @@ class _$UserSettingsImpl implements _UserSettings {
             (identical(other.enableNotifications, enableNotifications) ||
                 other.enableNotifications == enableNotifications) &&
             (identical(other.enableDailyReminders, enableDailyReminders) ||
-                other.enableDailyReminders == enableDailyReminders));
+                other.enableDailyReminders == enableDailyReminders) &&
+            (identical(other.themeType, themeType) ||
+                other.themeType == themeType));
   }
 
   @JsonKey(ignore: true)
@@ -235,7 +256,8 @@ class _$UserSettingsImpl implements _UserSettings {
       const DeepCollectionEquality().hash(_dietaryRestrictions),
       languageCode,
       enableNotifications,
-      enableDailyReminders);
+      enableDailyReminders,
+      themeType);
 
   @JsonKey(ignore: true)
   @override
@@ -257,7 +279,8 @@ abstract class _UserSettings implements UserSettings {
       @HiveField(1) final List<DietaryRestriction> dietaryRestrictions,
       @HiveField(2) final String languageCode,
       @HiveField(3) final bool enableNotifications,
-      @HiveField(4) final bool enableDailyReminders}) = _$UserSettingsImpl;
+      @HiveField(4) final bool enableDailyReminders,
+      @HiveField(5) final AppThemeType themeType}) = _$UserSettingsImpl;
 
   factory _UserSettings.fromJson(Map<String, dynamic> json) =
       _$UserSettingsImpl.fromJson;
@@ -277,6 +300,9 @@ abstract class _UserSettings implements UserSettings {
   @override
   @HiveField(4)
   bool get enableDailyReminders;
+  @override
+  @HiveField(5)
+  AppThemeType get themeType;
   @override
   @JsonKey(ignore: true)
   _$$UserSettingsImplCopyWith<_$UserSettingsImpl> get copyWith =>

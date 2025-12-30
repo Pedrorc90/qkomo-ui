@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
+import 'package:qkomo_ui/features/settings/application/settings_providers.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 import 'package:qkomo_ui/theme/theme_type.dart';
 
@@ -28,8 +29,8 @@ class ThemeSelectionPage extends ConsumerWidget {
                       description: 'Naranja cálido e invitador',
                       isSelected: currentTheme == AppThemeType.warm,
                       color: const Color(0xFFFF6F3C),
-                      onTap: () => ref.read(themeTypeProvider.notifier).state =
-                          AppThemeType.warm,
+                      onTap: () =>
+                          ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.warm),
                     ),
                     const Divider(),
                     _ThemeOption(
@@ -37,8 +38,9 @@ class ThemeSelectionPage extends ConsumerWidget {
                       description: 'Gris minimalista neutral',
                       isSelected: currentTheme == AppThemeType.offWhite,
                       color: const Color(0xFF5D5D5D),
-                      onTap: () => ref.read(themeTypeProvider.notifier).state =
-                          AppThemeType.offWhite,
+                      onTap: () => ref
+                          .read(userSettingsProvider.notifier)
+                          .setThemeType(AppThemeType.offWhite),
                     ),
                     const Divider(),
                     _ThemeOption(
@@ -46,8 +48,8 @@ class ThemeSelectionPage extends ConsumerWidget {
                       description: 'Azul oscuro para modo noche',
                       isSelected: currentTheme == AppThemeType.dark,
                       color: const Color(0xFF3B82F6),
-                      onTap: () => ref.read(themeTypeProvider.notifier).state =
-                          AppThemeType.dark,
+                      onTap: () =>
+                          ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.dark),
                     ),
                     const Divider(),
                     _ThemeOption(
@@ -55,8 +57,8 @@ class ThemeSelectionPage extends ConsumerWidget {
                       description: 'Verde bosque natural',
                       isSelected: currentTheme == AppThemeType.forest,
                       color: const Color(0xFF2D5016),
-                      onTap: () => ref.read(themeTypeProvider.notifier).state =
-                          AppThemeType.forest,
+                      onTap: () =>
+                          ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.forest),
                     ),
                     const Divider(),
                     _ThemeOption(
@@ -64,8 +66,8 @@ class ThemeSelectionPage extends ConsumerWidget {
                       description: 'Índigo profundo y elegante',
                       isSelected: currentTheme == AppThemeType.indigo,
                       color: const Color(0xFF4338CA),
-                      onTap: () => ref.read(themeTypeProvider.notifier).state =
-                          AppThemeType.indigo,
+                      onTap: () =>
+                          ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.indigo),
                     ),
                   ],
                 ),
@@ -125,19 +127,14 @@ class _ThemeOption extends StatelessWidget {
                   Text(
                     label,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     description,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.color
-                              ?.withAlpha(153),
+                          color: Theme.of(context).textTheme.bodySmall?.color?.withAlpha(153),
                         ),
                   ),
                 ],

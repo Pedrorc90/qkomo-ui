@@ -190,19 +190,22 @@ class UserSettingsImplAdapter extends TypeAdapter<_$UserSettingsImpl> {
       languageCode: fields[2] as String,
       enableNotifications: fields[3] as bool,
       enableDailyReminders: fields[4] as bool,
+      themeType: fields[5] as AppThemeType,
     );
   }
 
   @override
   void write(BinaryWriter writer, _$UserSettingsImpl obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(2)
       ..write(obj.languageCode)
       ..writeByte(3)
       ..write(obj.enableNotifications)
       ..writeByte(4)
       ..write(obj.enableDailyReminders)
+      ..writeByte(5)
+      ..write(obj.themeType)
       ..writeByte(0)
       ..write(obj.allergens)
       ..writeByte(1)
@@ -237,6 +240,9 @@ _$UserSettingsImpl _$$UserSettingsImplFromJson(Map<String, dynamic> json) =>
       languageCode: json['languageCode'] as String? ?? 'es',
       enableNotifications: json['enableNotifications'] as bool? ?? true,
       enableDailyReminders: json['enableDailyReminders'] as bool? ?? true,
+      themeType:
+          $enumDecodeNullable(_$AppThemeTypeEnumMap, json['themeType']) ??
+              AppThemeType.forest,
     );
 
 Map<String, dynamic> _$$UserSettingsImplToJson(_$UserSettingsImpl instance) =>
@@ -249,6 +255,7 @@ Map<String, dynamic> _$$UserSettingsImplToJson(_$UserSettingsImpl instance) =>
       'languageCode': instance.languageCode,
       'enableNotifications': instance.enableNotifications,
       'enableDailyReminders': instance.enableDailyReminders,
+      'themeType': _$AppThemeTypeEnumMap[instance.themeType]!,
     };
 
 const _$AllergenEnumMap = {
@@ -277,4 +284,12 @@ const _$DietaryRestrictionEnumMap = {
   DietaryRestriction.lowCarb: 'lowCarb',
   DietaryRestriction.glutenFree: 'glutenFree',
   DietaryRestriction.dairyFree: 'dairyFree',
+};
+
+const _$AppThemeTypeEnumMap = {
+  AppThemeType.warm: 'warm',
+  AppThemeType.offWhite: 'offWhite',
+  AppThemeType.dark: 'dark',
+  AppThemeType.forest: 'forest',
+  AppThemeType.indigo: 'indigo',
 };

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/theme/theme_type.dart';
 
 class SettingsHiveBoxes {
   static const userSettings = 'user_settings_box';
@@ -9,7 +10,8 @@ class SettingsHiveBoxes {
     Hive
       ..registerAdapter(UserSettingsImplAdapter())
       ..registerAdapter(AllergenAdapter())
-      ..registerAdapter(DietaryRestrictionAdapter());
+      ..registerAdapter(DietaryRestrictionAdapter())
+      ..registerAdapter(AppThemeTypeAdapter());
 
     final cipher = encryptionKey != null ? HiveAesCipher(encryptionKey) : null;
 

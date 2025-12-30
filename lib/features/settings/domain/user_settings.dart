@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:qkomo_ui/theme/theme_type.dart';
 
 part 'user_settings.freezed.dart';
 part 'user_settings.g.dart';
@@ -15,6 +16,7 @@ class UserSettings with _$UserSettings {
     @HiveField(2) @Default('es') String languageCode,
     @HiveField(3) @Default(true) bool enableNotifications,
     @HiveField(4) @Default(true) bool enableDailyReminders,
+    @HiveField(5) @Default(AppThemeType.forest) AppThemeType themeType,
   }) = _UserSettings;
 
   factory UserSettings.fromJson(Map<String, dynamic> json) => _$UserSettingsFromJson(json);
