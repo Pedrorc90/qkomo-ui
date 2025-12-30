@@ -61,7 +61,7 @@ class CaptureController extends StateNotifier<CaptureState> {
         return;
       }
 
-      // Validar tamaño (máx 10MB)
+      // Validate size (max 10MB)
       final length = await file.length();
       if (length > 10 * 1024 * 1024) {
         state = state.copyWith(
@@ -72,7 +72,7 @@ class CaptureController extends StateNotifier<CaptureState> {
         return;
       }
 
-      // Validar tipo (solo imágenes)
+      // Validate type (images only)
       final mimeType = file.mimeType;
       if (mimeType != null && !mimeType.startsWith('image/')) {
         state = state.copyWith(
@@ -124,7 +124,7 @@ class CaptureController extends StateNotifier<CaptureState> {
         return;
       }
 
-      // Validar tamaño (máx 10MB)
+      // Validate size (max 10MB)
       final length = await file.length();
       if (length > 10 * 1024 * 1024) {
         state = state.copyWith(
@@ -135,7 +135,7 @@ class CaptureController extends StateNotifier<CaptureState> {
         return;
       }
 
-      // Validar tipo (solo imágenes)
+      // Validate type (images only)
       final mimeType = file.mimeType;
       if (mimeType != null && !mimeType.startsWith('image/')) {
         state = state.copyWith(
@@ -188,8 +188,8 @@ class CaptureController extends StateNotifier<CaptureState> {
   }
 
   void onBarcodeScanned(String barcode) {
-    // Validar formato de código de barras (mínimo 8 caracteres, numérico)
-    // Esto es una validación básica para evitar basura
+    // Validate barcode format (minimum 8 characters, numeric)
+    // This is a basic validation to avoid garbage
     final isNumeric = RegExp(r'^[0-9]+$').hasMatch(barcode);
     if (barcode.length < 8 || !isNumeric) {
       state = state.copyWith(

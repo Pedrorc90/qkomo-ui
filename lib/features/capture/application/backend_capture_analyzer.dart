@@ -67,7 +67,7 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     String? barcode,
   }) {
     if (kDebugMode) {
-      print('[BackendCaptureAnalyzer] Procesando respuesta del backend:');
+      print('[BackendCaptureAnalyzer] Processing backend response:');
       print('  - analysisId: ${dto.analysisId}');
       print('  - type: ${dto.type}');
       print('  - photoId: ${dto.photoId}');
@@ -88,7 +88,7 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     final imagePath = file?.path;
 
     if (kDebugMode) {
-      print('[BackendCaptureAnalyzer] Información de la imagen:');
+      print('[BackendCaptureAnalyzer] Image information:');
       print('  - file != null: ${file != null}');
       print('  - file?.path: ${file?.path}');
       print('  - imagePath: $imagePath');
@@ -112,7 +112,7 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     );
 
     if (kDebugMode) {
-      print('[BackendCaptureAnalyzer] CaptureResult creado:');
+      print('[BackendCaptureAnalyzer] CaptureResult created:');
       print('  - jobId: ${result.jobId}');
       print('  - title: ${result.title}');
       print('  - imagePath: ${result.imagePath}');

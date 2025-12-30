@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-/// Implementación de IO para PlatformImage
+/// IO implementation for PlatformImage
 Widget buildFileImage({
   required String path,
   double? width,

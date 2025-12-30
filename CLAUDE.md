@@ -188,6 +188,28 @@ All user-facing strings must be in Spanish. This includes:
 - Analysis result prompts
 - Form validation messages
 
+### Code Language Policy
+
+**All code must be written exclusively in English.** This includes:
+- Variable names, function names, class names
+- Code comments and documentation
+- Commit messages
+- Debug/print statements (debugPrint, print, logger)
+- Exception messages in code
+- Test descriptions
+
+**Exception:** User-facing strings for internationalization (i18n) should be in Spanish as per the Spanish-First UX policy above. This includes:
+- UI text strings that will be displayed to users
+- Error messages shown in the UI
+- Form labels and validation messages
+- Any text that appears in the application interface
+
+**Why English for code?**
+- Maintains consistency with Flutter/Dart ecosystem conventions
+- Improves collaboration with international developers
+- Aligns with industry best practices
+- Keeps codebase maintainable and accessible
+
 ### Current Status (see PLAN.md)
 
 ✅ Completed:

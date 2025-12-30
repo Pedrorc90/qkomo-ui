@@ -17,7 +17,7 @@ class ImageCompressor {
   static Future<XFile> compressImage(XFile imageFile) async {
     try {
       if (kDebugMode) {
-        print('[ImageCompressor] Iniciando compresión de ${imageFile.name}');
+        print('[ImageCompressor] Starting compression of ${imageFile.name}');
       }
 
       // Read the original image
@@ -26,7 +26,7 @@ class ImageCompressor {
 
       if (kDebugMode) {
         print(
-            '[ImageCompressor] Tamaño original: ${(originalSize / 1024 / 1024).toStringAsFixed(2)} MB');
+            '[ImageCompressor] Original size: ${(originalSize / 1024 / 1024).toStringAsFixed(2)} MB');
       }
 
       // Decode image
@@ -34,7 +34,7 @@ class ImageCompressor {
       if (image == null) {
         if (kDebugMode) {
           print(
-              '[ImageCompressor] No se pudo decodificar la imagen, usando original');
+              '[ImageCompressor] Could not decode image, using original');
         }
         return imageFile;
       }
@@ -50,7 +50,7 @@ class ImageCompressor {
         );
         if (kDebugMode) {
           print(
-              '[ImageCompressor] Redimensionada a ${resized.width}x${resized.height}');
+              '[ImageCompressor] Resized to ${resized.width}x${resized.height}');
         }
       }
 
@@ -60,16 +60,16 @@ class ImageCompressor {
 
       if (kDebugMode) {
         print(
-            '[ImageCompressor] Tamaño comprimido: ${(compressedSize / 1024 / 1024).toStringAsFixed(2)} MB');
+            '[ImageCompressor] Compressed size: ${(compressedSize / 1024 / 1024).toStringAsFixed(2)} MB');
         print(
-            '[ImageCompressor] Reducción: ${((1 - compressedSize / originalSize) * 100).toStringAsFixed(1)}%');
+            '[ImageCompressor] Reduction: ${((1 - compressedSize / originalSize) * 100).toStringAsFixed(1)}%');
       }
 
       // If compressed is not significantly smaller, return original
       if (compressedSize >= originalSize * 0.9) {
         if (kDebugMode) {
           print(
-              '[ImageCompressor] Compresión no significativa, usando original');
+              '[ImageCompressor] Compression not significant, using original');
         }
         return imageFile;
       }
@@ -83,7 +83,7 @@ class ImageCompressor {
 
       if (kDebugMode) {
         print(
-            '[ImageCompressor] Imagen comprimida guardada en ${compressedFile.path}');
+            '[ImageCompressor] Compressed image saved at ${compressedFile.path}');
       }
 
       return XFile(compressedFile.path, name: 'compressed_${imageFile.name}');

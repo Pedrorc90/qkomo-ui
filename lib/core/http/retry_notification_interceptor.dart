@@ -3,14 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/http/retry_state_notifier.dart';
 
-/// Interceptor para notificar al usuario cuando se están haciendo reintentos
+/// Interceptor to notify the user when retries are being made
 class RetryNotificationInterceptor extends Interceptor {
   RetryNotificationInterceptor({required this.ref});
   final Ref ref;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // Inicializar el contador de reintentos si no existe
+    // Initialize retry counter if it doesn't exist
     if (!options.extra.containsKey('_retry_count')) {
       options.extra['_retry_count'] = 0;
     }
@@ -19,36 +19,36 @@ class RetryNotificationInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // Verificar si la request está marcada como silenciosa
+    // Check if the request is marked as silent
     final isSilent =
         err.requestOptions.extra['silent_request'] as bool? ?? false;
 
-    // Si es una request silenciosa, no mostrar overlay de reintentos
+    // If it's a silent request, don't show retry overlay
     if (isSilent) {
       debugPrint(
-          '[RetryNotificationInterceptor] Request silenciosa, no se mostrará overlay');
+          '[RetryNotificationInterceptor] Silent request, overlay will not be shown');
       super.onError(err, handler);
       return;
     }
 
-    // Incrementar el contador de reintentos
+    // Increment retry counter
     final currentRetryCount =
         (err.requestOptions.extra['_retry_count'] as int?) ?? 0;
 
-    // Si es un error que causará un reintento, incrementar el contador
+    // If it's an error that will cause a retry, increment the counter
     if (_shouldRetry(err)) {
       final newRetryCount = currentRetryCount + 1;
       err.requestOptions.extra['_retry_count'] = newRetryCount;
 
-      // Notificar al usuario que se está reintentando
+      // Notify the user that a retry is being attempted
       if (newRetryCount > 0 && newRetryCount <= 3) {
-        debugPrint('Reintentando conexión (intento $newRetryCount de 3)...');
+        debugPrint('Retrying connection (attempt $newRetryCount of 3)...');
         ref.read(retryStateProvider.notifier).startRetry(newRetryCount);
       }
     } else {
-      // Error no recuperable: limpiar la notificación
+      // Non-recoverable error: clear the notification
       debugPrint(
-          'Error no recuperable (${err.type}). Limpiando estado de reintentos.');
+          'Non-recoverable error (${err.type}). Clearing retry state.');
       ref.read(retryStateProvider.notifier).endRetry();
     }
 
@@ -57,19 +57,19 @@ class RetryNotificationInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // Cuando hay una respuesta exitosa, limpiar el estado de reintentos
+    // When there's a successful response, clear the retry state
     final retryCount =
         response.requestOptions.extra['_retry_count'] as int? ?? 0;
     if (retryCount > 0) {
-      debugPrint('Conexión restablecida después de $retryCount reintento(s)');
+      debugPrint('Connection restored after $retryCount retry/retries');
     }
     ref.read(retryStateProvider.notifier).endRetry();
     super.onResponse(response, handler);
   }
 
-  /// Determina si el error debe causar un reintento
+  /// Determines if the error should cause a retry
   bool _shouldRetry(DioException err) {
-    // Reintentar en errores de conexión, timeout, y respuestas 5xx
+    // Retry on connection errors, timeouts, and 5xx responses
     return err.type == DioExceptionType.connectionTimeout ||
         err.type == DioExceptionType.sendTimeout ||
         err.type == DioExceptionType.receiveTimeout ||

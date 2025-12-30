@@ -26,13 +26,13 @@ class CapturePermissions {
   Future<PermissionOutcome> ensureGalleryAccess() async {
     if (kIsWeb) return const PermissionOutcome(granted: true);
 
-    // Para Android 13+ (API 33+), usar Permission.photos
-    // Para versiones anteriores, usar Permission.storage
+    // For Android 13+ (API 33+), use Permission.photos
+    // For earlier versions, use Permission.storage
     Permission permission;
     if (Platform.isIOS) {
       permission = Permission.photos;
     } else if (Platform.isAndroid) {
-      // En Android 13+, photos es el permiso correcto para acceder a imágenes
+      // On Android 13+, photos is the correct permission to access images
       permission = Permission.photos;
     } else {
       permission = Permission.storage;

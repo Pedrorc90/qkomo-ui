@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
 import 'package:qkomo_ui/features/auth/domain/auth_failure.dart';
+import 'package:qkomo_ui/features/profile/domain/user_profile_repository.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthController {
@@ -10,13 +13,16 @@ class AuthController {
     required FirebaseAuth auth,
     required SecureTokenStore tokenStore,
     required VoidCallback onTokenChanged,
+    required UserProfileRepository userProfileRepo,
   })  : _auth = auth,
         _tokenStore = tokenStore,
-        _onTokenChanged = onTokenChanged;
+        _onTokenChanged = onTokenChanged,
+        _userProfileRepo = userProfileRepo;
 
   final FirebaseAuth _auth;
   final SecureTokenStore _tokenStore;
   final VoidCallback _onTokenChanged;
+  final UserProfileRepository _userProfileRepo;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   Future<void> signInWithGoogle() async {
@@ -110,6 +116,10 @@ class AuthController {
       await _googleSignIn.signOut();
     }
     await _tokenStore.clear();
+
+    // Clear user profile on logout
+    await _userProfileRepo.clearProfile();
+
     _notifyTokenChanged();
   }
 
@@ -122,6 +132,9 @@ class AuthController {
     final token = await user.getIdToken(forceRefresh);
     await _tokenStore.save(token);
     _notifyTokenChanged();
+
+    // Sync user profile after successful login (fire-and-forget)
+    unawaited(_userProfileRepo.triggerSync());
   }
 
   void _notifyTokenChanged() => _onTokenChanged();

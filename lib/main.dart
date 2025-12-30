@@ -12,11 +12,14 @@ import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/migration_service.dart';
 import 'package:qkomo_ui/features/entry/domain/entry.dart';
 import 'package:qkomo_ui/features/feature_toggles/data/feature_toggle_hive_boxes.dart';
+import 'package:qkomo_ui/features/profile/application/user_profile_providers.dart';
 import 'package:qkomo_ui/features/profile/data/companion_hive_boxes.dart';
+import 'package:qkomo_ui/features/profile/data/profile_hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart' as menu_hive;
 import 'package:qkomo_ui/features/settings/data/settings_hive_boxes.dart';
 import 'package:qkomo_ui/features/sync/application/background_sync_worker.dart';
 import 'package:qkomo_ui/firebase_options.dart';
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +41,7 @@ void main() async {
   await SettingsHiveBoxes.init(encryptionKey);
   await FeatureToggleHiveBoxes.init(encryptionKey);
   await CompanionHiveBoxes.init(encryptionKey);
+  await ProfileHiveBoxes.init(encryptionKey);
 
   // Run migrations if needed
   await _runMigration();
@@ -67,6 +71,15 @@ class _SyncInitializerState extends ConsumerState<SyncInitializer> {
     super.initState();
     // Initialize SyncService
     ref.read(syncServiceProvider).init();
+
+    // Sync user profile if authenticated (fire-and-forget, non-blocking)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authState = ref.read(authStateChangesProvider).valueOrNull;
+      if (authState != null) {
+        // User is already authenticated, sync profile in background
+        ref.read(userProfileProvider.notifier).sync();
+      }
+    });
   }
 
   @override

@@ -25,7 +25,7 @@ class PlatformImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // En web, no podemos usar File, así que mostramos el placeholder
+    // On web, we can't use File, so we show the placeholder
     if (kIsWeb) {
       return errorBuilder?.call(
             context,
@@ -40,7 +40,7 @@ class PlatformImage extends StatelessWidget {
           );
     }
 
-    // En plataformas nativas, usamos la implementación específica de IO
+    // On native platforms, we use the IO-specific implementation
     return platform.buildFileImage(
       path: path,
       width: width,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
 
-/// Card para mostrar información nutricional
+/// Card for displaying nutritional information
 class NutritionInfoCard extends StatelessWidget {
   const NutritionInfoCard({
     super.key,

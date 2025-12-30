@@ -71,14 +71,14 @@ class HybridSettingsRepository implements SettingsRepository {
       if (isFirstSync) {
         // First sync: Push local data to backend (migration)
         if (kDebugMode) {
-          print('[HybridSettingsRepo] Primera sync: enviando settings locales al backend');
+          print('[HybridSettingsRepo] First sync: sending local settings to backend');
         }
 
         await _remoteRepo.pushPreferences(localSettings);
         await _localRepo.markFirstSyncCompleted();
 
         if (kDebugMode) {
-          print('[HybridSettingsRepo] Primera sync completada');
+          print('[HybridSettingsRepo] First sync completed');
         }
       } else {
         // Subsequent syncs: Fetch from backend (server authoritative)
@@ -95,14 +95,14 @@ class HybridSettingsRepository implements SettingsRepository {
           await _localRepo.saveSettings(mergedSettings);
 
           if (kDebugMode) {
-            print('[HybridSettingsRepo] Settings actualizados desde backend');
+            print('[HybridSettingsRepo] Settings updated from backend');
           }
         }
       }
     } catch (e, stackTrace) {
       // Silent failure - don't block user
       if (kDebugMode) {
-        print('[HybridSettingsRepo] Error al sincronizar settings: $e');
+        print('[HybridSettingsRepo] Error synchronizing settings: $e');
         print(stackTrace);
       }
     }
@@ -114,12 +114,12 @@ class HybridSettingsRepository implements SettingsRepository {
       await _remoteRepo.pushPreferences(settings);
 
       if (kDebugMode) {
-        print('[HybridSettingsRepo] Settings enviados al backend');
+        print('[HybridSettingsRepo] Settings sent to backend');
       }
     } catch (e, stackTrace) {
       // Silent failure - don't block user
       if (kDebugMode) {
-        print('[HybridSettingsRepo] Error al enviar settings al backend: $e');
+        print('[HybridSettingsRepo] Error sending settings to backend: $e');
         print(stackTrace);
       }
 
@@ -134,12 +134,12 @@ class HybridSettingsRepository implements SettingsRepository {
       await _remoteRepo.deletePreferences();
 
       if (kDebugMode) {
-        print('[HybridSettingsRepo] Settings eliminados del backend');
+        print('[HybridSettingsRepo] Settings deleted from backend');
       }
     } catch (e, stackTrace) {
       // Silent failure - don't block user
       if (kDebugMode) {
-        print('[HybridSettingsRepo] Error al eliminar settings del backend: $e');
+        print('[HybridSettingsRepo] Error deleting settings from backend: $e');
         print(stackTrace);
       }
     }

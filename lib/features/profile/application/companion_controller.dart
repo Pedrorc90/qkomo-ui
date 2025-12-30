@@ -42,7 +42,7 @@ class CompanionListNotifier extends AutoDisposeAsyncNotifier<List<Companion>> {
     } catch (e) {
       // If we have data, we stay in 'data' state (silent error).
       // If we don't have data (e.g. first launch offline), we might want to show error?
-      // User requested "Offline First. Que no me tiene porque mostrar un loading. Que sino se ha cargado nunca la información no deberia de dar un error de conexi"
+      // User requested "Offline First. Don't show loading. If info was never loaded, shouldn't show a connection error"
       // So if clean state, maybe just return empty list?
 
       if (state.valueOrNull == null || state.valueOrNull!.isEmpty) {

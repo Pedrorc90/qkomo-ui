@@ -44,6 +44,7 @@ class EnvConfig {
   static bool get enableCloudSync {
     return const bool.fromEnvironment(
       'ENABLE_CLOUD_SYNC',
+      defaultValue: true, // Habilitado por defecto
     );
   }
 

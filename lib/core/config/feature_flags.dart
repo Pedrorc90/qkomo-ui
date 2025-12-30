@@ -1,6 +1,6 @@
 class FeatureFlags {
   static bool enableCloudSync = false;
 
-  /// Habilita el botón de autenticación con Google
+  /// Enables Google authentication button
   static bool googleAuth = false;
 }

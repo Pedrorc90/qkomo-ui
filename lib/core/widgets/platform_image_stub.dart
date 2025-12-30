@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Stub para PlatformImage (no debería ser llamado en web debido a kIsWeb check)
+/// Stub for PlatformImage (should not be called on web due to kIsWeb check)
 Widget buildFileImage({
   required String path,
   double? width,

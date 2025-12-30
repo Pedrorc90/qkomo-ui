@@ -334,7 +334,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                     ],
                   ),
 
-                // Form content (shown when editing or when user clicks "Añadir")
+                // Form content (shown when editing or when user clicks "Add")
                 if (_showForm) ...[
                   // Meal Type Selector
                   DropdownButtonFormField<MealType>(

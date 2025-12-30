@@ -21,14 +21,14 @@ class RetryState {
   }
 }
 
-/// StateNotifier para manejar el estado de reintentos con timeout automático
+/// StateNotifier to manage retry state with automatic timeout
 class RetryStateNotifier extends StateNotifier<RetryState> {
   RetryStateNotifier() : super(const RetryState());
 
   Timer? _timeoutTimer;
 
   void startRetry(int retryCount) {
-    // Cancelar timeout anterior si existe
+    // Cancel previous timeout if it exists
     _timeoutTimer?.cancel();
 
     state = state.copyWith(
@@ -36,14 +36,14 @@ class RetryStateNotifier extends StateNotifier<RetryState> {
       retryCount: retryCount,
     );
 
-    // Timeout automático de 10 segundos: si no hay éxito en ese tiempo, limpiar
+    // Automatic timeout of 10 seconds: if no success in that time, clear
     _timeoutTimer = Timer(const Duration(seconds: 10), () {
       endRetry();
     });
   }
 
   void endRetry() {
-    // Cancelar timeout
+    // Cancel timeout
     _timeoutTimer?.cancel();
     _timeoutTimer = null;
 

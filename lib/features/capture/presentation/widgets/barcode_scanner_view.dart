@@ -145,7 +145,7 @@ class _ScannerOverlayPainter extends CustomPainter {
     final right = size.width - margin;
     final bottom = top + (size.width - 2 * margin);
 
-    // Rectángulo principal
+    // Main rectangle
     canvas.drawRect(Rect.fromLTRB(left, top, right, bottom), paint);
 
     // Esquinas redondeadas

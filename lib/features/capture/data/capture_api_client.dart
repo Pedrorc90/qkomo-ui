@@ -36,7 +36,7 @@ class CaptureApiClient {
     } else {
       if (!await File(imageToUpload.path).exists()) {
         throw Exception(
-            'El archivo de imagen no existe en ${imageToUpload.path}');
+            'Image file does not exist at ${imageToUpload.path}');
       }
       multipartFile = MultipartFileRecreatable.fromFileSync(
         imageToUpload.path,
@@ -50,7 +50,7 @@ class CaptureApiClient {
     });
 
     if (kDebugMode) {
-      print('[CaptureApiClient] Enviando imagen para análisis (type: $type)');
+      print('[CaptureApiClient] Sending image for analysis (type: $type)');
     }
 
     final response = await _dio.post<Map<String, dynamic>>(
@@ -59,7 +59,7 @@ class CaptureApiClient {
     );
 
     if (kDebugMode) {
-      print('[CaptureApiClient] Respuesta del backend: ${response.data}');
+      print('[CaptureApiClient] Backend response: ${response.data}');
       print('[CaptureApiClient] Status code: ${response.statusCode}');
     }
 
@@ -68,7 +68,7 @@ class CaptureApiClient {
 
   Future<AnalyzeResponseDto> analyzeBarcode(String barcode) async {
     if (kDebugMode) {
-      print('[CaptureApiClient] Analizando código de barras: $barcode');
+      print('[CaptureApiClient] Analyzing barcode: $barcode');
     }
 
     final response = await _dio.post<Map<String, dynamic>>(
@@ -77,7 +77,7 @@ class CaptureApiClient {
     );
 
     if (kDebugMode) {
-      print('[CaptureApiClient] Respuesta del backend: ${response.data}');
+      print('[CaptureApiClient] Backend response: ${response.data}');
       print('[CaptureApiClient] Status code: ${response.statusCode}');
     }
 
@@ -103,7 +103,7 @@ class CaptureApiClient {
     } else {
       if (!await File(imageToUpload.path).exists()) {
         throw Exception(
-            'El archivo de imagen no existe en ${imageToUpload.path}');
+            'Image file does not exist at ${imageToUpload.path}');
       }
       multipartFile = MultipartFileRecreatable.fromFileSync(
         imageToUpload.path,
@@ -116,7 +116,7 @@ class CaptureApiClient {
     });
 
     if (kDebugMode) {
-      print('[CaptureApiClient] Subiendo foto al backend');
+      print('[CaptureApiClient] Uploading photo to backend');
     }
 
     final response = await _dio.post<Map<String, dynamic>>(
@@ -125,14 +125,14 @@ class CaptureApiClient {
     );
 
     if (kDebugMode) {
-      print('[CaptureApiClient] Respuesta de subida: ${response.data}');
+      print('[CaptureApiClient] Upload response: ${response.data}');
       print('[CaptureApiClient] Status code: ${response.statusCode}');
     }
 
     // Backend returns 'photoId', not 'id'
     final photoId = response.data?['photoId'] as String?;
     if (photoId == null) {
-      throw Exception('No se recibió el ID de la foto del backend');
+      throw Exception('Photo ID was not received from backend');
     }
 
     if (kDebugMode) {
@@ -145,7 +145,7 @@ class CaptureApiClient {
   /// Get the signed URL for a photo by its ID
   Future<String> getPhotoUrl(String photoId) async {
     if (kDebugMode) {
-      print('[CaptureApiClient] Obteniendo URL de foto: $photoId');
+      print('[CaptureApiClient] Getting photo URL: $photoId');
     }
 
     final response = await _dio.get<Map<String, dynamic>>(
@@ -153,7 +153,7 @@ class CaptureApiClient {
     );
 
     if (kDebugMode) {
-      print('[CaptureApiClient] Respuesta URL: ${response.data}');
+      print('[CaptureApiClient] URL response: ${response.data}');
     }
 
     final url = response.data?['url'] as String?;

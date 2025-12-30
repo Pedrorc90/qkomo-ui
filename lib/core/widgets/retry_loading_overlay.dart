@@ -38,7 +38,7 @@ class RetryLoadingOverlay extends ConsumerWidget {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            // Círculo de fondo con degradado
+                            // Background circle with gradient
                             Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,

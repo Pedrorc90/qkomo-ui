@@ -274,7 +274,7 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
 
     Future<void> analyze() async {
       _analyzeStartTime = DateTime.now();
-      debugPrint('🚀 Iniciando análisis...');
+      debugPrint('🚀 Starting analysis...');
       await analyzeController.analyze(captureState);
       // The listener handles navigation, so we don't close the modal here
     }

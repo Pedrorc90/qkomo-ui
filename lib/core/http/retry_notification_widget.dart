@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/http/retry_state_notifier.dart';
 import 'package:qkomo_ui/theme/app_colors.dart';
 
-/// Widget que muestra un indicador cuando se están reintentando conexiones
+/// Widget that shows an indicator when connections are being retried
 class RetryNotificationWidget extends ConsumerWidget {
   const RetryNotificationWidget({
     super.key,

@@ -34,7 +34,7 @@ Allergen? allergenFromDisplayName(String displayName) {
   return null;
 }
 
-/// Selector de alérgenos con integración de alertas personales
+/// Allergen selector with personal alerts integration
 class AllergenSelector extends ConsumerWidget {
   const AllergenSelector({
     super.key,

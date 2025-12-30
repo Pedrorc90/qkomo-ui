@@ -5,13 +5,13 @@ part 'theme_type.g.dart';
 @HiveType(typeId: 10)
 enum AppThemeType {
   @HiveField(0)
-  warm, // Naranja cálido e invitador
+  warm, // Warm and inviting orange
   @HiveField(1)
-  offWhite, // Gris minimalista neutral
+  offWhite, // Neutral minimalist gray
   @HiveField(2)
-  dark, // Azul oscuro para modo noche
+  dark, // Dark blue for night mode
   @HiveField(3)
-  forest, // Verde bosque natural
+  forest, // Natural forest green
   @HiveField(4)
-  indigo, // Índigo profundo y elegante
+  indigo, // Deep and elegant indigo
 }

@@ -53,9 +53,9 @@ final dioProvider = Provider<Dio>((ref) {
     RetryInterceptor(
       dio: dio,
       retryDelays: const [
-        Duration(seconds: 1), // Primer reintento después de 1s
-        Duration(seconds: 2), // Segundo reintento después de 2s
-        Duration(seconds: 4), // Tercer reintento después de 4s
+        Duration(seconds: 1), // First retry after 1s
+        Duration(seconds: 2), // Second retry after 2s
+        Duration(seconds: 4), // Third retry after 4s
       ],
       retryableExtraStatuses: {408, 429}, // Request Timeout y Too Many Requests
     ),
