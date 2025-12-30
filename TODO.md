@@ -7,43 +7,20 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 
 ## Project Milestones (from PLAN.md)
 
-- [x] **M8 – Mobile QA:** Add widget/state tests plus smoke tests for capture → review → save. (Completed)
-
----
-
-## High Priority - MVP Completion
-
-
 ---
 
 ## Medium Priority - Quality Assurance
 
-### M8 - Mobile QA
-**Status:** Minimal - Some unit tests exist, needs expansion
-**Goal:** Comprehensive test coverage for critical user flows
-
-#### Unit Tests
-- [x] Test `BackendCaptureAnalyzer`
-  - [x] Successful photo analysis response parsing
-  - [x] Successful barcode analysis response parsing
-  - [x] Network error handling
-  - [x] Auth error handling (401)
-  - [x] Invalid response handling
-
-**Files verified:**
-- `test/features/capture/application/backend_capture_analyzer_test.dart`
-- `test/features/entry/data/hybrid_entry_repository_test.dart`
-
 #### Integration Tests
-- [ ] End-to-end smoke tests
-  - [ ] Sign in → capture photo → direct analyze → save to history → sync
-  - [ ] Sign in → scan barcode → direct analyze → save to history → sync
-  - [ ] Offline capture → save locally → go online → auto-sync
-  - [ ] Auth token expiration → refresh → continue operation
-- [ ] Test offline scenarios
-  - [ ] Capture/Save works offline
-  - [ ] History reflects local changes immediately
-  - [ ] Entries sync when connectivity returns
+- [x] End-to-end smoke tests
+  - [x] Sign in → capture photo → direct analyze → save to history → sync
+  - [x] Sign in → scan barcode → direct analyze → save to history → sync
+  - [x] Offline capture → save locally → go online → auto-sync
+  - [x] Auth token expiration → refresh → continue operation
+- [x] Test offline scenarios
+  - [x] Capture/Save works offline
+  - [x] History reflects local changes immediately
+  - [x] Entries sync when connectivity returns
   - [ ] Failed syncs can be retried
 - [ ] Test error recovery
   - [ ] Network interruption during upload
@@ -52,9 +29,10 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
   - [ ] App restart with pending entries
 
 **Files to create:**
-- `integration_test/app_test.dart` (Flutter integration tests)
-- `integration_test/offline_flow_test.dart`
-- `integration_test/error_recovery_test.dart`
+- [x] `integration_test/app_integration_test.dart` (Flutter integration tests)
+- [x] `integration_test/offline_flow_test.dart`
+- [x] `integration_test/auth_refresh_test.dart`
+- [ ] `integration_test/error_recovery_test.dart`
 
 #### Test Coverage Goals
 - [ ] Set up test coverage reporting
