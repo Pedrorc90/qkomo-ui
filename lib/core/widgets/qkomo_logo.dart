@@ -169,6 +169,20 @@ class _QkomoLogoPainter extends CustomPainter {
       Offset(center.dx + radius * 0.4, center.dy + radius * 0.4),
       leafDetailPaint,
     );
+
+    // Orange dot - Bottom Left accent (nature accent)
+    final dotPaint = Paint()
+      ..color = const Color(0xFFFF6F3C)
+      ..style = PaintingStyle.fill;
+
+    // Position on the green circle (bottom left), matching icon_qk_hybrid.svg style
+    final dotPosition = Offset(
+      center.dx + radius * -0.692,
+      center.dy + radius * 0.918,
+    );
+    final dotRadius = size.width * 0.025;
+
+    canvas.drawCircle(dotPosition, dotRadius, dotPaint);
   }
 
   @override

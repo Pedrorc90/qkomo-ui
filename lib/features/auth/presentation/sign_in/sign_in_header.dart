@@ -10,7 +10,7 @@ class SignInHeader extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return Column(
       children: [
-        const QkomoLogo(size: 80),
+        const QkomoLogo(size: 150),
         const SizedBox(height: 24),
         Text(
           'QKomo',
