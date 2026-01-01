@@ -16,6 +16,84 @@ Spanish-first AI food logging app with offline-first architecture.
 - Hive (offline-first local storage)
 - `image_picker`, `camera`, `mobile_scanner` (capture flows)
 
+
+
+# Project Rules
+
+## Architecture: MANDATORY
+
+Before writing ANY code, check the architecture skills:
+- `.claude/skills/flutter-architecture.md` for Flutter/Dart
+- `.claude/skills/clean-code.md` for SOLID principles and clean code
+
+**NEVER violate the principles defined in these skills.**
+
+## Pre-code verification
+
+Before creating or modifying code, mentally answer:
+
+1. Which layer does this code belong to? (Controller/Service/Repository/Widget/Bloc/UseCase)
+2. Am I respecting the dependency direction?
+3. Does something similar already exist that I should reuse?
+4. Does the name follow project conventions?
+
+## Code creation rules
+
+### When creating a new feature:
+
+1. **First**: Define folder structure according to architecture
+2. **Second**: Create interfaces/contracts before implementations
+3. **Third**: Implement from inside out (Domain → Data → Presentation)
+4. **Fourth**: Connect with dependency injection
+
+### When modifying existing code:
+
+1. **First**: Understand the current architecture of the module
+2. **Second**: Identify the correct place for the change
+3. **Third**: Modify respecting existing patterns
+4. **Fourth**: DO NOT introduce dependencies that violate layers
+
+## Absolute prohibitions
+
+### Flutter:
+- ❌ HTTP calls from Widgets
+- ❌ Business logic in Widgets
+- ❌ Import from Data layer in Presentation
+- ❌ Mutable state in Blocs
+- ❌ Widgets with more than 100 lines
+- ❌ Nesting deeper than 4 levels
+
+## When asked for new code
+
+Always generate in this order:
+
+**Flutter:**
+1. Entity (Domain)
+2. Repository interface (Domain)
+3. UseCase (Domain)
+4. Model + fromJson/toJson (Data)
+5. DataSource (Data)
+6. Repository implementation (Data)
+7. Bloc/Cubit + States + Events (Presentation)
+8. Widgets/Pages (Presentation)
+
+## Refactoring
+
+When detecting code that violates architecture:
+1. Inform the user which principle is violated
+2. Propose correction following the skills
+3. DO NOT auto-correct without approval
+4. Prioritize changes that don't break functionality
+
+## Token control
+
+- Concise responses: code first
+- DO NOT generate tests without request
+- DO NOT document extensively without request
+- Surgical edits, don't regenerate entire files
+- Confirm plan before changes affecting more than 3 files
+
+
 ### Common Commands
 
 **Get dependencies:**
