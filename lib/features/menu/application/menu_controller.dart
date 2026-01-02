@@ -1,11 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 import 'package:qkomo_ui/features/menu/application/menu_state.dart';
-import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
-import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class MenuController extends StateNotifier<MenuState> {
@@ -43,16 +42,9 @@ class MenuController extends StateNotifier<MenuState> {
         mealType: mealType,
         scheduledFor: scheduledFor,
         createdAt: DateTime.now(),
-        updatedAt: null,
         notes: notes,
         photoPath: photoPath,
-        // Sync fields with defaults
-        syncStatus: SyncStatus.pending,
         lastModifiedAt: DateTime.now(),
-        lastSyncedAt: null,
-        isDeleted: false,
-        cloudVersion: null,
-        pendingChanges: null,
       );
 
       await _repository.saveMeal(meal);
@@ -159,7 +151,7 @@ class MenuController extends StateNotifier<MenuState> {
 
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      await _customRecipeRepository!.create(
+      await _customRecipeRepository.create(
         name: name,
         ingredients: ingredients,
         mealType: mealType,
@@ -183,7 +175,7 @@ class MenuController extends StateNotifier<MenuState> {
           );
           return;
         }
-        await _customRecipeRepository!.delete(recipeId);
+        await _customRecipeRepository.delete(recipeId);
       } else {
         // Delete preset recipe by marking it as deleted
         if (_deletedPresetRecipesRepository == null) {
@@ -192,7 +184,7 @@ class MenuController extends StateNotifier<MenuState> {
           );
           return;
         }
-        await _deletedPresetRecipesRepository!.markAsDeleted(recipeId);
+        await _deletedPresetRecipesRepository.markAsDeleted(recipeId);
       }
       state = state.copyWith(clearError: true);
     } catch (e) {

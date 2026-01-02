@@ -14,8 +14,8 @@ import 'package:qkomo_ui/features/capture/presentation/review/widgets/photo_view
 import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/settings/application/settings_providers.dart';
-import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
 import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 // Mock SettingsRepository

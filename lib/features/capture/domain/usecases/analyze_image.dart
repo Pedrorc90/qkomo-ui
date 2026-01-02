@@ -1,7 +1,7 @@
 import 'package:image_picker/image_picker.dart';
-import 'package:qkomo_ui/features/capture/domain/interfaces/capture_analyzer.dart';
 import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/interfaces/capture_analyzer.dart';
 
 /// UseCase: Analyze an image to extract food information
 ///

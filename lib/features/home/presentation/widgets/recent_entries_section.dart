@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/animations/page_transitions.dart';
 import 'package:qkomo_ui/core/widgets/widgets.dart';
-import 'package:qkomo_ui/core/widgets/platform_image.dart';
 import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
@@ -85,8 +84,7 @@ class RecentEntriesSection extends StatelessWidget {
                           Icon(
                             Icons.inbox_outlined,
                             size: 48,
-                            color: colorScheme.onSurfaceVariant
-                                .withAlpha((0.5 * 255).round()),
+                            color: colorScheme.onSurfaceVariant.withAlpha((0.5 * 255).round()),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -209,8 +207,7 @@ class RecentEntriesSection extends StatelessWidget {
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer
-                          .withAlpha((0.3 * 255).round()),
+                      color: colorScheme.primaryContainer.withAlpha((0.3 * 255).round()),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(

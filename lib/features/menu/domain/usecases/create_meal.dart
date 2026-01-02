@@ -29,8 +29,7 @@ class CreateMealParams {
 ///
 /// Creates a meal with all required data and saves it to the repository.
 class CreateMeal {
-  CreateMeal(this._repository, {Uuid? uuid})
-      : _uuid = uuid ?? const Uuid();
+  CreateMeal(this._repository, {Uuid? uuid}) : _uuid = uuid ?? const Uuid();
 
   final MealRepository _repository;
   final Uuid _uuid;
@@ -45,14 +44,9 @@ class CreateMeal {
       mealType: params.mealType,
       scheduledFor: params.scheduledFor,
       createdAt: now,
-      updatedAt: null,
       notes: params.notes,
       photoPath: params.photoPath,
-      syncStatus: SyncStatus.pending,
       lastModifiedAt: now,
-      lastSyncedAt: null,
-      cloudVersion: null,
-      isDeleted: false,
     );
 
     await _repository.saveMeal(meal);

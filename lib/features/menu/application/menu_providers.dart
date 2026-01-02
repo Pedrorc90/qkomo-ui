@@ -7,19 +7,17 @@ import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
 import 'package:qkomo_ui/features/menu/application/menu_state.dart';
-import 'package:qkomo_ui/features/menu/data/custom_recipe_repository.dart'
-    as impl;
-import 'package:qkomo_ui/features/menu/data/deleted_preset_recipes_repository.dart'
-    as impl2;
+import 'package:qkomo_ui/features/menu/data/custom_recipe_repository.dart' as impl;
+import 'package:qkomo_ui/features/menu/data/deleted_preset_recipes_repository.dart' as impl2;
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart';
-import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
-import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
 import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
 
 // Box provider

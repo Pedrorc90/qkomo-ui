@@ -1,6 +1,6 @@
-import 'package:qkomo_ui/features/capture/domain/interfaces/capture_analyzer.dart';
 import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/interfaces/capture_analyzer.dart';
 
 /// UseCase: Analyze a barcode to extract product information
 ///

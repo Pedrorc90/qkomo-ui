@@ -149,7 +149,7 @@ void main() {
 
     test('analysis with barcode mode uses barcode string', () async {
       fakeAnalyzer.resultToReturn = testResult;
-      final captureState = const CaptureState(
+      const captureState = CaptureState(
         mode: CaptureMode.barcode,
         scannedBarcode: '1234567890',
       );
@@ -162,7 +162,7 @@ void main() {
     });
 
     test('analysis without mode throws exception', () async {
-      final captureState = const CaptureState(mode: null);
+      const captureState = CaptureState();
 
       await controller.analyze(captureState);
 
@@ -281,7 +281,7 @@ void main() {
 
     test('verifies analyzer is called with correct parameters from barcode', () async {
       fakeAnalyzer.resultToReturn = testResult;
-      final captureState = const CaptureState(
+      const captureState = CaptureState(
         mode: CaptureMode.barcode,
         scannedBarcode: '9876543210',
       );
@@ -352,7 +352,7 @@ void main() {
         title: 'Second Meal',
       );
       fakeAnalyzer.resultToReturn = testResult2;
-      final captureState2 = const CaptureState(
+      const captureState2 = CaptureState(
         mode: CaptureMode.barcode,
         scannedBarcode: '123456',
       );

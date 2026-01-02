@@ -38,15 +38,13 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(null),
+          onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
         FilledButton(
           onPressed: () {
-            final selected = _selectedMealTypes.entries
-                .where((e) => e.value)
-                .map((e) => e.key)
-                .toList();
+            final selected =
+                _selectedMealTypes.entries.where((e) => e.value).map((e) => e.key).toList();
 
             if (selected.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(

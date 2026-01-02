@@ -4,8 +4,8 @@ import 'package:qkomo_ui/core/services/logger_service.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
+import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 import 'package:qkomo_ui/features/sync/domain/interfaces/syncable_repository.dart';
 
 class HybridEntryRepository implements EntryRepository, SyncableRepository {
@@ -29,15 +29,12 @@ class HybridEntryRepository implements EntryRepository, SyncableRepository {
 
     if (from != null) {
       entries = entries
-          .where((e) =>
-              e.result.savedAt.isAfter(from.subtract(const Duration(days: 1))))
+          .where((e) => e.result.savedAt.isAfter(from.subtract(const Duration(days: 1))))
           .toList();
     }
     if (to != null) {
-      entries = entries
-          .where(
-              (e) => e.result.savedAt.isBefore(to.add(const Duration(days: 1))))
-          .toList();
+      entries =
+          entries.where((e) => e.result.savedAt.isBefore(to.add(const Duration(days: 1)))).toList();
     }
 
     return entries;

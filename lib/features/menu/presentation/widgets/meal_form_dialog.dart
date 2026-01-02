@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:qkomo_ui/core/utils/sanitizer.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/menu/application/image_picker_service.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
-import 'package:qkomo_ui/features/menu/presentation/widgets/preset_recipe_dialog.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_action_buttons.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_ingredients_input.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_photo_picker.dart';
-import 'package:qkomo_ui/core/utils/sanitizer.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/preset_recipe_dialog.dart';
 
 class MealFormDialog extends ConsumerStatefulWidget {
   const MealFormDialog({

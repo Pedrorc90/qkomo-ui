@@ -12,7 +12,6 @@ import 'package:qkomo_ui/features/history/domain/entities/date_filter.dart';
 import 'package:qkomo_ui/features/history/domain/entities/date_group.dart';
 import 'package:qkomo_ui/features/history/domain/entities/history_state.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
-import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 
 // Fakes
 class FakeHistoryController extends StateNotifier<HistoryState> implements HistoryController {
@@ -71,7 +70,7 @@ void main() {
   late FakeHistoryController mockController;
 
   setUp(() async {
-    await initializeDateFormatting('es', null);
+    await initializeDateFormatting('es');
     mockController = FakeHistoryController(const HistoryState());
   });
 

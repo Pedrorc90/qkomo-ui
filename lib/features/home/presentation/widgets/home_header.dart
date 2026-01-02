@@ -7,8 +7,8 @@ import 'package:qkomo_ui/core/animations/page_transitions.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/hero_cta_card.dart';
-import 'package:qkomo_ui/features/home/presentation/widgets/next_meal_preview_card.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/last_analysis_preview_card.dart';
+import 'package:qkomo_ui/features/home/presentation/widgets/next_meal_preview_card.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
 

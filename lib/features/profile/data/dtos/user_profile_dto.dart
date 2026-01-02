@@ -22,13 +22,11 @@ class UserProfileDto with _$UserProfileDto {
     // Ignored fields from backend (handled by UserSettings)
     List<String>? allergens,
     @JsonKey(name: 'dietaryPreferences') List<String>? dietaryPreferences,
-
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _UserProfileDto;
 
-  factory UserProfileDto.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileDtoFromJson(json);
+  factory UserProfileDto.fromJson(Map<String, dynamic> json) => _$UserProfileDtoFromJson(json);
 }
 
 /// Extension to convert DTO to domain model
@@ -50,7 +48,6 @@ extension UserProfileDtoConverter on UserProfileDto {
       // Sync fields default to synced on successful fetch
       syncStatus: SyncStatus.synced,
       lastSyncedAt: DateTime.now(),
-      isDeleted: false,
     );
   }
 }

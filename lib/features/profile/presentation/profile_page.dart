@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/user_summary_card.dart';
+import 'package:qkomo_ui/features/profile/application/companion_controller.dart';
 import 'package:qkomo_ui/features/profile/presentation/allergens_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/dietary_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/theme_selection_page.dart';
-import 'package:qkomo_ui/features/profile/presentation/widgets/profile_option_card.dart';
-import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
-import 'package:qkomo_ui/features/profile/application/companion_controller.dart';
 import 'package:qkomo_ui/features/profile/presentation/widgets/add_companion_dialog.dart';
+import 'package:qkomo_ui/features/profile/presentation/widgets/profile_option_card.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});

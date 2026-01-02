@@ -124,22 +124,16 @@ class RemoteMealRepository {
       id: json['id'] as String,
       userId: json['userId'] as String,
       name: json['name'] as String,
-      ingredients:
-          (json['ingredients'] as List<dynamic>?)?.cast<String>() ?? [],
+      ingredients: (json['ingredients'] as List<dynamic>?)?.cast<String>() ?? [],
       mealType: mealType,
-      scheduledFor: DateTime.tryParse(json['scheduledFor'] as String) ??
-          DateTime.now(),
-      createdAt:
-          DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now(),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt'] as String)
-          : null,
+      scheduledFor: DateTime.tryParse(json['scheduledFor'] as String) ?? DateTime.now(),
+      createdAt: DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now(),
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt'] as String) : null,
       notes: json['notes'] as String?,
       photoPath: json['photoPath'] as String?,
       // Sync fields
       syncStatus: SyncStatus.synced, // Freshly fetched from server
-      lastModifiedAt:
-          DateTime.tryParse(json['lastModifiedAt'] as String) ?? DateTime.now(),
+      lastModifiedAt: DateTime.tryParse(json['lastModifiedAt'] as String) ?? DateTime.now(),
       lastSyncedAt: DateTime.now(), // Just synced
       isDeleted: json['isDeleted'] as bool? ?? false,
       cloudVersion: json['version'] as int?,

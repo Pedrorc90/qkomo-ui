@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
 import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
 
 /// Local implementation of SettingsRepository using Hive for persistence
 ///

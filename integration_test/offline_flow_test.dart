@@ -1,19 +1,20 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:qkomo_ui/features/auth/application/auth_controller.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 import 'package:qkomo_ui/main_test.dart' as app;
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:mockito/mockito.dart';
-import 'dart:async';
 
-import 'test_helpers.dart';
 import '../test/helpers/shared_mocks.mocks.dart';
+import 'test_helpers.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

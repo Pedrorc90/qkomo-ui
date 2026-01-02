@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qkomo_ui/features/settings/data/local_settings_repository.dart';
 import 'package:qkomo_ui/features/settings/data/remote_settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
 import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
 
 /// Hybrid implementation combining local and remote settings repositories
 ///
@@ -87,8 +87,7 @@ class HybridSettingsRepository implements SettingsRepository {
       if (isFirstSync) {
         // First sync: Push local data to backend (migration)
         if (kDebugMode) {
-          print(
-              '[HybridSettingsRepo] First sync: sending local settings to backend');
+          print('[HybridSettingsRepo] First sync: sending local settings to backend');
         }
 
         await _remoteRepo.pushPreferences(localSettings);

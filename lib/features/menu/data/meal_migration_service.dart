@@ -1,8 +1,6 @@
 import 'package:hive/hive.dart';
-import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
-import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 /// Service to migrate existing Meal data from V1 (typeId: 5) to V2 (typeId: 6)
 /// NOTE: Migration is now deprecated - box opened directly with V2 adapter

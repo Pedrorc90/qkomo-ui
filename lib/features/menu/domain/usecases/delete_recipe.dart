@@ -23,13 +23,13 @@ class DeleteRecipe {
       if (_customRecipeRepository == null) {
         throw Exception('CustomRecipeRepository not available');
       }
-      await _customRecipeRepository!.delete(recipeId);
+      await _customRecipeRepository.delete(recipeId);
     } else {
       if (_deletedPresetRecipesRepository == null) {
         throw Exception('DeletedPresetRecipesRepository not available');
       }
       // For preset recipes, recipeId is the recipe name
-      await _deletedPresetRecipesRepository!.markAsDeleted(recipeId);
+      await _deletedPresetRecipesRepository.markAsDeleted(recipeId);
     }
   }
 }

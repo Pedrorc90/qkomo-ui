@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/features/capture/domain/repositories/capture_result_repository.dart';
+import 'package:qkomo_ui/core/utils/sanitizer.dart';
 import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/repositories/capture_result_repository.dart';
 import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
 import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
-import 'package:qkomo_ui/core/utils/sanitizer.dart';
 
 /// State for the capture review screen
 class CaptureReviewState {

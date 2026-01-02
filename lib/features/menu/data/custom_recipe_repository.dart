@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
-import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomRecipeRepositoryImpl implements CustomRecipeRepository {
@@ -102,9 +102,8 @@ class CustomRecipeRepositoryImpl implements CustomRecipeRepository {
       name: data['name'] as String? ?? '',
       ingredients: (data['ingredients'] as List?)?.cast<String>() ?? [],
       mealType: MealType.values[data['mealType'] as int? ?? 0],
-      createdAt: data['createdAt'] != null
-          ? DateTime.parse(data['createdAt'] as String)
-          : DateTime.now(),
+      createdAt:
+          data['createdAt'] != null ? DateTime.parse(data['createdAt'] as String) : DateTime.now(),
       photoPath: data['photoPath'] as String?,
     );
   }
