@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:qkomo_ui/core/network/api_endpoints.dart';
 import 'package:qkomo_ui/features/profile/data/dtos/user_profile_dto.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/user_profile.dart';
 
 /// Remote repository for user profile using backend API
 ///
@@ -25,7 +26,7 @@ class RemoteUserProfileRepository {
   Future<UserProfile?> fetchProfile() async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
-        '/api/v1/users/me',
+        ApiEndpoints.userProfile,
         options: Options(
           extra: {'silent_request': true}, // Don't show connection overlay
         ),

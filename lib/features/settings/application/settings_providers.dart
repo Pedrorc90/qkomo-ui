@@ -1,20 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/config/env.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/settings/data/hybrid_settings_repository.dart';
 import 'package:qkomo_ui/features/settings/data/local_settings_repository.dart';
 import 'package:qkomo_ui/features/settings/data/remote_settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 import 'package:qkomo_ui/theme/theme_type.dart';
 
 /// Provider for local settings repository (Hive storage)
-final localSettingsRepositoryProvider = Provider<LocalSettingsRepository>((ref) {
+final localSettingsRepositoryProvider =
+    Provider<LocalSettingsRepository>((ref) {
   return LocalSettingsRepository();
 });
 
 /// Provider for remote settings repository (API client)
-final remoteSettingsRepositoryProvider = Provider<RemoteSettingsRepository>((ref) {
+final remoteSettingsRepositoryProvider =
+    Provider<RemoteSettingsRepository>((ref) {
   final dio = ref.watch(dioProvider);
   return RemoteSettingsRepository(dio: dio);
 });
@@ -23,16 +26,19 @@ final remoteSettingsRepositoryProvider = Provider<RemoteSettingsRepository>((ref
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   final localRepo = ref.watch(localSettingsRepositoryProvider);
   final remoteRepo = ref.watch(remoteSettingsRepositoryProvider);
+  final firebaseAuth = ref.watch(firebaseAuthProvider);
 
   return HybridSettingsRepository(
     localRepo: localRepo,
     remoteRepo: remoteRepo,
+    firebaseAuth: firebaseAuth,
     enableCloudSync: EnvConfig.enableCloudSync,
   );
 });
 
 final userSettingsProvider =
-    StateNotifierProvider<UserSettingsNotifier, AsyncValue<UserSettings>>((ref) {
+    StateNotifierProvider<UserSettingsNotifier, AsyncValue<UserSettings>>(
+        (ref) {
   final repository = ref.watch(settingsRepositoryProvider);
   return UserSettingsNotifier(repository);
 });
@@ -88,14 +94,16 @@ class UserSettingsNotifier extends StateNotifier<AsyncValue<UserSettings>> {
       } else {
         currentList.add(restriction);
       }
-      await updateSettings(currentSettings.copyWith(dietaryRestrictions: currentList));
+      await updateSettings(
+          currentSettings.copyWith(dietaryRestrictions: currentList));
     }
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     final currentSettings = state.valueOrNull;
     if (currentSettings != null) {
-      await updateSettings(currentSettings.copyWith(enableNotifications: enabled));
+      await updateSettings(
+          currentSettings.copyWith(enableNotifications: enabled));
     }
   }
 

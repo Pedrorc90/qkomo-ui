@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qkomo_ui/features/settings/data/dtos/preferences_dto.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
 void main() {
   group('PreferencesDto', () {

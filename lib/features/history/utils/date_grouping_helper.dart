@@ -1,13 +1,6 @@
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-
-/// Date grouping categories for history
-enum DateGroup {
-  today,
-  yesterday,
-  thisWeek,
-  older,
-}
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
+import 'package:qkomo_ui/features/history/domain/entities/date_group.dart';
 
 /// Helper class for date grouping and formatting
 class DateGroupingHelper {

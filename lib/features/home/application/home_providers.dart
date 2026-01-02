@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 

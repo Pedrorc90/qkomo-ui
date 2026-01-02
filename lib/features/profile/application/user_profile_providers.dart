@@ -6,8 +6,8 @@ import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/profile/data/hybrid_user_profile_repository.dart';
 import 'package:qkomo_ui/features/profile/data/local_user_profile_repository.dart';
 import 'package:qkomo_ui/features/profile/data/remote_user_profile_repository.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile_repository.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/user_profile.dart';
+import 'package:qkomo_ui/features/profile/domain/repositories/user_profile_repository.dart';
 
 /// Provider for local user profile repository (Hive storage)
 final localUserProfileRepositoryProvider =

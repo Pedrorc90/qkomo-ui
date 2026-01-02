@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 
 void main() {
   late Box<Entry> entryBox;

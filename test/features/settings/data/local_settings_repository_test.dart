@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:qkomo_ui/features/settings/data/local_settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
 void main() {
   late LocalSettingsRepository repository;

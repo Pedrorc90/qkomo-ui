@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/shell/state/navigation_provider.dart';
 
 class DaySection extends ConsumerWidget {

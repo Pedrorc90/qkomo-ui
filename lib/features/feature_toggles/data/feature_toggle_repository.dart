@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:qkomo_ui/core/network/api_endpoints.dart';
 import 'package:qkomo_ui/features/feature_toggles/data/feature_toggle_hive_boxes.dart';
-import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle.dart';
-import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_cache.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/entities/feature_toggle.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/entities/feature_toggle_cache.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/repositories/feature_toggle_repository.dart';
 
-class FeatureToggleRepository {
-  FeatureToggleRepository(this._dio);
+class FeatureToggleRepositoryImpl implements FeatureToggleRepository {
+  FeatureToggleRepositoryImpl(this._dio);
   final Dio _dio;
 
   /// Load feature toggles from cache
@@ -64,9 +66,9 @@ class FeatureToggleRepository {
     try {
       debugPrint('[FeatureToggleRepository] Fetching feature toggles from API...');
       final response = await _dio.get(
-        '/api/features',
+        ApiEndpoints.features,
         options: Options(
-          sendTimeout: const Duration(seconds: 3),
+          sendTimeout: kIsWeb ? null : const Duration(seconds: 3),
           receiveTimeout: const Duration(seconds: 3),
           extra: {'silent_request': true}, // No mostrar overlay de reintentos
         ),

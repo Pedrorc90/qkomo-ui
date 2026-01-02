@@ -12,7 +12,13 @@
       "Bash(flutter pub run build_runner build:*)",
       "Bash(dart run build_runner build:*)",
       "Bash(flutter run:*)",
-      "Bash(flutter clean:*)"
+      "Bash(flutter clean:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(git mv:*)",
+      "Bash(grep:*)",
+      "Bash(done)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

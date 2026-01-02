@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/core/widgets/allergen_badge.dart';
 import 'package:qkomo_ui/features/settings/application/settings_providers.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
 
 /// List of common allergens in Spanish

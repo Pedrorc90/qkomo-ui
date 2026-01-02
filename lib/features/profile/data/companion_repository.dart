@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:qkomo_ui/core/network/api_endpoints.dart';
 import 'package:qkomo_ui/features/profile/data/companion_local_data_source.dart';
-import 'package:qkomo_ui/features/profile/domain/companion.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/companion.dart';
+import 'package:qkomo_ui/features/profile/domain/repositories/companion_repository.dart';
 
-class CompanionRepository {
-  CompanionRepository({
+class CompanionRepositoryImpl implements CompanionRepository {
+  CompanionRepositoryImpl({
     required Dio dio,
     required CompanionLocalDataSource localDataSource,
   })  : _dio = dio,
@@ -21,7 +23,7 @@ class CompanionRepository {
   /// Throws DioException on network error.
   Future<List<Companion>> syncRemoteCompanions() async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/v1/companions',
+      ApiEndpoints.companions,
       options: Options(
         extra: {'silent_request': true},
       ),
@@ -51,11 +53,11 @@ class CompanionRepository {
   }
 
   Future<void> inviteCompanion(String email) async {
-    await _dio.post('/v1/companions', data: {'email': email});
+    await _dio.post(ApiEndpoints.companions, data: {'email': email});
   }
 
   Future<void> removeCompanion(String id) async {
-    await _dio.delete('/v1/companions/$id');
+    await _dio.delete(ApiEndpoints.companionById(id));
     // We could optimize by removing locally here, but next getCompanions will sync it.
   }
 }

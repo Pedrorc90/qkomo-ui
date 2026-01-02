@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/create_manual_entry.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/save_capture_result.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
-import 'package:uuid/uuid.dart';
 
 class TextEntryController extends StateNotifier<AsyncValue<CaptureResult?>> {
-  TextEntryController(this._captureResultRepository)
+  TextEntryController(this._createManualEntry, this._saveCaptureResult)
       : super(const AsyncValue.data(null));
 
-  final CaptureResultRepository _captureResultRepository;
-  final Uuid _uuid = const Uuid();
+  final CreateManualEntry _createManualEntry;
+  final SaveCaptureResult _saveCaptureResult;
 
   Future<void> saveTextEntry({
     required String title,
@@ -20,18 +20,17 @@ class TextEntryController extends StateNotifier<AsyncValue<CaptureResult?>> {
   }) async {
     state = const AsyncValue.loading();
     try {
-      final result = CaptureResult(
-        jobId: _uuid.v4(),
-        savedAt: DateTime.now(),
+      // Create manual entry using UseCase
+      final result = _createManualEntry(CreateManualEntryParams(
         title: title,
         ingredients: ingredients,
-        allergens: allergens ?? [],
+        allergens: allergens,
         notes: notes,
         mealType: mealType,
-        isManualEntry: true,
-      );
+      ));
 
-      await _captureResultRepository.saveResult(result);
+      // Save using UseCase
+      await _saveCaptureResult(result);
       state = AsyncValue.data(result);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

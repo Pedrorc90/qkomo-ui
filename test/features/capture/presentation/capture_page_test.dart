@@ -6,12 +6,12 @@ import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
-import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/repositories/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_view.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
-import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
+import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 // Mock class for CaptureController

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
-import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
 class PresetRecipeDialog extends ConsumerStatefulWidget {

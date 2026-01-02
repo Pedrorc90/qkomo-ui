@@ -1,28 +1,40 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:qkomo_ui/features/settings/data/hybrid_settings_repository.dart';
 import 'package:qkomo_ui/features/settings/data/local_settings_repository.dart';
 import 'package:qkomo_ui/features/settings/data/remote_settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
 import 'hybrid_settings_repository_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<LocalSettingsRepository>(),
   MockSpec<RemoteSettingsRepository>(),
+  MockSpec<FirebaseAuth>(),
+  MockSpec<User>(),
 ])
 void main() {
   late HybridSettingsRepository repository;
   late MockLocalSettingsRepository mockLocalRepo;
   late MockRemoteSettingsRepository mockRemoteRepo;
+  late MockFirebaseAuth mockFirebaseAuth;
+  late MockUser mockUser;
 
   setUp(() {
     mockLocalRepo = MockLocalSettingsRepository();
     mockRemoteRepo = MockRemoteSettingsRepository();
+    mockFirebaseAuth = MockFirebaseAuth();
+    mockUser = MockUser();
+
+    // By default, simulate authenticated user
+    when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
+
     repository = HybridSettingsRepository(
       localRepo: mockLocalRepo,
       remoteRepo: mockRemoteRepo,
+      firebaseAuth: mockFirebaseAuth,
       enableCloudSync: true,
     );
   });
@@ -77,6 +89,7 @@ void main() {
         final repoWithoutSync = HybridSettingsRepository(
           localRepo: mockLocalRepo,
           remoteRepo: mockRemoteRepo,
+          firebaseAuth: mockFirebaseAuth,
           enableCloudSync: false,
         );
 
@@ -84,6 +97,20 @@ void main() {
 
         // Act
         await repoWithoutSync.loadSettings();
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Assert - should not attempt sync
+        verifyNever(mockLocalRepo.isFirstSyncCompleted());
+        verifyNever(mockRemoteRepo.fetchPreferences());
+      });
+
+      test('does not sync when user is not authenticated', () async {
+        // Arrange
+        when(mockFirebaseAuth.currentUser).thenReturn(null); // Not authenticated
+        when(mockLocalRepo.loadSettings()).thenAnswer((_) async => tSettings);
+
+        // Act
+        await repository.loadSettings();
         await Future.delayed(const Duration(milliseconds: 50));
 
         // Assert - should not attempt sync
@@ -265,6 +292,7 @@ void main() {
         final repoWithoutSync = HybridSettingsRepository(
           localRepo: mockLocalRepo,
           remoteRepo: mockRemoteRepo,
+          firebaseAuth: mockFirebaseAuth,
           enableCloudSync: false,
         );
 
@@ -273,6 +301,21 @@ void main() {
 
         // Act
         await repoWithoutSync.saveSettings(tSettings);
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Assert
+        verify(mockLocalRepo.saveSettings(tSettings)).called(1);
+        verifyNever(mockRemoteRepo.pushPreferences(any));
+      });
+
+      test('does not push to backend when user is not authenticated', () async {
+        // Arrange
+        when(mockFirebaseAuth.currentUser).thenReturn(null); // Not authenticated
+        when(mockLocalRepo.saveSettings(any))
+            .thenAnswer((_) async => Future.value());
+
+        // Act
+        await repository.saveSettings(tSettings);
         await Future.delayed(const Duration(milliseconds: 50));
 
         // Assert
@@ -336,6 +379,7 @@ void main() {
         final repoWithoutSync = HybridSettingsRepository(
           localRepo: mockLocalRepo,
           remoteRepo: mockRemoteRepo,
+          firebaseAuth: mockFirebaseAuth,
           enableCloudSync: false,
         );
 
@@ -344,6 +388,21 @@ void main() {
 
         // Act
         await repoWithoutSync.clearSettings();
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Assert
+        verify(mockLocalRepo.clearSettings()).called(1);
+        verifyNever(mockRemoteRepo.deletePreferences());
+      });
+
+      test('does not delete from backend when user is not authenticated', () async {
+        // Arrange
+        when(mockFirebaseAuth.currentUser).thenReturn(null); // Not authenticated
+        when(mockLocalRepo.clearSettings())
+            .thenAnswer((_) async => Future.value());
+
+        // Act
+        await repository.clearSettings();
         await Future.delayed(const Duration(milliseconds: 50));
 
         // Assert
@@ -376,6 +435,7 @@ void main() {
         final repoWithoutSync = HybridSettingsRepository(
           localRepo: mockLocalRepo,
           remoteRepo: mockRemoteRepo,
+          firebaseAuth: mockFirebaseAuth,
           enableCloudSync: false,
         );
 

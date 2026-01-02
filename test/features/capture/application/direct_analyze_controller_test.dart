@@ -4,11 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:qkomo_ui/features/capture/application/backend_capture_analyzer.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/application/direct_analyze_controller.dart';
-import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/repositories/capture_result_repository.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 
 // Mock BackendCaptureAnalyzer
 class FakeBackendCaptureAnalyzer implements BackendCaptureAnalyzer {

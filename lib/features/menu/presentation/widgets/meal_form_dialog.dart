@@ -1,15 +1,16 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
-import 'package:qkomo_ui/features/capture/presentation/widgets/capture_option_card.dart';
 import 'package:qkomo_ui/features/menu/application/image_picker_service.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
-import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/preset_recipe_dialog.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_action_buttons.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_ingredients_input.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_photo_picker.dart';
 import 'package:qkomo_ui/core/utils/sanitizer.dart';
 
 class MealFormDialog extends ConsumerStatefulWidget {
@@ -308,30 +309,14 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
               children: [
                 // Action Buttons (only for new meals)
                 if (widget.existingMeal == null && !_showForm)
-                  Column(
-                    children: [
-                      CaptureOptionCard(
-                        icon: Icons.restaurant_menu,
-                        label: 'Mis recetas',
-                        description: 'Selecciona una comida de tu lista personal',
-                        color: Theme.of(context).colorScheme.primary,
-                        onPressed: _showPresetRecipes,
-                      ),
-                      const SizedBox(height: 8),
-                      CaptureOptionCard(
-                        icon: Icons.add_circle_outline,
-                        label: 'Crear nueva',
-                        description: 'Añade una comida personalizada manualmente',
-                        color: Theme.of(context).colorScheme.secondary,
-                        onPressed: () {
-                          setState(() {
-                            _showForm = true;
-                            _isCreatingCustom = true;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                  MealFormActionButtons(
+                    onShowPresetRecipes: _showPresetRecipes,
+                    onCreateCustom: () {
+                      setState(() {
+                        _showForm = true;
+                        _isCreatingCustom = true;
+                      });
+                    },
                   ),
 
                 // Form content (shown when editing or when user clicks "Add")
@@ -371,53 +356,11 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Ingredientes',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  ..._ingredientControllers.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final controller = entry.value;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: controller,
-                              onChanged: (value) {
-                                // Trigger validation of first field when typing in others
-                                if (index != 0) {
-                                  _formKey.currentState?.validate();
-                                }
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'Ingrediente ${index + 1}',
-                              ),
-                              validator: index == 0
-                                  ? (value) {
-                                      if (value == null || value.trim().isEmpty) {
-                                        return 'Agrega al menos un ingrediente';
-                                      }
-                                      return null;
-                                    }
-                                  : null,
-                            ),
-                          ),
-                          if (_ingredientControllers.length > 1)
-                            IconButton(
-                              icon: const Icon(Icons.remove_circle_outline),
-                              onPressed: () => _removeIngredient(index),
-                            ),
-                        ],
-                      ),
-                    );
-                  }),
-                  TextButton.icon(
-                    onPressed: _addIngredient,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Agregar ingrediente'),
+                  MealIngredientsInput(
+                    controllers: _ingredientControllers,
+                    formKey: _formKey,
+                    onAddIngredient: _addIngredient,
+                    onRemoveIngredient: _removeIngredient,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -430,73 +373,10 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                   ),
                   if (_isCreatingCustom) ...[
                     const SizedBox(height: 16),
-                    const Text(
-                      'Foto (opcional)',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: GestureDetector(
-                        onTap: _showImageSourceDialog,
-                        child: Container(
-                          width: double.infinity,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest
-                                .withAlpha(128),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.outline.withAlpha(77),
-                            ),
-                          ),
-                          child: _photoPath != null
-                              ? Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.file(
-                                        File(_photoPath!),
-                                        width: double.infinity,
-                                        height: 150,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: IconButton.filled(
-                                        onPressed: () => setState(() => _photoPath = null),
-                                        icon: const Icon(Icons.close, size: 20),
-                                        style: IconButton.styleFrom(
-                                          backgroundColor: Colors.black54,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add_a_photo_outlined,
-                                      size: 32,
-                                      color: Theme.of(context).colorScheme.primary,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Añadir foto',
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        ),
-                      ),
+                    MealPhotoPicker(
+                      photoPath: _photoPath,
+                      onPickPhoto: _showImageSourceDialog,
+                      onRemovePhoto: () => setState(() => _photoPath = null),
                     ),
                   ],
                 ], // End of _showForm

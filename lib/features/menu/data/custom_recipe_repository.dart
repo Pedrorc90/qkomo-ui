@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
+import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
 import 'package:uuid/uuid.dart';
 
-class CustomRecipeRepository {
-  CustomRecipeRepository({
+class CustomRecipeRepositoryImpl implements CustomRecipeRepository {
+  CustomRecipeRepositoryImpl({
     required Box<dynamic> recipeBox,
     required String userId,
     Uuid? uuid,

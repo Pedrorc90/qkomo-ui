@@ -19,7 +19,8 @@ class UserSettings with _$UserSettings {
     @HiveField(5) @Default(AppThemeType.forest) AppThemeType themeType,
   }) = _UserSettings;
 
-  factory UserSettings.fromJson(Map<String, dynamic> json) => _$UserSettingsFromJson(json);
+  factory UserSettings.fromJson(Map<String, dynamic> json) =>
+      _$UserSettingsFromJson(json);
 }
 
 @HiveType(typeId: 21)

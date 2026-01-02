@@ -1,4 +1,4 @@
-import 'package:qkomo_ui/features/profile/domain/user_profile.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/user_profile.dart';
 
 /// Abstract repository interface for user profile operations
 ///

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
 
 class CaptureStatusBanner extends StatelessWidget {
   const CaptureStatusBanner({

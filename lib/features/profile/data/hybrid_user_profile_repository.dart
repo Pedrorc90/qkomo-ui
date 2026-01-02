@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:qkomo_ui/features/profile/data/local_user_profile_repository.dart';
 import 'package:qkomo_ui/features/profile/data/remote_user_profile_repository.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile_repository.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/user_profile.dart';
+import 'package:qkomo_ui/features/profile/domain/repositories/user_profile_repository.dart';
 
 /// Hybrid implementation combining local and remote profile repositories
 ///

@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:qkomo_ui/core/config/feature_flags.dart';
 import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
-import 'package:qkomo_ui/features/auth/domain/auth_failure.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile_repository.dart';
+import 'package:qkomo_ui/features/auth/domain/errors/auth_failure.dart';
+import 'package:qkomo_ui/features/profile/domain/repositories/user_profile_repository.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthController {
@@ -23,9 +24,14 @@ class AuthController {
   final SecureTokenStore _tokenStore;
   final VoidCallback _onTokenChanged;
   final UserProfileRepository _userProfileRepo;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  final GoogleSignIn? _googleSignIn =
+      (kIsWeb || !FeatureFlags.googleAuth) ? null : GoogleSignIn(scopes: ['email']);
 
   Future<void> signInWithGoogle() async {
+    if (!FeatureFlags.googleAuth) {
+      throw const AuthFailure('Google Sign-In no está disponible');
+    }
+
     try {
       if (kIsWeb) {
         final googleProvider = GoogleAuthProvider();
@@ -33,7 +39,7 @@ class AuthController {
         await _persistToken(credential.user);
         return;
       }
-      final googleUser = await _googleSignIn.signIn();
+      final googleUser = await _googleSignIn?.signIn();
       if (googleUser == null) {
         throw const AuthFailure('Inicio cancelado');
       }
@@ -113,7 +119,7 @@ class AuthController {
   Future<void> signOut() async {
     await _auth.signOut();
     if (!kIsWeb) {
-      await _googleSignIn.signOut();
+      await _googleSignIn?.signOut();
     }
     await _tokenStore.clear();
 

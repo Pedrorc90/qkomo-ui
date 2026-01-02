@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/config/app_constants.dart';
 import 'package:qkomo_ui/config/env.dart';
 import 'package:qkomo_ui/core/http/firebase_token_interceptor.dart';
+import 'package:qkomo_ui/core/http/logging_interceptor.dart';
 import 'package:qkomo_ui/core/http/retry_notification_interceptor.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 
@@ -19,6 +20,8 @@ final dioProvider = Provider<Dio>((ref) {
       baseUrl: baseUrl,
       connectTimeout: AppConstants.apiConnectTimeout,
       receiveTimeout: AppConstants.apiReceiveTimeout,
+      // sendTimeout not configured to avoid Web compatibility issues
+      // (sendTimeout requires request body on Web platform)
     ),
   );
 
@@ -32,6 +35,9 @@ final dioProvider = Provider<Dio>((ref) {
   // if (EnvConfig.environment == Environment.prod) {
   //   dio.interceptors.add(CertificatePinningInterceptor(allowedFingerprints: ['...']));
   // }
+
+  // Add logging interceptor FIRST to log all requests/responses/errors
+  dio.interceptors.add(LoggingInterceptor());
 
   // Add Firebase token interceptor for automatic authentication
   dio.interceptors.add(
@@ -48,14 +54,13 @@ final dioProvider = Provider<Dio>((ref) {
     RetryNotificationInterceptor(ref: ref),
   );
 
-  // Add retry interceptor with exponential backoff
+  // Add retry interceptor with single retry
   dio.interceptors.add(
     RetryInterceptor(
       dio: dio,
+      retries: 1, // Only 1 retry attempt
       retryDelays: const [
-        Duration(seconds: 1), // First retry after 1s
-        Duration(seconds: 2), // Second retry after 2s
-        Duration(seconds: 4), // Third retry after 4s
+        Duration(seconds: 1), // Single retry after 1s
       ],
       retryableExtraStatuses: {408, 429}, // Request Timeout y Too Many Requests
     ),

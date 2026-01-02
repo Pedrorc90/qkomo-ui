@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:qkomo_ui/core/network/api_endpoints.dart';
 import 'package:qkomo_ui/features/settings/data/dtos/preferences_dto.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
-/// Remote implementation of settings repository using backend API
-///
+/// Remote-only implementation for syncing settings with backend
+/// Does NOT implement SettingsRepository interface - that's for the hybrid repository
 /// Communicates with `/v1/preferences` endpoint for user preferences sync.
 /// Requires Firebase authentication token (automatically added by Dio interceptor).
 class RemoteSettingsRepository {
@@ -20,7 +21,14 @@ class RemoteSettingsRepository {
   /// are not returned from backend and use default values.
   Future<UserSettings?> fetchPreferences() async {
     try {
-      final response = await _dio.get<Map<String, dynamic>>('/v1/preferences');
+      final response = await _dio.get<Map<String, dynamic>>(
+        ApiEndpoints.preferences,
+        options: Options(
+          extra: {
+            'silent_request': true
+          }, // Background sync, don't show retry overlay
+        ),
+      );
 
       if (response.data == null) {
         return null;
@@ -49,7 +57,15 @@ class RemoteSettingsRepository {
       final dto = settings.toDto();
       final payload = dto.toJson();
 
-      await _dio.put<void>('/v1/preferences', data: payload);
+      await _dio.put<void>(
+        ApiEndpoints.preferences,
+        data: payload,
+        options: Options(
+          extra: {
+            'silent_request': true
+          }, // Background sync, don't show retry overlay
+        ),
+      );
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
         // Backend validation failed
@@ -70,7 +86,14 @@ class RemoteSettingsRepository {
   /// Throws [DioException] for network errors, auth failures, etc.
   Future<void> deletePreferences() async {
     try {
-      await _dio.delete<void>('/v1/preferences');
+      await _dio.delete<void>(
+        ApiEndpoints.preferences,
+        options: Options(
+          extra: {
+            'silent_request': true
+          }, // Background sync, don't show retry overlay
+        ),
+      );
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         // Already deleted - not an error

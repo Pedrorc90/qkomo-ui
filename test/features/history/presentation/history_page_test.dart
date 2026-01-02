@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 import 'package:qkomo_ui/features/history/application/history_controller.dart';
 import 'package:qkomo_ui/features/history/application/history_providers.dart';
+import 'package:qkomo_ui/features/history/domain/entities/date_filter.dart';
+import 'package:qkomo_ui/features/history/domain/entities/date_group.dart';
+import 'package:qkomo_ui/features/history/domain/entities/history_state.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
 

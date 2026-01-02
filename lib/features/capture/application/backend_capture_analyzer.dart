@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
-
 import 'package:image_picker/image_picker.dart';
-
 import 'package:qkomo_ui/features/capture/data/capture_api_client.dart';
 import 'package:qkomo_ui/features/capture/data/models/analyze_response_dto.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_analyzer.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/interfaces/capture_analyzer.dart';
 
 /// Analyzer that calls the backend `/v1/analyze` and `/v1/analyze/barcode` endpoints.
 class BackendCaptureAnalyzer implements CaptureAnalyzer {
@@ -79,8 +77,7 @@ class BackendCaptureAnalyzer implements CaptureAnalyzer {
     final title = dto.identification.dishName ??
         (switch (mode) {
           CaptureMode.barcode => 'Producto código $barcode',
-          CaptureMode.camera =>
-            dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura',
+          CaptureMode.camera => dto.photoId != null ? 'Foto ${dto.photoId}' : 'Captura',
           CaptureMode.gallery => 'Imagen importada',
           CaptureMode.text => 'Texto manual',
         });

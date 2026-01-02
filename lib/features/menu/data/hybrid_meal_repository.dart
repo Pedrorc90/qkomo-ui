@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:qkomo_ui/core/services/logger_service.dart';
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_repository.dart';
-import 'package:qkomo_ui/features/sync/domain/syncable_repository.dart';
+import 'package:qkomo_ui/features/sync/domain/interfaces/syncable_repository.dart';
 
 /// Hybrid repository implementing offline-first pattern with cloud sync
 class HybridMealRepository implements MealRepository, SyncableRepository {

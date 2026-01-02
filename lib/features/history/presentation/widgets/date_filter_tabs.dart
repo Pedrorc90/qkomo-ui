@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/features/history/application/history_controller.dart';
 import 'package:qkomo_ui/features/history/application/history_providers.dart';
+import 'package:qkomo_ui/features/history/domain/entities/date_filter.dart';
 import 'package:qkomo_ui/theme/app_typography.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
 

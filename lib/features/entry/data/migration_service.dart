@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
 
 /// Service to migrate existing CaptureResult data to Entry model
 class MigrationService {

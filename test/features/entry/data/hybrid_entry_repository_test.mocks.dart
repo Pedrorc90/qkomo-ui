@@ -7,12 +7,13 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:qkomo_ui/core/services/logger_service.dart' as _i7;
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart' as _i5;
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart'
+    as _i5;
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart'
     as _i2;
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart'
     as _i6;
-import 'package:qkomo_ui/features/entry/domain/entry.dart' as _i4;
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

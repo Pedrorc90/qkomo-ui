@@ -1,8 +1,10 @@
 import 'package:hive/hive.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 
+/// Local-only implementation of entry storage using Hive
+/// Does NOT implement EntryRepository interface - that's for the hybrid repository
 class LocalEntryRepository {
   LocalEntryRepository({required Box<Entry> entryBox}) : _entryBox = entryBox;
 

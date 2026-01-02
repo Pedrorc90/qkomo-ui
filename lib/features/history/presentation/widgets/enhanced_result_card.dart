@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/widgets/allergen_badge.dart';
 import 'package:qkomo_ui/core/widgets/animated_card.dart';
 import 'package:qkomo_ui/core/widgets/meal_type_chip.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/theme/app_colors.dart';
 import 'package:qkomo_ui/theme/app_typography.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';

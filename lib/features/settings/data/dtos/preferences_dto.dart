@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
 part 'preferences_dto.freezed.dart';
 part 'preferences_dto.g.dart';
@@ -109,9 +109,8 @@ extension UserSettingsDtoConverter on UserSettings {
   /// Empty lists are converted to null.
   PreferencesDto toDto() {
     return PreferencesDto(
-      allergens: allergens.isEmpty
-          ? null
-          : allergens.map((a) => a.name).join(','),
+      allergens:
+          allergens.isEmpty ? null : allergens.map((a) => a.name).join(','),
       dietaryPreferences: dietaryRestrictions.isEmpty
           ? null
           : dietaryRestrictions.map((d) => d.name).join(','),

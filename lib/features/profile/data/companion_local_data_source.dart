@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qkomo_ui/features/profile/data/companion_hive_boxes.dart';
-import 'package:qkomo_ui/features/profile/domain/companion.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/companion.dart';
 
 class CompanionLocalDataSource {
   Box<Companion> get _box => Hive.box<Companion>(CompanionHiveBoxes.companions);

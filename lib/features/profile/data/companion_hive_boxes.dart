@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qkomo_ui/features/profile/domain/companion.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/companion.dart';
 
 class CompanionHiveBoxes {
   static const companions = 'companions';

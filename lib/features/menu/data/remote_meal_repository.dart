@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:qkomo_ui/core/network/api_endpoints.dart';
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
@@ -22,8 +23,11 @@ class RemoteMealRepository {
       }
 
       final response = await _dio.get<Map<String, dynamic>>(
-        '/v1/meals',
+        ApiEndpoints.meals,
         queryParameters: queryParams,
+        options: Options(
+          extra: {'silent_request': true}, // Background sync, don't show retry overlay
+        ),
       );
 
       if (response.data == null) {
@@ -54,8 +58,11 @@ class RemoteMealRepository {
 
       // Use PUT for idempotency
       await _dio.put<void>(
-        '/v1/meals/${meal.id}',
+        ApiEndpoints.mealById(meal.id),
         data: payload,
+        options: Options(
+          extra: {'silent_request': true}, // Background sync, don't show retry overlay
+        ),
       );
     } on DioException catch (e) {
       if (e.response?.statusCode == 409) {
@@ -69,7 +76,12 @@ class RemoteMealRepository {
   /// Delete a meal from the backend
   Future<void> deleteMeal(String id) async {
     try {
-      await _dio.delete<void>('/v1/meals/$id');
+      await _dio.delete<void>(
+        ApiEndpoints.mealById(id),
+        options: Options(
+          extra: {'silent_request': true}, // Background sync, don't show retry overlay
+        ),
+      );
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         // Meal not found - already deleted, consider success

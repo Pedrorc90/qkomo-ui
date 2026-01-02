@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle.dart';
-import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_cache.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/entities/feature_toggle.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/entities/feature_toggle_cache.dart';
 
 class FeatureToggleHiveBoxes {
   static const String togglesBox = 'feature_toggles';

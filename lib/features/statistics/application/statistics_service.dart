@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
-import 'package:qkomo_ui/features/statistics/domain/statistics_data.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/statistics/domain/entities/statistics_data.dart';
 
 final statisticsServiceProvider = Provider<StatisticsService>((ref) {
   return StatisticsService();

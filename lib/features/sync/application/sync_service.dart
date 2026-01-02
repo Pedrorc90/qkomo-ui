@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qkomo_ui/core/config/feature_flags.dart';
-import 'package:qkomo_ui/features/sync/domain/syncable_repository.dart';
+import 'package:qkomo_ui/features/sync/domain/interfaces/syncable_repository.dart';
 
 /// Sync status enum
 enum SyncStatus {

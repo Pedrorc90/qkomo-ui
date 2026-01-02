@@ -1,4 +1,4 @@
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
 
 abstract class EntryRepository {
   /// Get entries filtered by date range

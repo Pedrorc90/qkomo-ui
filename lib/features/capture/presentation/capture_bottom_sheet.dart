@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/barcode_scanner_view.dart';
 import 'package:qkomo_ui/features/capture/presentation/widgets/camera_capture_view.dart';

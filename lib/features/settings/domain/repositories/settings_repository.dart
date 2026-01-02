@@ -1,4 +1,4 @@
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
 /// Abstract repository interface for user settings operations
 ///

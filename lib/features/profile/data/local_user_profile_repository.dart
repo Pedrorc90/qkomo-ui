@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qkomo_ui/features/profile/data/profile_hive_boxes.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/user_profile.dart';
 
 /// Local repository for user profile using Hive storage
 ///

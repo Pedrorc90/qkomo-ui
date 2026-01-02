@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
 
 /// Card for displaying nutritional information

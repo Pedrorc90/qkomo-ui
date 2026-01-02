@@ -50,7 +50,7 @@ class RetryNotificationWidget extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           'Conectando con el servidor... '
-                          '(intento ${retryState.retryCount} de 3)',
+                          '(intento ${retryState.retryCount} de 1)',
                           style: const TextStyle(
                             color: AppColors.neutralWhite,
                             fontSize: 14,

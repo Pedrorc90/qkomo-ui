@@ -1,12 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/profile/data/companion_local_data_source.dart';
-import 'package:qkomo_ui/features/profile/data/companion_repository.dart';
-import 'package:qkomo_ui/features/profile/domain/companion.dart';
+import 'package:qkomo_ui/features/profile/data/companion_repository.dart' as impl;
+import 'package:qkomo_ui/features/profile/domain/entities/companion.dart';
+import 'package:qkomo_ui/features/profile/domain/repositories/companion_repository.dart';
 
 final companionRepositoryProvider = Provider<CompanionRepository>((ref) {
   final dio = ref.watch(dioProvider);
-  return CompanionRepository(
+  return impl.CompanionRepositoryImpl(
     dio: dio,
     localDataSource: CompanionLocalDataSource(),
   );

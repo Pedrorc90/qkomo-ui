@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/settings/application/settings_providers.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
 class AllergensPage extends ConsumerWidget {
   const AllergensPage({super.key});

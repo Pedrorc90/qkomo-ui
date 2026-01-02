@@ -8,11 +8,14 @@ import 'package:qkomo_ui/core/animations/feedback_animations.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
-import 'package:qkomo_ui/features/menu/data/preset_recipes.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_card.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_type_selector_dialog.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/empty_day_placeholder.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/day_header_with_actions.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/add_meal_button.dart';
 
 class SelectedDayMealsSection extends ConsumerWidget {
   const SelectedDayMealsSection({super.key});
@@ -27,33 +30,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
         '[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
 
     if (selectedDay == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.calendar_today,
-                size: 64,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurfaceVariant
-                    .withAlpha((0.3 * 255).round()),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Selecciona un día para ver las comidas',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
+      return const EmptyDayPlaceholder();
     }
 
     final dateFormat = DateFormat('EEEE, d \'de\' MMMM', 'es');
@@ -73,71 +50,12 @@ class SelectedDayMealsSection extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .surfaceContainerHighest
-                    .withAlpha((0.3 * 255).round()),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-                border: Border(
-                  bottom: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      capitalizedDate,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  // Auto-generate menu button
-                  IconButton(
-                    icon: Icon(
-                      Icons.auto_awesome,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    onPressed: () =>
-                        _autoGenerateMenu(context, ref, selectedDay),
-                    tooltip: 'Generar menú automático',
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  // Suggestions AI button
-                  if (aiSuggestionsEnabled)
-                    IconButton(
-                      icon: Icon(
-                        Icons.lightbulb_outline,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      onPressed: () => _generateSuggestions(context),
-                      tooltip: 'Sugerencias IA',
-                      visualDensity: VisualDensity.compact,
-                    ),
-                  // Clear meals button
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete_sweep,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    onPressed: () => _clearDayMeals(context, ref, selectedDay),
-                    tooltip: 'Limpiar comidas',
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
-              ),
+            DayHeaderWithActions(
+              dateText: capitalizedDate,
+              onAutoGenerate: () => _autoGenerateMenu(context, ref, selectedDay),
+              onClearMeals: () => _clearDayMeals(context, ref, selectedDay),
+              onGenerateSuggestions: () => _generateSuggestions(context),
+              showSuggestionsButton: aiSuggestionsEnabled,
             ),
             ListView(
               shrinkWrap: true,
@@ -159,53 +77,15 @@ class SelectedDayMealsSection extends ConsumerWidget {
                 else
                   ..._buildMealTypeSections(context, meals, selectedDay),
                 const SizedBox(height: 12),
-                // Add new meal button
-                Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryContainer
-                      .withAlpha((0.3 * 255).round()),
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => MealFormDialog(
-                          date: selectedDay,
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add_circle,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 28,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Agregar comida',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
+                AddMealButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => MealFormDialog(
+                        date: selectedDay,
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -213,33 +93,6 @@ class SelectedDayMealsSection extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Color _getMealTypeColor(BuildContext context, MealType type) {
-    final colorScheme = Theme.of(context).colorScheme;
-    switch (type) {
-      case MealType.breakfast:
-        return colorScheme.primary;
-      case MealType.lunch:
-        return colorScheme.secondary;
-      case MealType.snack:
-        return colorScheme.tertiary;
-      case MealType.dinner:
-        return colorScheme.error;
-    }
-  }
-
-  String _getMealTimeContext(MealType type) {
-    switch (type) {
-      case MealType.breakfast:
-        return '7:00 - 9:00';
-      case MealType.lunch:
-        return '12:30 - 14:30';
-      case MealType.snack:
-        return '16:00 - 17:30';
-      case MealType.dinner:
-        return '20:00 - 22:00';
-    }
   }
 
   List<Widget> _buildMealTypeSections(

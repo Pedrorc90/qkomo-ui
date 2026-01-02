@@ -6,7 +6,7 @@ import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_result_adap
 import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
 import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
 
 import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';

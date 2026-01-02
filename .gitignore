@@ -16,6 +16,7 @@ pubspec.lock
 .vscode/
 *.iml
 .claude
+docs/
 
 # Misc
 .DS_Store

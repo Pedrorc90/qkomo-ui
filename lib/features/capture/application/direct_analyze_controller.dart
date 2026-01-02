@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/services/logger_service.dart';
 import 'package:qkomo_ui/features/capture/application/backend_capture_analyzer.dart';
 import 'package:qkomo_ui/features/capture/application/capture_state.dart';
-import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
+import 'package:qkomo_ui/features/capture/domain/repositories/capture_result_repository.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 
 class DirectAnalyzeController extends StateNotifier<AsyncValue<String?>> {
   DirectAnalyzeController(

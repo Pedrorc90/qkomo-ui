@@ -11,9 +11,17 @@ import 'package:qkomo_ui/features/capture/application/capture_state.dart';
 import 'package:qkomo_ui/features/capture/application/direct_analyze_controller.dart';
 import 'package:qkomo_ui/features/capture/application/text_entry_controller.dart';
 import 'package:qkomo_ui/features/capture/data/capture_api_client.dart';
-import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
+import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart'
+    as impl;
 import 'package:qkomo_ui/features/capture/data/hive_boxes.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/repositories/capture_result_repository.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/create_manual_entry.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/get_month_results.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/get_results_by_date_range.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/get_today_results.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/get_week_results.dart';
+import 'package:qkomo_ui/features/capture/domain/usecases/save_capture_result.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
 
 final imagePickerProvider = Provider<ImagePicker>((ref) {
@@ -38,7 +46,7 @@ final captureResultBoxProvider = Provider<Box<CaptureResult>>((ref) {
 final captureResultRepositoryProvider =
     Provider<CaptureResultRepository>((ref) {
   final box = ref.watch(captureResultBoxProvider);
-  return CaptureResultRepository(resultBox: box);
+  return impl.CaptureResultRepositoryImpl(resultBox: box);
 });
 
 final captureApiClientProvider = Provider<CaptureApiClient>((ref) {
@@ -65,11 +73,42 @@ final captureResultsProvider = StreamProvider<List<CaptureResult>>((ref) {
   );
 });
 
+// UseCase providers
+final createManualEntryProvider = Provider<CreateManualEntry>((ref) {
+  return CreateManualEntry();
+});
+
+final saveCaptureResultProvider = Provider<SaveCaptureResult>((ref) {
+  final repository = ref.watch(captureResultRepositoryProvider);
+  return SaveCaptureResult(repository);
+});
+
+final getTodayResultsProvider = Provider<GetTodayResults>((ref) {
+  final repository = ref.watch(captureResultRepositoryProvider);
+  return GetTodayResults(repository);
+});
+
+final getWeekResultsProvider = Provider<GetWeekResults>((ref) {
+  final repository = ref.watch(captureResultRepositoryProvider);
+  return GetWeekResults(repository);
+});
+
+final getMonthResultsProvider = Provider<GetMonthResults>((ref) {
+  final repository = ref.watch(captureResultRepositoryProvider);
+  return GetMonthResults(repository);
+});
+
+final getResultsByDateRangeProvider = Provider<GetResultsByDateRange>((ref) {
+  final repository = ref.watch(captureResultRepositoryProvider);
+  return GetResultsByDateRange(repository);
+});
+
 final textEntryControllerProvider =
     StateNotifierProvider<TextEntryController, AsyncValue<CaptureResult?>>(
         (ref) {
-  final resultRepo = ref.watch(captureResultRepositoryProvider);
-  return TextEntryController(resultRepo);
+  final createManualEntry = ref.watch(createManualEntryProvider);
+  final saveCaptureResult = ref.watch(saveCaptureResultProvider);
+  return TextEntryController(createManualEntry, saveCaptureResult);
 });
 
 final captureReviewControllerProvider = StateNotifierProvider.family<

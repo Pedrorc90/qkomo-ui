@@ -4,18 +4,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_review_controller.dart';
-import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/repositories/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/capture_review_page.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/allergen_selector.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/ingredient_list_editor.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/nutrition_info_card.dart';
 import 'package:qkomo_ui/features/capture/presentation/review/widgets/photo_viewer.dart';
-import 'package:qkomo_ui/features/entry/domain/entry_repository.dart';
+import 'package:qkomo_ui/features/entry/domain/repositories/entry_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/settings/application/settings_providers.dart';
-import 'package:qkomo_ui/features/settings/domain/settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 import 'package:qkomo_ui/theme/theme_providers.dart';
 
 // Mock SettingsRepository

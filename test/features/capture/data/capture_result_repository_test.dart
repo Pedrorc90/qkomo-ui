@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:qkomo_ui/features/capture/data/capture_result_repository.dart';
 import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_result_adapter.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 
 void main() {
   late Directory tempDir;
   late Box<CaptureResult> resultBox;
-  late CaptureResultRepository repository;
+  late CaptureResultRepositoryImpl repository;
 
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('result_repo_test');
@@ -18,7 +18,7 @@ void main() {
       Hive.registerAdapter(CaptureResultAdapter());
     }
     resultBox = await Hive.openBox<CaptureResult>('capture_results_test');
-    repository = CaptureResultRepository(resultBox: resultBox);
+    repository = CaptureResultRepositoryImpl(resultBox: resultBox);
   });
 
   tearDown(() async {
@@ -39,15 +39,12 @@ void main() {
     expect(repository.findByJobId('1')?.jobId, '1');
   });
 
-  test('today returns only today results', () async {
-    final today = DateTime.now();
-    final yesterday = today.subtract(const Duration(days: 1));
-    await repository.saveResult(CaptureResult(jobId: 'today', savedAt: today));
-    await repository
-        .saveResult(CaptureResult(jobId: 'old', savedAt: yesterday));
+  test('findByJobId returns correct result', () async {
+    final result = CaptureResult(jobId: 'test-id', savedAt: DateTime.now());
+    await repository.saveResult(result);
 
-    final items = repository.today();
-    expect(items.map((e) => e.jobId), contains('today'));
-    expect(items.map((e) => e.jobId), isNot(contains('old')));
+    final found = repository.findByJobId('test-id');
+    expect(found?.jobId, 'test-id');
+    expect(repository.findByJobId('non-existent'), isNull);
   });
 }

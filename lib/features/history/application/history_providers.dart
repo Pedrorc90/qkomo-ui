@@ -1,19 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/entry/application/entry_providers.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
 import 'package:qkomo_ui/features/history/application/history_controller.dart';
+import 'package:qkomo_ui/features/history/domain/entities/date_filter.dart';
+import 'package:qkomo_ui/features/history/domain/entities/date_group.dart';
+import 'package:qkomo_ui/features/history/domain/entities/date_group_stats.dart';
+import 'package:qkomo_ui/features/history/domain/entities/history_state.dart';
 import 'package:qkomo_ui/features/history/utils/date_grouping_helper.dart';
-
-/// Statistics for a date group
-class DateGroupStats {
-  const DateGroupStats({
-    required this.mealCount,
-    required this.ingredientCount,
-  });
-  final int mealCount;
-  final int ingredientCount;
-}
 
 /// Provider for history controller
 final historyControllerProvider =

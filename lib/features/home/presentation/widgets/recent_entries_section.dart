@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/animations/page_transitions.dart';
 import 'package:qkomo_ui/core/widgets/widgets.dart';
 import 'package:qkomo_ui/core/widgets/platform_image.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 

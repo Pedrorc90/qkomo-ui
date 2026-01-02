@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:qkomo_ui/core/image/image_compressor.dart';
+import 'package:qkomo_ui/core/network/api_endpoints.dart';
 import 'package:qkomo_ui/features/capture/data/models/analyze_response_dto.dart';
 
 class CaptureApiClient {
@@ -29,7 +29,7 @@ class CaptureApiClient {
 
     if (kIsWeb) {
       final bytes = await imageToUpload.readAsBytes();
-      multipartFile = MultipartFileRecreatable.fromBytes(
+      multipartFile = MultipartFile.fromBytes(
         bytes,
         filename: imageToUpload.name,
       );
@@ -38,7 +38,7 @@ class CaptureApiClient {
         throw Exception(
             'Image file does not exist at ${imageToUpload.path}');
       }
-      multipartFile = MultipartFileRecreatable.fromFileSync(
+      multipartFile = await MultipartFile.fromFile(
         imageToUpload.path,
         filename: imageToUpload.name,
       );
@@ -54,7 +54,7 @@ class CaptureApiClient {
     }
 
     final response = await _dio.post<Map<String, dynamic>>(
-      '/v1/analyze',
+      ApiEndpoints.analyzeImage,
       data: formData,
     );
 
@@ -72,7 +72,7 @@ class CaptureApiClient {
     }
 
     final response = await _dio.post<Map<String, dynamic>>(
-      '/v1/analyze/barcode',
+      ApiEndpoints.analyzeBarcode,
       data: {'barcode': barcode},
     );
 
@@ -96,7 +96,7 @@ class CaptureApiClient {
 
     if (kIsWeb) {
       final bytes = await imageToUpload.readAsBytes();
-      multipartFile = MultipartFileRecreatable.fromBytes(
+      multipartFile = MultipartFile.fromBytes(
         bytes,
         filename: imageToUpload.name,
       );
@@ -105,7 +105,7 @@ class CaptureApiClient {
         throw Exception(
             'Image file does not exist at ${imageToUpload.path}');
       }
-      multipartFile = MultipartFileRecreatable.fromFileSync(
+      multipartFile = await MultipartFile.fromFile(
         imageToUpload.path,
         filename: imageToUpload.name,
       );
@@ -120,7 +120,7 @@ class CaptureApiClient {
     }
 
     final response = await _dio.post<Map<String, dynamic>>(
-      '/v1/photos',
+      ApiEndpoints.uploadPhoto,
       data: formData,
     );
 
@@ -149,7 +149,7 @@ class CaptureApiClient {
     }
 
     final response = await _dio.get<Map<String, dynamic>>(
-      '/v1/photos/$photoId',
+      ApiEndpoints.photoById(photoId),
     );
 
     if (kDebugMode) {

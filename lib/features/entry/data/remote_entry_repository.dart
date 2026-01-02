@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
-import 'package:qkomo_ui/features/entry/domain/entry.dart';
-import 'package:qkomo_ui/features/entry/domain/sync_status.dart';
+import 'package:qkomo_ui/core/network/api_endpoints.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
+import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 
+/// Remote-only implementation for syncing entries with backend
+/// Does NOT implement EntryRepository interface - that's for the hybrid repository
 class RemoteEntryRepository {
   RemoteEntryRepository({required Dio dio}) : _dio = dio;
 
@@ -21,8 +24,11 @@ class RemoteEntryRepository {
       }
 
       final response = await _dio.get<Map<String, dynamic>>(
-        '/v1/entries',
+        ApiEndpoints.entries,
         queryParameters: queryParams,
+        options: Options(
+          extra: {'silent_request': true}, // Background sync, don't show retry overlay
+        ),
       );
 
       if (response.data == null) {
@@ -55,8 +61,11 @@ class RemoteEntryRepository {
 
       // Use PUT for idempotency (same ID = same result)
       await _dio.put<void>(
-        '/v1/entries/${entry.id}',
+        ApiEndpoints.entryById(entry.id),
         data: payload,
+        options: Options(
+          extra: {'silent_request': true}, // Background sync, don't show retry overlay
+        ),
       );
     } on DioException catch (e) {
       // TODO: Add proper logging
@@ -71,7 +80,12 @@ class RemoteEntryRepository {
   /// Delete an entry from the backend
   Future<void> deleteEntry(String id) async {
     try {
-      await _dio.delete<void>('/v1/entries/$id');
+      await _dio.delete<void>(
+        ApiEndpoints.entryById(id),
+        options: Options(
+          extra: {'silent_request': true}, // Background sync, don't show retry overlay
+        ),
+      );
     } on DioException catch (e) {
       // TODO: Add proper logging
       if (e.response?.statusCode == 404) {

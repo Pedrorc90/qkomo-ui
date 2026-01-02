@@ -3,13 +3,15 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
-import 'package:qkomo_ui/features/feature_toggles/data/feature_toggle_repository.dart';
-import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle.dart';
+import 'package:qkomo_ui/features/feature_toggles/data/feature_toggle_repository.dart'
+    as impl;
+import 'package:qkomo_ui/features/feature_toggles/domain/entities/feature_toggle.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/repositories/feature_toggle_repository.dart';
 
 final featureToggleRepositoryProvider =
     Provider<FeatureToggleRepository>((ref) {
   final dio = ref.watch(dioProvider);
-  return FeatureToggleRepository(dio);
+  return impl.FeatureToggleRepositoryImpl(dio);
 });
 
 /// StateNotifier-based provider for feature toggles with cache-first loading

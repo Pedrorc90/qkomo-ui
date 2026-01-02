@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qkomo_ui/features/profile/domain/user_profile.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/user_profile.dart';
 
 /// Hive box initialization for UserProfile feature
 class ProfileHiveBoxes {

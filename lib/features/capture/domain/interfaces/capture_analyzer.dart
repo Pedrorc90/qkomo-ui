@@ -3,8 +3,8 @@
 library;
 
 import 'package:image_picker/image_picker.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_result.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 
 abstract class CaptureAnalyzer {
   Future<CaptureResult> analyze({

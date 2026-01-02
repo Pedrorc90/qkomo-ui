@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qkomo_ui/features/capture/application/capture_controller.dart';
 import 'package:qkomo_ui/features/capture/application/capture_permissions.dart';
-import 'package:qkomo_ui/features/capture/domain/capture_mode.dart';
+import 'package:qkomo_ui/features/capture/domain/entities/capture_mode.dart';
 
 // Mock ImagePicker
 class FakeImagePicker implements ImagePicker {

@@ -1,28 +1,32 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qkomo_ui/features/settings/data/local_settings_repository.dart';
 import 'package:qkomo_ui/features/settings/data/remote_settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/settings_repository.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/repositories/settings_repository.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 
 /// Hybrid implementation combining local and remote settings repositories
 ///
 /// Implements offline-first pattern:
 /// - Always returns local data immediately
-/// - Syncs with backend asynchronously in background
+/// - Syncs with backend asynchronously in background (only if user is authenticated)
 /// - First sync after app update: pushes local settings to backend
 /// - Subsequent syncs: fetches from backend (server authoritative)
 class HybridSettingsRepository implements SettingsRepository {
   HybridSettingsRepository({
     required LocalSettingsRepository localRepo,
     required RemoteSettingsRepository remoteRepo,
+    required FirebaseAuth firebaseAuth,
     this.enableCloudSync = false,
   })  : _localRepo = localRepo,
-        _remoteRepo = remoteRepo;
+        _remoteRepo = remoteRepo,
+        _firebaseAuth = firebaseAuth;
 
   final LocalSettingsRepository _localRepo;
   final RemoteSettingsRepository _remoteRepo;
+  final FirebaseAuth _firebaseAuth;
   final bool enableCloudSync;
 
   @override
@@ -60,18 +64,31 @@ class HybridSettingsRepository implements SettingsRepository {
     }
   }
 
+  /// Check if user is authenticated
+  bool get _isUserAuthenticated => _firebaseAuth.currentUser != null;
+
   /// Sync settings from backend in background
   ///
   /// First sync: Push local settings to backend (migration)
   /// Subsequent syncs: Fetch from backend and update local (server wins)
+  /// Only syncs if user is authenticated.
   Future<void> _syncFromBackend(UserSettings localSettings) async {
+    // Don't sync if user is not authenticated
+    if (!_isUserAuthenticated) {
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Skipping sync: user not authenticated');
+      }
+      return;
+    }
+
     try {
       final isFirstSync = !(await _localRepo.isFirstSyncCompleted());
 
       if (isFirstSync) {
         // First sync: Push local data to backend (migration)
         if (kDebugMode) {
-          print('[HybridSettingsRepo] First sync: sending local settings to backend');
+          print(
+              '[HybridSettingsRepo] First sync: sending local settings to backend');
         }
 
         await _remoteRepo.pushPreferences(localSettings);
@@ -109,7 +126,16 @@ class HybridSettingsRepository implements SettingsRepository {
   }
 
   /// Push settings to backend in background
+  /// Only pushes if user is authenticated.
   Future<void> _pushToBackend(UserSettings settings) async {
+    // Don't push if user is not authenticated
+    if (!_isUserAuthenticated) {
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Skipping push: user not authenticated');
+      }
+      return;
+    }
+
     try {
       await _remoteRepo.pushPreferences(settings);
 
@@ -129,7 +155,16 @@ class HybridSettingsRepository implements SettingsRepository {
   }
 
   /// Delete settings from backend in background
+  /// Only deletes if user is authenticated.
   Future<void> _deleteFromBackend() async {
+    // Don't delete if user is not authenticated
+    if (!_isUserAuthenticated) {
+      if (kDebugMode) {
+        print('[HybridSettingsRepo] Skipping delete: user not authenticated');
+      }
+      return;
+    }
+
     try {
       await _remoteRepo.deletePreferences();
 

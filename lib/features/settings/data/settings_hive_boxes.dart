@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:qkomo_ui/features/settings/domain/user_settings.dart';
+import 'package:qkomo_ui/features/settings/domain/entities/user_settings.dart';
 import 'package:qkomo_ui/theme/theme_type.dart';
 
 class SettingsHiveBoxes {
