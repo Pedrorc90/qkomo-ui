@@ -34128,9 +34128,10 @@ a2s:function a2s(a){this.a=a},
 beG(){switch("local"){case"uat":return B.Wj
 case"prod":return B.Wk
 case"local":default:return B.vz}},
-bva(){switch(A.beG().a){case 0:return"http://localhost:8080"
-case 1:return"https://api-uat.qkomo.com"
-case 2:return"https://api.qkomo.com"}},
+bva(){var s="https://qkomo-backend.onrender.com"
+switch(A.beG().a){case 0:return s
+case 1:return s
+case 2:return s}},
 IT:function IT(a,b){this.a=a
 this.b=b},
 a46(a,b,c,d,e,f,g){return new A.a45(a,f,c,d,e,b,g,null)},
