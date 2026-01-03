@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/core/widgets/platform_image.dart';
@@ -20,12 +19,10 @@ class NextMealPreviewCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final isAsset = nextMeal.photoPath != null && nextMeal.photoPath!.startsWith('assets/');
-    final timeFormat = DateFormat('HH:mm');
-    final scheduledTime = timeFormat.format(nextMeal.scheduledFor);
 
     return SemanticWrapper(
       onTap: onTap,
-      label: 'Próxima comida: ${nextMeal.name} a las $scheduledTime',
+      label: 'Próxima comida: ${nextMeal.name}',
       isButton: true,
       child: Container(
         width: double.infinity,
@@ -58,26 +55,14 @@ class NextMealPreviewCard extends StatelessWidget {
                   bottom: 8,
                   left: 8,
                   right: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Próxima: $scheduledTime',
-                        style: textTheme.labelSmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        nextMeal.name,
-                        style: textTheme.labelMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  child: Text(
+                    nextMeal.name,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

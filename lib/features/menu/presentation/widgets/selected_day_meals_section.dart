@@ -23,8 +23,10 @@ class SelectedDayMealsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDay = ref.watch(selectedDayProvider);
     final meals = ref.watch(selectedDayMealsProvider);
-    final aiSuggestionsEnabled = ref.watch(featureEnabledProvider('ai_suggestions'));
-    debugPrint('[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
+    final aiSuggestionsEnabled =
+        ref.watch(featureEnabledProvider('ai_suggestions'));
+    debugPrint(
+        '[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
 
     if (selectedDay == null) {
       return const EmptyDayPlaceholder();
@@ -32,7 +34,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
     final dateFormat = DateFormat('EEEE, d \'de\' MMMM', 'es');
     final formattedDate = dateFormat.format(selectedDay);
-    final capitalizedDate = formattedDate[0].toUpperCase() + formattedDate.substring(1);
+    final capitalizedDate =
+        formattedDate[0].toUpperCase() + formattedDate.substring(1);
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -48,7 +51,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
           children: [
             DayHeaderWithActions(
               dateText: capitalizedDate,
-              onAutoGenerate: () => _autoGenerateMenu(context, ref, selectedDay),
+              onAutoGenerate: () =>
+                  _autoGenerateMenu(context, ref, selectedDay),
               onClearMeals: () => _clearDayMeals(context, ref, selectedDay),
               onGenerateSuggestions: () => _generateSuggestions(context),
               showSuggestionsButton: aiSuggestionsEnabled,
@@ -129,7 +133,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
     return sections;
   }
 
-  Future<void> _autoGenerateMenu(BuildContext context, WidgetRef ref, DateTime selectedDay) async {
+  Future<void> _autoGenerateMenu(
+      BuildContext context, WidgetRef ref, DateTime selectedDay) async {
     // Show meal type selector dialog
     final selectedMealTypes = await showDialog<List<MealType>>(
       context: context,
@@ -180,14 +185,16 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
     for (final mealType in selectedMealTypes) {
       // Check if there are recipes of this type available
-      if (!recipesByType.containsKey(mealType) || recipesByType[mealType]!.isEmpty) {
+      if (!recipesByType.containsKey(mealType) ||
+          recipesByType[mealType]!.isEmpty) {
         missingTypes.add(mealType.displayName);
         continue;
       }
 
       // Select a random recipe of this type
       final recipesOfType = recipesByType[mealType]!;
-      final selectedRecipe = recipesOfType[random.nextInt(recipesOfType.length)];
+      final selectedRecipe =
+          recipesOfType[random.nextInt(recipesOfType.length)];
 
       // Get default time for this meal type
       final timeOfDay = defaultTimes[mealType]!;
@@ -224,32 +231,53 @@ class SelectedDayMealsSection extends ConsumerWidget {
     }
   }
 
-  void _clearDayMeals(BuildContext context, WidgetRef ref, DateTime selectedDay) {
+  void _clearDayMeals(
+      BuildContext context, WidgetRef ref, DateTime selectedDay) {
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Limpiar comidas'),
-        content:
-            const Text('¿Estás seguro de que quieres eliminar todas las comidas para este día?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancelar'),
+      builder: (dialogContext) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Limpiar comidas',
+                style: Theme.of(dialogContext).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                  '¿Estás seguro de que quieres eliminar todas las comidas para este día?'),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: const Text('Cancelar'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton.tonal(
+                    onPressed: () async {
+                      Navigator.of(dialogContext).pop();
+                      await ref
+                          .read(menuControllerProvider.notifier)
+                          .deleteMealsForDay(selectedDay);
+                      if (context.mounted) {
+                        await SuccessFeedback.show(
+                          context,
+                          message: 'Comidas eliminadas correctamente',
+                        );
+                      }
+                    },
+                    child: const Text('Limpiar'),
+                  ),
+                ],
+              ),
+            ],
           ),
-          FilledButton.tonal(
-            onPressed: () async {
-              Navigator.of(dialogContext).pop();
-              await ref.read(menuControllerProvider.notifier).deleteMealsForDay(selectedDay);
-              if (context.mounted) {
-                await SuccessFeedback.show(
-                  context,
-                  message: 'Comidas eliminadas correctamente',
-                );
-              }
-            },
-            child: const Text('Limpiar'),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -257,7 +285,8 @@ class SelectedDayMealsSection extends ConsumerWidget {
   void _generateSuggestions(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Función de sugerencias con IA será implementada en la próxima versión'),
+        content: Text(
+            'Función de sugerencias con IA será implementada en la próxima versión'),
         duration: Duration(seconds: 2),
       ),
     );

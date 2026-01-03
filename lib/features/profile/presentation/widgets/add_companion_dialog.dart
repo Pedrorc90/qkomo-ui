@@ -50,54 +50,73 @@ class _AddCompanionDialogState extends ConsumerState<AddCompanionDialog> {
       }
     });
 
-    return AlertDialog(
-      title: const Text('Añadir Compañero'),
-      content: Form(
-        key: _formKey,
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Introduce el email de tu compañero para compartir el menú semanal.',
+            Text(
+              'Añadir Compañero',
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email_outlined),
+            Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Introduce el email de tu compañero para compartir el menú semanal.',
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.email_outlined),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, introduce un email';
+                      }
+                      if (!value.contains('@')) {
+                        return 'Introduce un email válido';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, introduce un email';
-                }
-                if (!value.contains('@')) {
-                  return 'Introduce un email válido';
-                }
-                return null;
-              },
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed:
+                      isLoading ? null : () => Navigator.of(context).pop(),
+                  child: const Text('Cancelar'),
+                ),
+                const SizedBox(width: 8),
+                FilledButton.tonal(
+                  onPressed: isLoading ? null : _submit,
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Invitar'),
+                ),
+              ],
             ),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
-        ),
-        FilledButton.tonal(
-          onPressed: isLoading ? null : _submit,
-          child: isLoading
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Invitar'),
-        ),
-      ],
     );
   }
 }

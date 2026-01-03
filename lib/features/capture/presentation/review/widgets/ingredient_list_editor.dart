@@ -43,38 +43,56 @@ class _IngredientListEditorState extends State<IngredientListEditor> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Editar ingrediente'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(
-            labelText: 'Nombre del ingrediente',
-            border: OutlineInputBorder(),
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Editar ingrediente',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre del ingrediente',
+                  border: OutlineInputBorder(),
+                ),
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    widget.onUpdate(ingredient, value.trim());
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancelar'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () {
+                      final newValue = controller.text.trim();
+                      if (newValue.isNotEmpty) {
+                        widget.onUpdate(ingredient, newValue);
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Guardar'),
+                  ),
+                ],
+              ),
+            ],
           ),
-          onSubmitted: (value) {
-            if (value.trim().isNotEmpty) {
-              widget.onUpdate(ingredient, value.trim());
-              Navigator.pop(context);
-            }
-          },
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () {
-              final newValue = controller.text.trim();
-              if (newValue.isNotEmpty) {
-                widget.onUpdate(ingredient, newValue);
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Guardar'),
-          ),
-        ],
       ),
     );
   }

@@ -139,19 +139,38 @@ class _CaptureBottomSheetState extends ConsumerState<CaptureBottomSheet> {
 
         final shouldClose = await showDialog<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('¿Descartar captura?'),
-            content: const Text('Perderás la imagen o información capturada.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar'),
+          builder: (context) => Dialog(
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '¿Descartar captura?',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Perderás la imagen o información capturada.'),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancelar'),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('Descartar'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              FilledButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Descartar'),
-              ),
-            ],
+            ),
           ),
         );
 

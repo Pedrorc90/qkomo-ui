@@ -198,22 +198,43 @@ class _MealCardState extends ConsumerState<MealCard> {
                       onPressed: () async {
                         final confirmed = await showDialog<bool>(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Eliminar comida'),
-                            content: Text(
-                                '¿Estás seguro de que quieres eliminar "${widget.meal.name}"?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: const Text('Cancelar'),
+                          builder: (context) => Dialog(
+                            insetPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 24),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Eliminar comida',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                      '¿Estás seguro de que quieres eliminar "${widget.meal.name}"?'),
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text('Cancelar'),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      FilledButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text('Eliminar'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              FilledButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(true),
-                                child: const Text('Eliminar'),
-                              ),
-                            ],
+                            ),
                           ),
                         );
 

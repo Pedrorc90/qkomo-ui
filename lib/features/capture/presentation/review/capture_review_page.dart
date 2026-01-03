@@ -263,22 +263,40 @@ class CaptureReviewPage extends ConsumerWidget {
       BuildContext context, CaptureReviewController controller) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Descartar cambios'),
-        content: const Text('¿Estás seguro de descartar los cambios?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Descartar cambios',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 16),
+              const Text('¿Estás seguro de descartar los cambios?'),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancelar'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () {
+                      controller.discardChanges();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Descartar'),
+                  ),
+                ],
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () {
-              controller.discardChanges();
-              Navigator.pop(context);
-            },
-            child: const Text('Descartar'),
-          ),
-        ],
+        ),
       ),
     );
   }

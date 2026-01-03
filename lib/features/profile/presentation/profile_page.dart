@@ -106,7 +106,8 @@ class ProfilePage extends ConsumerWidget {
               onTap: () {
                 Navigator.of(
                   context,
-                ).push(MaterialPageRoute(builder: (context) => const ThemeSelectionPage()));
+                ).push(MaterialPageRoute(
+                    builder: (context) => const ThemeSelectionPage()));
               },
             ),
             const SizedBox(height: 24),
@@ -145,7 +146,8 @@ class _CompanionSection extends ConsumerWidget {
     // Assuming if key is missing -> disabled (safe default in provider).
     // If key exists and is false -> disabled.
     // If key exists and is true -> enabled.
-    final isEnabled = ref.watch(featureEnabledProvider('features.api.companion'));
+    final isEnabled =
+        ref.watch(featureEnabledProvider('features.api.companion'));
 
     if (!isEnabled) {
       return const SizedBox.shrink();
@@ -184,9 +186,12 @@ class _CompanionSection extends ConsumerWidget {
             return Card(
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundImage:
-                      companion.photoUrl != null ? NetworkImage(companion.photoUrl!) : null,
-                  child: companion.photoUrl == null ? const Icon(Icons.person) : null,
+                  backgroundImage: companion.photoUrl != null
+                      ? NetworkImage(companion.photoUrl!)
+                      : null,
+                  child: companion.photoUrl == null
+                      ? const Icon(Icons.person)
+                      : null,
                 ),
                 title: Text(companion.displayName ?? companion.email),
                 subtitle: Text(
@@ -202,20 +207,42 @@ class _CompanionSection extends ConsumerWidget {
                   onPressed: () async {
                     final confirm = await showDialog<bool>(
                       context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Desvincular compañero'),
-                        content: Text(
-                            '¿Seguro que quieres eliminar a ${companion.displayName ?? companion.email}? Dejarán de compartir el menú semanal.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text('Cancelar'),
+                      builder: (context) => Dialog(
+                        insetPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 24),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Desvincular compañero',
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                  '¿Seguro que quieres eliminar a ${companion.displayName ?? companion.email}? Dejarán de compartir el menú semanal.'),
+                              const SizedBox(height: 24),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text('Desvincular'),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: const Text('Desvincular'),
-                          ),
-                        ],
+                        ),
                       ),
                     );
 
