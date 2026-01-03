@@ -10,13 +10,6 @@ class MenuHiveBoxes {
   static const migrationKey = 'meal_sync_migration_v2';
 
   static Future<void> init([Uint8List? encryptionKey]) async {
-    // CRITICAL: Delete old box data to start fresh
-    try {
-      await Hive.deleteBoxFromDisk(meals);
-    } catch (e) {
-      // Box might not exist, continue
-    }
-
     // Register V2 adapter (generated version)
     // FORCE override to ensure the correct adapter is used for _$MealImpl
     // This fixes "unknown type: _$MealImpl" error if ID 6 was claimed by another adapter
@@ -24,8 +17,19 @@ class MenuHiveBoxes {
 
     final cipher = encryptionKey != null ? HiveAesCipher(encryptionKey) : null;
 
-    // Open the box as typed Box<Meal>
-    await Hive.openBox<Meal>(meals, encryptionCipher: cipher);
+    // Try to open the box, delete and retry if there's an adapter mismatch
+    try {
+      await Hive.openBox<Meal>(meals, encryptionCipher: cipher);
+    } catch (e) {
+      // If opening fails (likely due to adapter mismatch), delete and recreate
+      try {
+        await Hive.deleteBoxFromDisk(meals);
+        await Hive.openBox<Meal>(meals, encryptionCipher: cipher);
+      } catch (e2) {
+        // Still failing, try one more time
+        await Hive.openBox<Meal>(meals, encryptionCipher: cipher);
+      }
+    }
 
     // Open user recipes box (stores JSON as Map<String, dynamic>)
     try {

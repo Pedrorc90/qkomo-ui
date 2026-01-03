@@ -318,7 +318,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
-          Expanded(
+          Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Form(

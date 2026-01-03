@@ -75,40 +75,36 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
 
                   return Column(
                     children: [
-                      // Meal type filters (2x2 grid)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 2,
-                          childAspectRatio: 4,
-                          crossAxisSpacing: 4,
-                          mainAxisSpacing: 4,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            (MealType.breakfast, 'Desayuno'),
-                            (MealType.lunch, 'Comida'),
-                            (MealType.snack, 'Merienda'),
-                            (MealType.dinner, 'Cena'),
-                          ].map((filter) {
-                            return SizedBox.expand(
-                              child: FilterChip(
-                                label: SizedBox(
-                                  width: double.infinity,
-                                  child: Text(
-                                    filter.$2,
-                                    textAlign: TextAlign.center,
+                      // Meal type filters (horizontal scroll)
+                      SizedBox(
+                        height: 40,
+                        child: Center(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                (MealType.breakfast, 'Desayuno'),
+                                (MealType.lunch, 'Comida'),
+                                (MealType.snack, 'Merienda'),
+                                (MealType.dinner, 'Cena'),
+                              ].map((filter) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: FilterChip(
+                                    label: Text(filter.$2),
+                                    selected: _selectedMealType == filter.$1,
+                                    onSelected: (selected) {
+                                      setState(() {
+                                        _selectedMealType = selected ? filter.$1 : null;
+                                      });
+                                    },
                                   ),
-                                ),
-                                selected: _selectedMealType == filter.$1,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    _selectedMealType = selected ? filter.$1 : null;
-                                  });
-                                },
-                              ),
-                            );
-                          }).toList(),
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
