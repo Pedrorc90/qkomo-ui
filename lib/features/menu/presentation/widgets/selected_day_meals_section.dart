@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/animations/feedback_animations.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
@@ -24,7 +25,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
     final selectedDay = ref.watch(selectedDayProvider);
     final meals = ref.watch(selectedDayMealsProvider);
     final aiSuggestionsEnabled =
-        ref.watch(featureEnabledProvider('ai_suggestions'));
+        ref.watch(featureEnabledProvider(FeatureToggleKeys.aiSuggestions));
     debugPrint(
         '[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
 

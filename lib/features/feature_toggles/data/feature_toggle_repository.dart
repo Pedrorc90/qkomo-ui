@@ -96,83 +96,29 @@ class FeatureToggleRepositoryImpl implements FeatureToggleRepository {
     }
   }
 
-  /// Parse feature toggles from nested JSON structure
+  /// Parse feature toggles from flat key-value map
   ///
   /// Converts the API response structure from:
   /// {
-  ///   "ui": { "showHistory": true, "showPreferences": true, ... },
-  ///   "analysis": { "enableVision": true, "aiSuggestions": true, ... }
+  ///   "ai_suggestions": true,
+  ///   "companion": false,
+  ///   "show_history": true
   /// }
-  /// Into a flat list of FeatureToggle objects
+  /// Into a list of FeatureToggle objects
   List<FeatureToggle> _parseFeatureToggles(Map<String, dynamic> data) {
     final toggles = <FeatureToggle>[];
 
-    // Parse UI toggles
-    if (data['ui'] is Map<String, dynamic>) {
-      final uiToggles = data['ui'] as Map<String, dynamic>;
-      for (final entry in uiToggles.entries) {
-        if (entry.value is bool) {
-          final key = 'ui_${_camelToSnake(entry.key)}';
-          toggles.add(FeatureToggle(
-            key: key,
-            enabled: entry.value as bool,
-            description: 'UI toggle: ${entry.key}',
-          ));
-        }
-      }
-    }
-
-    // Parse Analysis toggles
-    if (data['analysis'] is Map<String, dynamic>) {
-      final analysisToggles = data['analysis'] as Map<String, dynamic>;
-      for (final entry in analysisToggles.entries) {
-        if (entry.value is bool) {
-          // Special handling for aiSuggestions -> use 'ai_suggestions'
-          final key = entry.key == 'aiSuggestions'
-              ? 'ai_suggestions'
-              : 'analysis_${_camelToSnake(entry.key)}';
-          toggles.add(FeatureToggle(
-            key: key,
-            enabled: entry.value as bool,
-            description: 'Analysis toggle: ${entry.key}',
-          ));
-        }
-      }
-    }
-
-    // Parse Features toggles (Nested structure features -> api -> companion)
-    if (data['features'] is Map<String, dynamic>) {
-      final features = data['features'] as Map<String, dynamic>;
-      if (features['api'] is Map<String, dynamic>) {
-        final api = features['api'] as Map<String, dynamic>;
-
-        // Handle companion toggle
-        if (api.containsKey('companion') && api['companion'] is bool) {
-          toggles.add(FeatureToggle(
-            key: 'features.api.companion',
-            enabled: api['companion'] as bool,
-            description: 'Enable/Disable Companion (Community) features',
-          ));
-        }
+    for (final entry in data.entries) {
+      if (entry.value is bool) {
+        toggles.add(FeatureToggle(
+          key: entry.key,
+          enabled: entry.value as bool,
+          description: 'Feature toggle: ${entry.key}',
+        ));
       }
     }
 
     return toggles;
-  }
-
-  /// Convert camelCase to snake_case
-  /// e.g., "showHistory" -> "show_history"
-  String _camelToSnake(String text) {
-    final buffer = StringBuffer();
-    for (int i = 0; i < text.length; i++) {
-      final char = text[i];
-      if (char.toUpperCase() == char && i > 0) {
-        buffer.write('_${char.toLowerCase()}');
-      } else {
-        buffer.write(char);
-      }
-    }
-    return buffer.toString();
   }
 
   /// Save toggles to cache with metadata

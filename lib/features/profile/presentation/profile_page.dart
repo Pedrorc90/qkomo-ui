@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/history/presentation/history_page.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/user_summary_card.dart';
 import 'package:qkomo_ui/features/profile/application/companion_controller.dart';
@@ -19,6 +20,9 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authController = ref.read(authControllerProvider);
     final user = ref.watch(firebaseAuthProvider).currentUser;
+    final isDataHistoricalEnabled = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.profileDataHistoricalIsEnabled),
+    );
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -31,27 +35,29 @@ class ProfilePage extends ConsumerWidget {
             UserSummaryCard(user: user),
             const SizedBox(height: 24),
             const _CompanionSection(),
-            const SizedBox(height: 24),
-            Text(
-              'Datos',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            ProfileOptionCard(
-              title: 'Historial',
-              icon: Icons.history,
-              subtitle: 'Ver tu historial de comidas',
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const HistoryPage(),
-                  ),
-                );
-              },
-            ),
+            if (isDataHistoricalEnabled) ...[
+              const SizedBox(height: 24),
+              Text(
+                'Datos',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              const SizedBox(height: 12),
+              ProfileOptionCard(
+                title: 'Historial',
+                icon: Icons.history,
+                subtitle: 'Ver tu historial de comidas',
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const HistoryPage(),
+                    ),
+                  );
+                },
+              ),
+            ],
             const SizedBox(height: 24),
             Text(
               'Preferencias',
@@ -139,15 +145,8 @@ class _CompanionSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Check feature toggle for companion section
-    // If not found, defaults to false in safe mode, but we want it enabled by default?
-    // User requested "oculta ... dependendiendo del feature features.api.companion"
-    // Usually features are opt-in or opt-out.
-    // Assuming if key is missing -> disabled (safe default in provider).
-    // If key exists and is false -> disabled.
-    // If key exists and is true -> enabled.
     final isEnabled =
-        ref.watch(featureEnabledProvider('features.api.companion'));
+        ref.watch(featureEnabledProvider(FeatureToggleKeys.companion));
 
     if (!isEnabled) {
       return const SizedBox.shrink();
