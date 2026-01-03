@@ -67,6 +67,7 @@ class DietaryPage extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),

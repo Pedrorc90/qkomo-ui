@@ -182,13 +182,13 @@ class AppColors {
   static const Color offWhiteBorder = Color(0xFFDDDDDD); // Subtle border
 
   // Dark theme color scheme
-  /// Dark palette for night mode using dark backgrounds and light text
-  static const Color darkSurface = Color(0xFF121212); // Very dark gray
-  static const Color darkBackground = Color(0xFF0D0D0D); // Almost black
-  static const Color darkPrimary = Color(0xFF3B82F6); // Bright blue
-  static const Color darkSecondary = Color(0xFF60A5FA); // Light blue
-  static const Color darkOnSurface = Color(0xFFE0E0E0); // Light gray text
-  static const Color darkBorder = Color(0xFF383838); // Dark border
+  /// Dark palette for night mode - natural forest at night with moonlit greens
+  static const Color darkSurface = Color(0xFF1A2617); // Deep forest green
+  static const Color darkBackground = Color(0xFF141D11); // Darker forest floor
+  static const Color darkPrimary = Color(0xFF7CB342); // Vibrant spring green
+  static const Color darkSecondary = Color(0xFF81C784); // Soft sage green
+  static const Color darkOnSurface = Color(0xFFE8F5E9); // Light mint text
+  static const Color darkBorder = Color(0xFF2E4129); // Dark forest border
 
   // Overlay colors for modals, dialogs, and semi-transparent backgrounds
   /// Black overlay at 50% opacity
@@ -218,9 +218,9 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
-  /// Dark theme gradient - dark grays to charcoal
+  /// Dark theme gradient - deep forest night with subtle green glow
   static const LinearGradient gradientDark = LinearGradient(
-    colors: [Color(0xFF1A1A1A), Color(0xFF2C2C2C)],
+    colors: [Color(0xFF1A2617), Color(0xFF233B1D), Color(0xFF1A2617)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

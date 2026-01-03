@@ -41,6 +41,8 @@ class AllergenAdapter extends TypeAdapter<Allergen> {
         return Allergen.lupin;
       case 13:
         return Allergen.molluscs;
+      case 14:
+        return Allergen.wheat;
       default:
         return Allergen.gluten;
     }
@@ -90,6 +92,9 @@ class AllergenAdapter extends TypeAdapter<Allergen> {
         break;
       case Allergen.molluscs:
         writer.writeByte(13);
+        break;
+      case Allergen.wheat:
+        writer.writeByte(14);
         break;
     }
   }
@@ -273,6 +278,7 @@ const _$AllergenEnumMap = {
   Allergen.mustard: 'mustard',
   Allergen.lupin: 'lupin',
   Allergen.molluscs: 'molluscs',
+  Allergen.wheat: 'wheat',
 };
 
 const _$DietaryRestrictionEnumMap = {

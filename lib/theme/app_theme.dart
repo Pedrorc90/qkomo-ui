@@ -61,13 +61,16 @@ class AppTheme {
   static ThemeData get _offWhiteTheme => _baseTheme(_offWhiteScheme);
 
   // -- Dark --
-  /// Dark theme for night mode with blue accents on dark backgrounds
+  /// Dark theme for night mode - natural forest night with moonlit greens
   static final ColorScheme _darkScheme = ColorScheme.fromSeed(
     seedColor: AppColors.darkPrimary,
     brightness: Brightness.dark,
     surface: AppColors.darkSurface,
     primary: AppColors.darkPrimary,
+    secondary: AppColors.darkSecondary,
     onSurface: AppColors.darkOnSurface,
+    onPrimary: AppColors.darkBackground,
+    onSecondary: AppColors.darkBackground,
   );
 
   static ThemeData get _darkTheme => _baseTheme(_darkScheme);
@@ -116,8 +119,15 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: Colors.white,
-        surfaceTintColor: Colors.white,
+        color: scheme.brightness == Brightness.dark
+            ? Color.alphaBlend(
+                scheme.primary.withOpacity(0.08),
+                scheme.surface,
+              )
+            : Colors.white,
+        surfaceTintColor: scheme.brightness == Brightness.dark
+            ? Colors.transparent
+            : Colors.white,
         elevation: DesignTokens.elevationSm,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
@@ -153,7 +163,12 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: scheme.brightness == Brightness.dark
+            ? Color.alphaBlend(
+                scheme.primary.withOpacity(0.05),
+                scheme.surface,
+              )
+            : Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
           borderSide: BorderSide(
@@ -163,7 +178,9 @@ class AppTheme {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
           borderSide: BorderSide(
-            color: scheme.outlineVariant,
+            color: scheme.brightness == Brightness.dark
+                ? scheme.primary.withOpacity(0.3)
+                : scheme.outlineVariant,
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -184,7 +201,7 @@ class AppTheme {
         ),
         backgroundColor: scheme.onSurface,
         contentTextStyle: AppTypography.bodyMedium.copyWith(
-          color: Colors.white,
+          color: scheme.surface,
         ),
       ),
       tabBarTheme: TabBarThemeData(

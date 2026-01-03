@@ -22,9 +22,7 @@ class DayMealSection extends ConsumerWidget {
     final weekMeals = ref.watch(weekMealsProvider);
     final mealsOfDay = weekMeals.where((meal) {
       final mealDate = meal.scheduledFor;
-      return mealDate.year == date.year &&
-          mealDate.month == date.month &&
-          mealDate.day == date.day;
+      return mealDate.year == date.year && mealDate.month == date.month && mealDate.day == date.day;
     }).toList();
 
     // Sort meals by type
@@ -121,7 +119,7 @@ class DayMealSection extends ConsumerWidget {
                     Text(
                       'Agregar comida',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

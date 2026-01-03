@@ -48,7 +48,7 @@ class RootShell extends ConsumerWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 48, right: 48, bottom: 16, top: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 16),
         child: Material(
           elevation: 3,
           borderRadius: BorderRadius.circular(20),

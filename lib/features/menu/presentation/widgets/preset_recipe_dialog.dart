@@ -34,7 +34,10 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
             child: Text(
               'Lista de recetas',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
           ),
           // Content
@@ -207,9 +210,11 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                                       .textTheme
                                                       .bodySmall
                                                       ?.copyWith(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 11,
-                                                      ),
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 11,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .onSurface),
                                                   maxLines: 2,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),

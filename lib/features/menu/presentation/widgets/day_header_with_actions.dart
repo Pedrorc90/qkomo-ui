@@ -22,10 +22,7 @@ class DayHeaderWithActions extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withAlpha((0.3 * 255).round()),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
@@ -51,7 +48,7 @@ class DayHeaderWithActions extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(
-              Icons.auto_awesome,
+              Icons.restaurant_menu,
               color: Theme.of(context).colorScheme.primary,
             ),
             onPressed: onAutoGenerate,

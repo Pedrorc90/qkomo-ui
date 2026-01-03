@@ -128,8 +128,18 @@ class ProfilePage extends ConsumerWidget {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.logout),
-                title: const Text('Cerrar sesión'),
-                subtitle: const Text('Salir de qkomo en este dispositivo'),
+                title: Text(
+                  'Cerrar sesión',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                subtitle: Text(
+                  'Salir de qkomo en este dispositivo',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
                 onTap: authController.signOut,
               ),
             ),
@@ -192,7 +202,12 @@ class _CompanionSection extends ConsumerWidget {
                       ? const Icon(Icons.person)
                       : null,
                 ),
-                title: Text(companion.displayName ?? companion.email),
+                title: Text(
+                  companion.displayName ?? companion.email,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
                 subtitle: Text(
                   companion.isPending ? 'Invitación enviada' : 'Compañero',
                   style: TextStyle(
@@ -216,12 +231,23 @@ class _CompanionSection extends ConsumerWidget {
                             children: [
                               Text(
                                 'Desvincular compañero',
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                  '¿Seguro que quieres eliminar a ${companion.displayName ?? companion.email}? Dejarán de compartir el menú semanal.'),
+                                '¿Seguro que quieres eliminar a ${companion.displayName ?? companion.email}? Dejarán de compartir el menú semanal.',
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
                               const SizedBox(height: 24),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,

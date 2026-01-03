@@ -26,10 +26,8 @@ class ProfileOptionCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 26,
-                backgroundColor: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withAlpha((0.15 * 255).round()),
+                backgroundColor:
+                    Theme.of(context).colorScheme.primary.withAlpha((0.15 * 255).round()),
                 child: Icon(icon, color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(width: 14),
@@ -40,13 +38,16 @@ class ProfileOptionCard extends StatelessWidget {
                     Text(
                       title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).colorScheme.onSurface),
                     ),
                     if (subtitle != null) ...[
                       const SizedBox(height: 4),
                       Text(subtitle!,
-                          style: Theme.of(context).textTheme.bodyMedium),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                     ],
                   ],
                 ),

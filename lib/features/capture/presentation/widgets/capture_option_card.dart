@@ -20,8 +20,7 @@ class CaptureOptionCard extends StatefulWidget {
   State<CaptureOptionCard> createState() => _CaptureOptionCardState();
 }
 
-class _CaptureOptionCardState extends State<CaptureOptionCard>
-    with SingleTickerProviderStateMixin {
+class _CaptureOptionCardState extends State<CaptureOptionCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -93,8 +92,8 @@ class _CaptureOptionCardState extends State<CaptureOptionCard>
                       Text(
                         widget.label,
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.onSurface),
                       ),
                       const SizedBox(height: 2),
                       Text(

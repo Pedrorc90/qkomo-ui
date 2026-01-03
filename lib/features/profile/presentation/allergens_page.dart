@@ -73,6 +73,7 @@ class AllergensPage extends ConsumerWidget {
                             fontSize: 12,
                             fontWeight:
                                 isSelected ? FontWeight.bold : FontWeight.normal,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),

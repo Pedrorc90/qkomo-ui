@@ -25,10 +25,10 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'Seleccionar tipos de comidas',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+            Text('Seleccionar tipos de comidas',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    )),
             const SizedBox(height: 16),
             GridView.count(
               shrinkWrap: true,
@@ -53,9 +53,7 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
                         width: isSelected ? 2 : 1,
                       ),
                       borderRadius: BorderRadius.circular(8),
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : null,
+                      color: isSelected ? Theme.of(context).colorScheme.primaryContainer : null,
                     ),
                     child: Row(
                       children: [
@@ -71,9 +69,8 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
                           child: Text(
                             mealType.displayName,
                             style: TextStyle(
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -94,16 +91,13 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
                 const SizedBox(width: 8),
                 FilledButton(
                   onPressed: () {
-                    final selected = _selectedMealTypes.entries
-                        .where((e) => e.value)
-                        .map((e) => e.key)
-                        .toList();
+                    final selected =
+                        _selectedMealTypes.entries.where((e) => e.value).map((e) => e.key).toList();
 
                     if (selected.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                              'Debes seleccionar al menos un tipo de comida'),
+                          content: Text('Debes seleccionar al menos un tipo de comida'),
                           duration: Duration(seconds: 2),
                         ),
                       );

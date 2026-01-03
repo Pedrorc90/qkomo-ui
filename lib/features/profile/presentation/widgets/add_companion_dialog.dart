@@ -59,7 +59,9 @@ class _AddCompanionDialogState extends ConsumerState<AddCompanionDialog> {
           children: [
             Text(
               'Añadir Compañero',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
             ),
             const SizedBox(height: 16),
             Form(
@@ -67,8 +69,11 @@ class _AddCompanionDialogState extends ConsumerState<AddCompanionDialog> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
+                  Text(
                     'Introduce el email de tu compañero para compartir el menú semanal.',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(

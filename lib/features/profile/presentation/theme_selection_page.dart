@@ -24,15 +24,15 @@ class ThemeSelectionPage extends ConsumerWidget {
                 child: Column(
                   children: [
                     // Original themes
-                    _ThemeOption(
-                      label: 'Cálido',
-                      description: 'Naranja cálido e invitador',
-                      isSelected: currentTheme == AppThemeType.warm,
-                      color: const Color(0xFFFF6F3C),
-                      onTap: () =>
-                          ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.warm),
-                    ),
-                    const Divider(),
+                    // _ThemeOption(
+                    //   label: 'Cálido',
+                    //   description: 'Naranja cálido e invitador',
+                    //   isSelected: currentTheme == AppThemeType.warm,
+                    //   color: const Color(0xFFFF6F3C),
+                    //   onTap: () =>
+                    //       ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.warm),
+                    // ),
+                    // const Divider(),
                     _ThemeOption(
                       label: 'Off-White',
                       description: 'Gris minimalista neutral',
@@ -60,15 +60,15 @@ class ThemeSelectionPage extends ConsumerWidget {
                       onTap: () =>
                           ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.forest),
                     ),
-                    const Divider(),
-                    _ThemeOption(
-                      label: 'Índigo',
-                      description: 'Índigo profundo y elegante',
-                      isSelected: currentTheme == AppThemeType.indigo,
-                      color: const Color(0xFF4338CA),
-                      onTap: () =>
-                          ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.indigo),
-                    ),
+                    //const Divider(),
+                    // _ThemeOption(
+                    //   label: 'Índigo',
+                    //   description: 'Índigo profundo y elegante',
+                    //   isSelected: currentTheme == AppThemeType.indigo,
+                    //   color: const Color(0xFF4338CA),
+                    //   onTap: () =>
+                    //       ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.indigo),
+                    // ),
                   ],
                 ),
               ),
@@ -127,15 +127,16 @@ class _ThemeOption extends StatelessWidget {
                   Text(
                     label,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        ),
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: Theme.of(context).colorScheme.onSurface),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     description,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).textTheme.bodySmall?.color?.withAlpha(153),
-                        ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ],
               ),

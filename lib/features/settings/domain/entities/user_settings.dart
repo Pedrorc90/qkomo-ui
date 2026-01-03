@@ -52,7 +52,9 @@ enum Allergen {
   @HiveField(12)
   lupin,
   @HiveField(13)
-  molluscs;
+  molluscs,
+  @HiveField(14)
+  wheat;
 
   String get displayName {
     switch (this) {
@@ -84,6 +86,8 @@ enum Allergen {
         return 'Altramuces';
       case Allergen.molluscs:
         return 'Moluscos';
+      case Allergen.wheat:
+        return 'Trigo';
     }
   }
 }
@@ -161,6 +165,8 @@ extension AllergenIcon on Allergen {
         return MdiIcons.leaf;
       case Allergen.molluscs:
         return MdiIcons.close;
+      case Allergen.wheat:
+        return MdiIcons.barley;
     }
   }
 }
