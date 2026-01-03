@@ -298,15 +298,51 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-            child: Text(
-              widget.existingMeal != null
-                  ? 'Editar ${_selectedMealType.displayName}'
-                  : 'Agregar comida',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+            padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      // If showing form and not editing existing meal, go back to initial state
+                      if (_showForm && widget.existingMeal == null) {
+                        setState(() {
+                          _showForm = false;
+                          _isCreatingCustom = false;
+                          // Clear form data
+                          _nameController.clear();
+                          _notesController.clear();
+                          _photoPath = null;
+                          for (var controller in _ingredientControllers) {
+                            controller.dispose();
+                          }
+                          _ingredientControllers.clear();
+                          _ingredientControllers.add(TextEditingController());
+                        });
+                      } else {
+                        // Otherwise close the dialog
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
+                    child: Text(
+                      widget.existingMeal != null
+                          ? 'Editar ${_selectedMealType.displayName}'
+                          : 'Agregar comida',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Flexible(

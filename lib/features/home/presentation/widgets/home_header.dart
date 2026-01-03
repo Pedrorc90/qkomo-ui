@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/core/animations/page_transitions.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/hero_cta_card.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/last_analysis_preview_card.dart';
@@ -23,10 +25,14 @@ class HomeHeader extends ConsumerWidget {
     final name = user?.displayName?.split(' ').first ?? '';
     final now = DateTime.now();
     final dateStr = DateFormat('EEEE, d MMMM', 'es').format(now);
-    final formattedDate = dateStr.substring(0, 1).toUpperCase() + dateStr.substring(1);
+    final formattedDate =
+        dateStr.substring(0, 1).toUpperCase() + dateStr.substring(1);
 
     final nextMeal = ref.watch(nextMealProvider);
     final lastAnalysis = ref.watch(lastAnalysisProvider);
+    final isImageAnalysisEnabled = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.isImageAnalysisEnabled),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: DesignTokens.spacingMd),
@@ -51,21 +57,23 @@ class HomeHeader extends ConsumerWidget {
                 ),
           ),
           const SizedBox(height: DesignTokens.spacingMd),
-          // Dual Hero Section
+          // Hero Section - conditional layout based on image analysis feature
           Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildMealHero(context, ref, nextMeal),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _buildAnalysisHero(context, ref, lastAnalysis),
-                  ),
-                ],
-              ),
+              child: isImageAnalysisEnabled
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: _buildMealHero(context, ref, nextMeal),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _buildAnalysisHero(context, ref, lastAnalysis),
+                        ),
+                      ],
+                    )
+                  : _buildMealHero(context, ref, nextMeal),
             ),
           ),
         ],
@@ -89,7 +97,8 @@ class HomeHeader extends ConsumerWidget {
     }
   }
 
-  Widget _buildAnalysisHero(BuildContext context, WidgetRef ref, dynamic lastAnalysis) {
+  Widget _buildAnalysisHero(
+      BuildContext context, WidgetRef ref, dynamic lastAnalysis) {
     if (lastAnalysis != null) {
       return LastAnalysisPreviewCard(
         lastAnalysis: lastAnalysis,

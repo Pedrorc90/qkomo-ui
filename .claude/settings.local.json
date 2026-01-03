@@ -18,7 +18,9 @@
       "Bash(git mv:*)",
       "Bash(grep:*)",
       "Bash(done)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(curl:*)",
+      "Bash(dart analyze:*)"
     ],
     "deny": [],
     "ask": []

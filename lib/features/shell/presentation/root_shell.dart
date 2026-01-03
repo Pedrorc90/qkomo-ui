@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
 import 'package:qkomo_ui/features/capture/presentation/capture_bottom_sheet.dart';
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/home/presentation/home_page.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/profile_page.dart';
@@ -13,6 +15,9 @@ class RootShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final index = ref.watch(bottomNavIndexProvider);
+    final isImageAnalysisEnabled = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.isImageAnalysisEnabled),
+    );
 
     return Scaffold(
       extendBody: true,
@@ -28,24 +33,27 @@ class RootShell extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => const Dialog(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-              child: CaptureBottomSheet(),
-            ),
-          );
-        },
-        tooltip: SemanticLabels.navCapture,
-        child: const Icon(
-          Icons.camera_alt_outlined,
-          semanticLabel: SemanticLabels.navCapture,
-        ),
-      ),
+      floatingActionButton: isImageAnalysisEnabled
+          ? FloatingActionButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => const Dialog(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    insetPadding:
+                        EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                    child: CaptureBottomSheet(),
+                  ),
+                );
+              },
+              tooltip: SemanticLabels.navCapture,
+              child: const Icon(
+                Icons.camera_alt_outlined,
+                semanticLabel: SemanticLabels.navCapture,
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 16),

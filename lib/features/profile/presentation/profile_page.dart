@@ -23,6 +23,9 @@ class ProfilePage extends ConsumerWidget {
     final isDataHistoricalEnabled = ref.watch(
       featureEnabledProvider(FeatureToggleKeys.profileDataHistoricalIsEnabled),
     );
+    final showAppearance = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.showAppearance),
+    );
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -96,26 +99,28 @@ class ProfilePage extends ConsumerWidget {
             //const _NotificationOption(),
             //const SizedBox(height: 8),
             //const _LanguageOption(),
-            const SizedBox(height: 24),
-            Text(
-              'Apariencia',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            ProfileOptionCard(
-              title: 'Apariencia',
-              icon: Icons.palette_outlined,
-              subtitle: 'Personaliza los colores de la app',
-              onTap: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(
-                    builder: (context) => const ThemeSelectionPage()));
-              },
-            ),
+            if (showAppearance) ...[
+              const SizedBox(height: 24),
+              Text(
+                'Apariencia',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              const SizedBox(height: 12),
+              ProfileOptionCard(
+                title: 'Apariencia',
+                icon: Icons.palette_outlined,
+                subtitle: 'Personaliza los colores de la app',
+                onTap: () {
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(
+                      builder: (context) => const ThemeSelectionPage()));
+                },
+              ),
+            ],
             const SizedBox(height: 24),
             Text(
               'Cuenta',

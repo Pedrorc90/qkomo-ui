@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/recent_entries_section.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/upcoming_meals_section.dart';
@@ -18,17 +20,22 @@ class HomeContent extends ConsumerWidget {
     final todayEntries = ref.watch(todayEntriesProvider);
     final todayMeals = ref.watch(todayMealsProvider);
     final tomorrowMeals = ref.watch(tomorrowMealsProvider);
+    final isImageAnalysisEnabled = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.isImageAnalysisEnabled),
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          RecentEntriesSection(
-            yesterdayEntries: yesterdayEntries,
-            todayEntries: todayEntries,
-          ),
-          const SizedBox(height: 24),
+          if (isImageAnalysisEnabled) ...[
+            RecentEntriesSection(
+              yesterdayEntries: yesterdayEntries,
+              todayEntries: todayEntries,
+            ),
+            const SizedBox(height: 24),
+          ],
           UpcomingMealsSection(
             todayMeals: todayMeals,
             tomorrowMeals: tomorrowMeals,
