@@ -5,19 +5,30 @@ import 'package:hive/hive.dart';
 import 'package:qkomo_ui/config/env.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
+import 'package:qkomo_ui/features/menu/application/ai_weekly_menu_availability.dart';
 import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
 import 'package:qkomo_ui/features/menu/application/menu_state.dart';
-import 'package:qkomo_ui/features/menu/data/custom_recipe_repository.dart' as impl;
-import 'package:qkomo_ui/features/menu/data/deleted_preset_recipes_repository.dart' as impl2;
+import 'package:qkomo_ui/features/menu/data/custom_recipe_repository.dart'
+    as impl;
+import 'package:qkomo_ui/features/menu/data/deleted_preset_recipes_repository.dart'
+    as impl2;
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
+import 'package:qkomo_ui/features/menu/data/hybrid_weekly_menu_repository.dart';
+import 'package:qkomo_ui/features/menu/data/local_weekly_menu_repository.dart';
+import 'package:qkomo_ui/features/menu/data/remote_weekly_menu_repository.dart';
+import 'package:qkomo_ui/features/menu/data/weekly_menu_api.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/repositories/weekly_menu_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
 
 // Box provider
@@ -78,7 +89,8 @@ final weekMealsProvider = Provider<List<Meal>>((ref) {
   final weekEnd = weekStart.add(const Duration(days: 7));
 
   return allMeals.where((meal) {
-    return meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
+    return meal.scheduledFor
+            .isAfter(weekStart.subtract(const Duration(days: 1))) &&
         meal.scheduledFor.isBefore(weekEnd);
   }).toList();
 });
@@ -113,7 +125,9 @@ final todayMealsProvider = Provider<List<Meal>>((ref) {
 
   return allMeals.where((meal) {
     final mealDate = meal.scheduledFor;
-    return mealDate.year == now.year && mealDate.month == now.month && mealDate.day == now.day;
+    return mealDate.year == now.year &&
+        mealDate.month == now.month &&
+        mealDate.day == now.day;
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });
@@ -152,7 +166,8 @@ final deletedPresetRecipesBoxProvider = Provider<Box<String>?>((ref) {
 });
 
 // Deleted preset recipes repository provider
-final deletedPresetRecipesRepositoryProvider = Provider<DeletedPresetRecipesRepository?>((ref) {
+final deletedPresetRecipesRepositoryProvider =
+    Provider<DeletedPresetRecipesRepository?>((ref) {
   try {
     final box = ref.watch(deletedPresetRecipesBoxProvider);
     if (box == null) {
@@ -212,7 +227,7 @@ final userRecipesProvider = StreamProvider<List<UserRecipe>>((ref) {
         ingredients: (data['ingredients'] as List?)?.cast<String>() ?? [],
         mealType: data['mealType'] != null
             ? MealType.values[data['mealType'] as int]
-            : MealType.breakfast,
+            : MealType.lunch,
         createdAt: data['createdAt'] != null
             ? DateTime.parse(data['createdAt'] as String)
             : DateTime.now(),
@@ -263,14 +278,72 @@ final deletedPresetRecipesStreamProvider = StreamProvider<List<String>>((ref) {
   return controller.stream;
 });
 
+// Weekly Menu providers
+final weeklyMenuBoxProvider = Provider<Box<WeeklyMenu>>((ref) {
+  return Hive.box<WeeklyMenu>(MenuHiveBoxes.weeklyMenus);
+});
+
+final weeklyMenuApiProvider = Provider<WeeklyMenuApi>((ref) {
+  final dio = ref.watch(dioProvider);
+  return WeeklyMenuApi(dio);
+});
+
+final localWeeklyMenuRepositoryProvider =
+    Provider<LocalWeeklyMenuRepository>((ref) {
+  final box = ref.watch(weeklyMenuBoxProvider);
+  final user = ref.watch(authStateChangesProvider).value;
+  final userId = user?.uid ?? '';
+
+  return LocalWeeklyMenuRepository(weeklyMenuBox: box, userId: userId);
+});
+
+final remoteWeeklyMenuRepositoryProvider =
+    Provider<RemoteWeeklyMenuRepository>((ref) {
+  final api = ref.watch(weeklyMenuApiProvider);
+  return RemoteWeeklyMenuRepository(api);
+});
+
+final weeklyMenuRepositoryProvider = Provider<WeeklyMenuRepository>((ref) {
+  final localRepo = ref.watch(localWeeklyMenuRepositoryProvider);
+  final remoteRepo = ref.watch(remoteWeeklyMenuRepositoryProvider);
+  final user = ref.watch(authStateChangesProvider).value;
+  final userId = user?.uid ?? '';
+
+  return HybridWeeklyMenuRepository(
+    localRepo: localRepo,
+    remoteRepo: remoteRepo,
+    userId: userId,
+    enableCloudSync: EnvConfig.enableCloudSync,
+  );
+});
+
+final aiWeeklyMenuAvailabilityProvider =
+    Provider<AiWeeklyMenuAvailability>((ref) {
+  return AiWeeklyMenuAvailability();
+});
+
 // Controller provider
-final menuControllerProvider = StateNotifierProvider<MenuController, MenuState>((ref) {
+final menuControllerProvider =
+    StateNotifierProvider<MenuController, MenuState>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
   final customRecipeRepository = ref.watch(customRecipeRepositoryProvider);
-  final deletedPresetRecipesRepository = ref.watch(deletedPresetRecipesRepositoryProvider);
+  final deletedPresetRecipesRepository =
+      ref.watch(deletedPresetRecipesRepositoryProvider);
+  final weeklyMenuRepository = ref.watch(weeklyMenuRepositoryProvider);
+  final aiAvailability = ref.watch(aiWeeklyMenuAvailabilityProvider);
+
   return MenuController(
     repository,
+    isAiWeeklyMenuEnabled: () {
+      return ref.read(featureEnabledProvider(FeatureToggleKeys.aiWeeklyMenuIsEnabled));
+    },
+    getUserId: () {
+      final user = ref.read(authStateChangesProvider).value;
+      return user?.uid ?? '';
+    },
     customRecipeRepository: customRecipeRepository,
     deletedPresetRecipesRepository: deletedPresetRecipesRepository,
+    weeklyMenuRepository: weeklyMenuRepository,
+    aiAvailability: aiAvailability,
   );
 });

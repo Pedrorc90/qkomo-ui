@@ -1,7 +1,8 @@
 import 'package:hive/hive.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
 
-class DeletedPresetRecipesRepositoryImpl implements DeletedPresetRecipesRepository {
+class DeletedPresetRecipesRepositoryImpl
+    implements DeletedPresetRecipesRepository {
   DeletedPresetRecipesRepositoryImpl({required Box<String> box}) : _box = box;
 
   final Box<String> _box;

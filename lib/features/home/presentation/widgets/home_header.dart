@@ -11,6 +11,8 @@ import 'package:qkomo_ui/features/home/application/home_providers.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/hero_cta_card.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/last_analysis_preview_card.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/next_meal_preview_card.dart';
+import 'package:qkomo_ui/features/home/presentation/widgets/weekly_menu_preview_card.dart';
+import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
 
@@ -33,6 +35,11 @@ class HomeHeader extends ConsumerWidget {
     final isImageAnalysisEnabled = ref.watch(
       featureEnabledProvider(FeatureToggleKeys.isImageAnalysisEnabled),
     );
+    final isAiWeeklyMenuEnabled = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.aiWeeklyMenuIsEnabled),
+    );
+    final hasWeeklyMenu = ref.watch(hasWeeklyMenuProvider);
+    final weekMeals = ref.watch(weekMealsProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: DesignTokens.spacingMd),
@@ -57,28 +64,96 @@ class HomeHeader extends ConsumerWidget {
                 ),
           ),
           const SizedBox(height: DesignTokens.spacingMd),
-          // Hero Section - conditional layout based on image analysis feature
+          // Hero Section - conditional layout based on features
           Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
-              child: isImageAnalysisEnabled
-                  ? Row(
-                      children: [
-                        Expanded(
-                          child: _buildMealHero(context, ref, nextMeal),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _buildAnalysisHero(context, ref, lastAnalysis),
-                        ),
-                      ],
-                    )
-                  : _buildMealHero(context, ref, nextMeal),
+              child: _buildHeroSection(
+                context,
+                ref,
+                isAiWeeklyMenuEnabled: isAiWeeklyMenuEnabled,
+                isImageAnalysisEnabled: isImageAnalysisEnabled,
+                hasWeeklyMenu: hasWeeklyMenu,
+                weekMealCount: weekMeals.length,
+                nextMeal: nextMeal,
+                lastAnalysis: lastAnalysis,
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildHeroSection(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isAiWeeklyMenuEnabled,
+    required bool isImageAnalysisEnabled,
+    required bool hasWeeklyMenu,
+    required int weekMealCount,
+    required dynamic nextMeal,
+    required dynamic lastAnalysis,
+  }) {
+    if (isAiWeeklyMenuEnabled) {
+      // AI Weekly Menu mode
+      if (isImageAnalysisEnabled) {
+        // Both features enabled: show menu + analysis
+        return Row(
+          children: [
+            Expanded(
+              child:
+                  _buildWeeklyMenuHero(context, hasWeeklyMenu, weekMealCount),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildAnalysisHero(context, ref, lastAnalysis),
+            ),
+          ],
+        );
+      } else {
+        // Only AI menu enabled
+        return _buildWeeklyMenuHero(context, hasWeeklyMenu, weekMealCount);
+      }
+    } else {
+      // Legacy mode (original behavior)
+      if (isImageAnalysisEnabled) {
+        return Row(
+          children: [
+            Expanded(
+              child: _buildMealHero(context, ref, nextMeal),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildAnalysisHero(context, ref, lastAnalysis),
+            ),
+          ],
+        );
+      } else {
+        return _buildMealHero(context, ref, nextMeal);
+      }
+    }
+  }
+
+  Widget _buildWeeklyMenuHero(
+    BuildContext context,
+    bool hasWeeklyMenu,
+    int weekMealCount,
+  ) {
+    if (hasWeeklyMenu) {
+      return WeeklyMenuPreviewCard(
+        mealCount: weekMealCount,
+        onTap: () => context.pushSlide(const WeeklyMenuPage()),
+      );
+    } else {
+      return HeroCTACard(
+        title: 'Generar menú semanal',
+        subtitle: 'Planifica con IA',
+        icon: Icons.auto_awesome,
+        onTap: () => context.pushSlide(const WeeklyMenuPage()),
+        isPrimary: true,
+      );
+    }
   }
 
   Widget _buildMealHero(BuildContext context, WidgetRef ref, dynamic nextMeal) {

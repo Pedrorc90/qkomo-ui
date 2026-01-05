@@ -257,12 +257,8 @@ class _MealCardState extends ConsumerState<MealCard> {
 
   IconData _getMealIcon(MealType type) {
     switch (type) {
-      case MealType.breakfast:
-        return Icons.free_breakfast;
       case MealType.lunch:
         return Icons.restaurant;
-      case MealType.snack:
-        return Icons.cookie;
       case MealType.dinner:
         return Icons.dinner_dining;
     }
@@ -271,12 +267,8 @@ class _MealCardState extends ConsumerState<MealCard> {
   Color _getMealTypeColor(BuildContext context, MealType type) {
     final colorScheme = Theme.of(context).colorScheme;
     switch (type) {
-      case MealType.breakfast:
-        return colorScheme.primary;
       case MealType.lunch:
         return colorScheme.secondary;
-      case MealType.snack:
-        return colorScheme.tertiary;
       case MealType.dinner:
         return colorScheme.error;
     }

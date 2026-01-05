@@ -41,7 +41,8 @@ class HeroCTACard extends StatelessWidget {
           ],
         ),
         child: Material(
-          color: isPrimary ? scheme.primaryContainer : scheme.surfaceContainerLow,
+          color:
+              isPrimary ? scheme.primaryContainer : scheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
@@ -59,7 +60,9 @@ class HeroCTACard extends StatelessWidget {
                 Text(
                   title,
                   style: textTheme.titleSmall?.copyWith(
-                    color: isPrimary ? scheme.onPrimaryContainer : scheme.onSurface,
+                    color: isPrimary
+                        ? scheme.onPrimaryContainer
+                        : scheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,

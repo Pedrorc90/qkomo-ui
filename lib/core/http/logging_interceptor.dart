@@ -22,7 +22,8 @@ class LoggingInterceptor extends Interceptor {
     final requestId = response.requestOptions.extra['_request_id'] ?? '?';
     final isSilent = response.requestOptions.extra['silent_request'] as bool? ?? false;
     final silentTag = isSilent ? '[SILENT]' : '[VISIBLE]';
-    debugPrint('✅ [$requestId] $silentTag ${response.requestOptions.method} ${response.requestOptions.uri} - ${response.statusCode}');
+    debugPrint(
+        '✅ [$requestId] $silentTag ${response.requestOptions.method} ${response.requestOptions.uri} - ${response.statusCode}');
     super.onResponse(response, handler);
   }
 
@@ -32,7 +33,9 @@ class LoggingInterceptor extends Interceptor {
     final isSilent = err.requestOptions.extra['silent_request'] as bool? ?? false;
     final silentTag = isSilent ? '[SILENT]' : '[VISIBLE]';
     final statusCode = err.response?.statusCode ?? 'N/A';
-    debugPrint('❌ [$requestId] $silentTag ${err.requestOptions.method} ${err.requestOptions.uri} - $statusCode (${err.type})');
+    debugPrint(
+        '❌ [$requestId] $silentTag ${err.requestOptions.method} ${err.requestOptions.path} - $statusCode - (${err.type}) 🔍 ${err.message})');
+
     super.onError(err, handler);
   }
 }

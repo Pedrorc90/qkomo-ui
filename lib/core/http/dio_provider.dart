@@ -48,23 +48,22 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   );
 
-  // Add notification interceptor to inform user about retries
-  // DEBE estar ANTES del RetryInterceptor para capturar los errores antes del retry
-  dio.interceptors.add(
-    RetryNotificationInterceptor(ref: ref),
-  );
-
-  // Add retry interceptor with single retry
-  dio.interceptors.add(
-    RetryInterceptor(
-      dio: dio,
-      retries: 1, // Only 1 retry attempt
-      retryDelays: const [
-        Duration(seconds: 1), // Single retry after 1s
-      ],
-      retryableExtraStatuses: {408, 429}, // Request Timeout y Too Many Requests
-    ),
-  );
+  // Retry interceptors disabled
+  // TODO: Re-enable if needed
+  // dio.interceptors.add(
+  //   RetryNotificationInterceptor(ref: ref),
+  // );
+  //
+  // dio.interceptors.add(
+  //   RetryInterceptor(
+  //     dio: dio,
+  //     retries: 1,
+  //     retryDelays: const [
+  //       Duration(seconds: 1),
+  //     ],
+  //     retryableExtraStatuses: {408, 429},
+  //   ),
+  // );
 
   return dio;
 });

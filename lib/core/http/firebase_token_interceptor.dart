@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
 
@@ -18,25 +19,41 @@ class FirebaseTokenInterceptor extends Interceptor {
   final FirebaseAuth _auth;
   final Dio _dio;
 
+  /// Public endpoints that don't require authentication
+  static const _publicEndpoints = {
+    '/api/features',
+  };
+
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // Skip auth for public endpoints
+    if (_isPublicEndpoint(options.path)) {
+      handler.next(options);
+      return;
+    }
+
     try {
       final token = await _getToken();
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $token';
+      } else {
+        // No token available - log but continue (some endpoints may not require auth)
+        debugPrint('⚠️ No Firebase token available for request: ${options.method} ${options.uri}');
       }
       handler.next(options);
     } catch (e) {
-      handler.reject(
-        DioException(
-          requestOptions: options,
-          error: 'No se pudo obtener el token de autenticación: $e',
-        ),
-      );
+      // Log error but don't reject - let the backend return 401 if auth is required
+      debugPrint('⚠️ Error getting Firebase token: $e. Proceeding without auth header.');
+      handler.next(options);
     }
+  }
+
+  /// Check if endpoint is public (doesn't require authentication)
+  bool _isPublicEndpoint(String path) {
+    return _publicEndpoints.contains(path);
   }
 
   @override

@@ -44,7 +44,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   @override
   void initState() {
     super.initState();
-    _selectedMealType = widget.mealType ?? widget.existingMeal?.mealType ?? MealType.breakfast;
+    _selectedMealType =
+        widget.mealType ?? widget.existingMeal?.mealType ?? MealType.lunch;
 
     // Listen to name changes to update the bookmark button visibility
     _nameController.addListener(() {
@@ -157,7 +158,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         } else if (selected is Map<String, dynamic>) {
           // Custom recipe
           _nameController.text = selected['name'] as String? ?? '';
-          _selectedMealType = selected['mealType'] as MealType? ?? MealType.breakfast;
+          _selectedMealType =
+              selected['mealType'] as MealType? ?? MealType.lunch;
           _photoPath = selected['photoPath'] as String?;
 
           // Clear current ingredients and add from recipe
@@ -178,8 +180,10 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveMeal() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients =
-        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
+    final ingredients = _ingredientControllers
+        .map((c) => c.text.trim())
+        .where((text) => text.isNotEmpty)
+        .toList();
 
     if (ingredients.isEmpty) {
       // Form validation should catch this now with the validator on the first field
@@ -197,7 +201,9 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     } else {
@@ -207,7 +213,9 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
         ingredients: ingredients,
         mealType: _selectedMealType,
         scheduledFor: widget.date,
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
         photoPath: _photoPath,
       );
     }
@@ -220,8 +228,10 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   Future<void> _saveAsRecipe() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final ingredients =
-        _ingredientControllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
+    final ingredients = _ingredientControllers
+        .map((c) => c.text.trim())
+        .where((text) => text.isNotEmpty)
+        .toList();
 
     if (ingredients.isEmpty) {
       return;
@@ -279,10 +289,12 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     if (existsInCustom) return true;
 
     // Check preset recipes (excluding deleted ones)
-    final deletedPresetRecipes = ref.read(deletedPresetRecipesStreamProvider).value ?? [];
+    final deletedPresetRecipes =
+        ref.read(deletedPresetRecipesStreamProvider).value ?? [];
     final existsInPreset = PresetRecipes.all.any(
       (recipe) =>
-          recipe.name.toLowerCase() == trimmedName && !deletedPresetRecipes.contains(recipe.name),
+          recipe.name.toLowerCase() == trimmedName &&
+          !deletedPresetRecipes.contains(recipe.name),
     );
 
     return existsInPreset;
@@ -330,7 +342,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                 ),
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
                     child: Text(
                       widget.existingMeal != null
                           ? 'Editar ${_selectedMealType.displayName}'
@@ -338,7 +351,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall
-                          ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                          ?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface),
                     ),
                   ),
                 ),
@@ -423,7 +437,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                         MealPhotoPicker(
                           photoPath: _photoPath,
                           onPickPhoto: _showImageSourceDialog,
-                          onRemovePhoto: () => setState(() => _photoPath = null),
+                          onRemovePhoto: () =>
+                              setState(() => _photoPath = null),
                         ),
                       ],
                     ], // End of _showForm
@@ -432,7 +447,8 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                       const SizedBox(height: 16),
                       Text(
                         menuState.errorMessage!,
-                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                     ],
                   ],
@@ -452,9 +468,12 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                   child: const Text('Cancelar'),
                 ),
                 const SizedBox(width: 8),
-                if (_showForm && !_recipeAlreadyExists(_nameController.text)) ...[
+                if (_showForm &&
+                    !_recipeAlreadyExists(_nameController.text)) ...[
                   IconButton(
-                    onPressed: (menuState.isLoading || _isSavingAsRecipe) ? null : _saveAsRecipe,
+                    onPressed: (menuState.isLoading || _isSavingAsRecipe)
+                        ? null
+                        : _saveAsRecipe,
                     icon: _isSavingAsRecipe
                         ? const SizedBox(
                             width: 16,
@@ -465,14 +484,17 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                   )
                 ],
                 FilledButton(
-                  onPressed: (menuState.isLoading || _isSavingAsRecipe) ? null : _saveMeal,
+                  onPressed: (menuState.isLoading || _isSavingAsRecipe)
+                      ? null
+                      : _saveMeal,
                   child: menuState.isLoading
                       ? const SizedBox(
                           width: 16,
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text(widget.existingMeal != null ? 'Guardar' : 'Añadir'),
+                      : Text(
+                          widget.existingMeal != null ? 'Guardar' : 'Añadir'),
                 ),
               ],
             ),

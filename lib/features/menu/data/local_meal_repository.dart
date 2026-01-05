@@ -42,14 +42,17 @@ class LocalMealRepository {
 
   /// Get all non-deleted meals for current user, sorted by scheduledFor
   List<Meal> getAllMeals() {
-    return _mealBox.values.where((meal) => meal.userId == _userId && !meal.isDeleted).toList()
+    return _mealBox.values
+        .where((meal) => meal.userId == _userId && !meal.isDeleted)
+        .toList()
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
   }
 
   /// Get meals with pending sync status
   List<Meal> getPendingMeals() {
     return _mealBox.values
-        .where((meal) => meal.userId == _userId && meal.syncStatus == SyncStatus.pending)
+        .where((meal) =>
+            meal.userId == _userId && meal.syncStatus == SyncStatus.pending)
         .toList();
   }
 
@@ -66,7 +69,8 @@ class LocalMealRepository {
     return _mealBox.values.where((meal) {
       return meal.userId == _userId &&
           !meal.isDeleted &&
-          meal.scheduledFor.isAfter(weekStart.subtract(const Duration(days: 1))) &&
+          meal.scheduledFor
+              .isAfter(weekStart.subtract(const Duration(days: 1))) &&
           meal.scheduledFor.isBefore(weekEnd);
     }).toList()
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));

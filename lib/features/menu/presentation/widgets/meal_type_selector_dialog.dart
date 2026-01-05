@@ -10,9 +10,7 @@ class MealTypeSelectorDialog extends StatefulWidget {
 
 class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
   final Map<MealType, bool> _selectedMealTypes = {
-    MealType.breakfast: false,
     MealType.lunch: true,
-    MealType.snack: false,
     MealType.dinner: true,
   };
 
@@ -53,7 +51,9 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
                         width: isSelected ? 2 : 1,
                       ),
                       borderRadius: BorderRadius.circular(8),
-                      color: isSelected ? Theme.of(context).colorScheme.primaryContainer : null,
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : null,
                     ),
                     child: Row(
                       children: [
@@ -69,7 +69,9 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
                           child: Text(
                             mealType.displayName,
                             style: TextStyle(
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
@@ -91,13 +93,16 @@ class _MealTypeSelectorDialogState extends State<MealTypeSelectorDialog> {
                 const SizedBox(width: 8),
                 FilledButton(
                   onPressed: () {
-                    final selected =
-                        _selectedMealTypes.entries.where((e) => e.value).map((e) => e.key).toList();
+                    final selected = _selectedMealTypes.entries
+                        .where((e) => e.value)
+                        .map((e) => e.key)
+                        .toList();
 
                     if (selected.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Debes seleccionar al menos un tipo de comida'),
+                          content: Text(
+                              'Debes seleccionar al menos un tipo de comida'),
                           duration: Duration(seconds: 2),
                         ),
                       );

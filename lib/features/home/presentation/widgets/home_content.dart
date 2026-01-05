@@ -20,8 +20,13 @@ class HomeContent extends ConsumerWidget {
     final todayEntries = ref.watch(todayEntriesProvider);
     final todayMeals = ref.watch(todayMealsProvider);
     final tomorrowMeals = ref.watch(tomorrowMealsProvider);
+    final weeklyMenuAsync = ref.watch(currentWeeklyMenuProvider);
+    final weeklyMenu = weeklyMenuAsync.value;
     final isImageAnalysisEnabled = ref.watch(
       featureEnabledProvider(FeatureToggleKeys.isImageAnalysisEnabled),
+    );
+    final isAiWeeklyMenuEnabled = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.aiWeeklyMenuIsEnabled),
     );
 
     return SingleChildScrollView(
@@ -39,6 +44,8 @@ class HomeContent extends ConsumerWidget {
           UpcomingMealsSection(
             todayMeals: todayMeals,
             tomorrowMeals: tomorrowMeals,
+            weeklyMenu: weeklyMenu,
+            isAiWeeklyMenuEnabled: isAiWeeklyMenuEnabled,
           ),
         ],
       ),

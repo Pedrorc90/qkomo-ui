@@ -178,17 +178,7 @@ class _DayCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _MealIndicator(
-                    isActive: mealTypes.contains(MealType.breakfast),
-                    color: textColor,
-                  ),
-                  const SizedBox(width: 4),
-                  _MealIndicator(
                     isActive: mealTypes.contains(MealType.lunch),
-                    color: textColor,
-                  ),
-                  const SizedBox(width: 4),
-                  _MealIndicator(
-                    isActive: mealTypes.contains(MealType.snack),
                     color: textColor,
                   ),
                   const SizedBox(width: 4),

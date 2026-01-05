@@ -8,6 +8,7 @@ class DayHeaderWithActions extends StatelessWidget {
     required this.onClearMeals,
     this.onGenerateSuggestions,
     this.showSuggestionsButton = false,
+    this.showAutoGenerateButton = true,
   });
 
   final String dateText;
@@ -15,6 +16,7 @@ class DayHeaderWithActions extends StatelessWidget {
   final VoidCallback onClearMeals;
   final VoidCallback? onGenerateSuggestions;
   final bool showSuggestionsButton;
+  final bool showAutoGenerateButton;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,10 @@ class DayHeaderWithActions extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withAlpha((0.3 * 255).round()),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
@@ -46,15 +51,16 @@ class DayHeaderWithActions extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          IconButton(
-            icon: Icon(
-              Icons.restaurant_menu,
-              color: Theme.of(context).colorScheme.primary,
+          if (showAutoGenerateButton)
+            IconButton(
+              icon: Icon(
+                Icons.restaurant_menu,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onPressed: onAutoGenerate,
+              tooltip: 'Generar menú automático',
+              visualDensity: VisualDensity.compact,
             ),
-            onPressed: onAutoGenerate,
-            tooltip: 'Generar menú automático',
-            visualDensity: VisualDensity.compact,
-          ),
           if (showSuggestionsButton)
             IconButton(
               icon: Icon(

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -11,8 +12,10 @@ import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/add_meal_button.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/ai_meal_card.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/day_header_with_actions.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/empty_day_placeholder.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/generate_ai_menu_cta.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_card.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_dialog.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_type_selector_dialog.dart';
@@ -22,12 +25,135 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final menuState = ref.watch(menuControllerProvider);
     final selectedDay = ref.watch(selectedDayProvider);
+
+    // Check feature toggle to decide which mode to show
+    final isAiWeeklyMenuEnabled = ref.watch(
+      featureEnabledProvider(FeatureToggleKeys.aiWeeklyMenuIsEnabled),
+    );
+
+    // If toggle enabled and not explicitly disabled -> AI mode
+    if (isAiWeeklyMenuEnabled && !menuState.aiDisabled) {
+      debugPrint('[SelectedDayMealsSection] Rendering AI mode');
+      return _buildAiMode(context, ref, menuState, selectedDay);
+    }
+
+    // Legacy mode
+    debugPrint('[SelectedDayMealsSection] Rendering legacy mode');
+    return _buildLegacyMode(context, ref, selectedDay);
+  }
+
+  Widget _buildAiMode(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic menuState,
+    DateTime? selectedDay,
+  ) {
+    if (selectedDay == null) {
+      return const EmptyDayPlaceholder();
+    }
+
+    final dateFormat = DateFormat('EEEE, d \'de\' MMMM', 'es');
+    final formattedDate = dateFormat.format(selectedDay);
+    final capitalizedDate =
+        formattedDate[0].toUpperCase() + formattedDate.substring(1);
+
+    // Calculate showAiGenerateCta based on actual data, not isAiModeActive
+    final showAiGenerateCta = menuState.aiWeeklyMenu == null;
+
+    // Show CTA if no menu generated
+    if (showAiGenerateCta) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          ),
+          child: Column(
+            children: [
+              _buildDayHeader(context, capitalizedDate, canEdit: false),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: GenerateAiMenuCta(
+                  onPressed: () {
+                    final weekStart = ref.read(currentWeekStartProvider);
+                    ref
+                        .read(menuControllerProvider.notifier)
+                        .generateAiWeek(weekStart: weekStart);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Show AI items for selected day
+    final aiItems = menuState.selectedDayAiItems();
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+        ),
+        child: Column(
+          children: [
+            _buildDayHeader(context, capitalizedDate, canEdit: false),
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              children: [
+                if (aiItems.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'No hay comidas generadas para este día',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                else
+                  ...aiItems.map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: AiMealCard(item: item),
+                    );
+                  }),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegacyMode(
+    BuildContext context,
+    WidgetRef ref,
+    DateTime? selectedDay,
+  ) {
     final meals = ref.watch(selectedDayMealsProvider);
     final aiSuggestionsEnabled =
         ref.watch(featureEnabledProvider(FeatureToggleKeys.aiSuggestions));
-    debugPrint(
-        '[SelectedDayMealsSection] AI suggestions toggle: $aiSuggestionsEnabled');
+    final isManualMealAddEnabled = ref.watch(
+        featureEnabledProvider(FeatureToggleKeys.isManualMealAddEnabled));
+    final isGenerateAutomaticMenuEnabled = ref.watch(featureEnabledProvider(
+        FeatureToggleKeys.isGenerateAutomaticMenuEnabled));
 
     if (selectedDay == null) {
       return const EmptyDayPlaceholder();
@@ -57,6 +183,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
               onClearMeals: () => _clearDayMeals(context, ref, selectedDay),
               onGenerateSuggestions: () => _generateSuggestions(context),
               showSuggestionsButton: aiSuggestionsEnabled,
+              showAutoGenerateButton: isGenerateAutomaticMenuEnabled,
             ),
             ListView(
               shrinkWrap: true,
@@ -78,16 +205,17 @@ class SelectedDayMealsSection extends ConsumerWidget {
                 else
                   ..._buildMealTypeSections(context, meals, selectedDay),
                 const SizedBox(height: 12),
-                AddMealButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => MealFormDialog(
-                        date: selectedDay,
-                      ),
-                    );
-                  },
-                ),
+                if (isManualMealAddEnabled)
+                  AddMealButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => MealFormDialog(
+                          date: selectedDay,
+                        ),
+                      );
+                    },
+                  ),
               ],
             ),
           ],
@@ -178,9 +306,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
     // Default times for each meal type
     final defaultTimes = {
-      MealType.breakfast: const Duration(hours: 8),
       MealType.lunch: const Duration(hours: 14),
-      MealType.snack: const Duration(hours: 17),
       MealType.dinner: const Duration(hours: 21),
     };
 
@@ -289,6 +415,47 @@ class SelectedDayMealsSection extends ConsumerWidget {
         content: Text(
             'Función de sugerencias con IA será implementada en la próxima versión'),
         duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Widget _buildDayHeader(
+    BuildContext context,
+    String dateText, {
+    required bool canEdit,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withAlpha((0.3 * 255).round()),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              dateText,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -137,9 +137,7 @@ Map<String, dynamic> _$$MealImplToJson(_$MealImpl instance) =>
     };
 
 const _$MealTypeEnumMap = {
-  MealType.breakfast: 'breakfast',
   MealType.lunch: 'lunch',
-  MealType.snack: 'snack',
   MealType.dinner: 'dinner',
 };
 

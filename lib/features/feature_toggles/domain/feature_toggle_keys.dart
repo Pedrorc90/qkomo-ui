@@ -19,6 +19,12 @@ class FeatureToggleKeys {
   /// Enable/disable image analysis feature
   static const String isImageAnalysisEnabled = 'is_image_analysis_enabled';
 
+  /// Enable/disable manual meal adding feature
+  static const String isManualMealAddEnabled = 'is_manual_meal_add_enabled';
+
+  /// Enable/disable automatic menu generation
+  static const String isGenerateAutomaticMenuEnabled = 'is_generate_automatic_menu_enabled';
+
   /// Show appearance/theme settings
   static const String showAppearance = 'show_appearance';
 }

@@ -51,14 +51,16 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
 
                   // Create list of items: preset recipes + custom recipes
                   final allRecipes = [
-                    ...PresetRecipes.all.where((r) => !deletedNames.contains(r.name)).map((r) => {
-                          'name': r.name,
-                          'ingredients': r.ingredients,
-                          'photoPath': r.photoPath,
-                          'suggestedMealType': r.suggestedMealType,
-                          'isCustom': false,
-                          'presetRecipe': r,
-                        }),
+                    ...PresetRecipes.all
+                        .where((r) => !deletedNames.contains(r.name))
+                        .map((r) => {
+                              'name': r.name,
+                              'ingredients': r.ingredients,
+                              'photoPath': r.photoPath,
+                              'suggestedMealType': r.suggestedMealType,
+                              'isCustom': false,
+                              'presetRecipe': r,
+                            }),
                     ...recipes.map((r) => {
                           'id': r.id,
                           'name': r.name,
@@ -73,7 +75,8 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                   final filteredRecipes = _selectedMealType == null
                       ? allRecipes
                       : allRecipes.where((recipe) {
-                          return recipe['suggestedMealType'] == _selectedMealType;
+                          return recipe['suggestedMealType'] ==
+                              _selectedMealType;
                         }).toList();
 
                   return Column(
@@ -88,9 +91,7 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                (MealType.breakfast, 'Desayuno'),
                                 (MealType.lunch, 'Comida'),
-                                (MealType.snack, 'Merienda'),
                                 (MealType.dinner, 'Cena'),
                               ].map((filter) {
                                 return Padding(
@@ -100,7 +101,8 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                     selected: _selectedMealType == filter.$1,
                                     onSelected: (selected) {
                                       setState(() {
-                                        _selectedMealType = selected ? filter.$1 : null;
+                                        _selectedMealType =
+                                            selected ? filter.$1 : null;
                                       });
                                     },
                                   ),
@@ -121,7 +123,8 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                 ),
                               )
                             : GridView.builder(
-                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                gridDelegate:
+                                    const SliverGridDelegateWithMaxCrossAxisExtent(
                                   maxCrossAxisExtent: 140,
                                   childAspectRatio: 0.65,
                                   crossAxisSpacing: 8,
@@ -139,27 +142,36 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                         if (isCustom) {
                                           Navigator.of(context).pop(recipe);
                                         } else {
-                                          Navigator.of(context).pop(recipe['presetRecipe']);
+                                          Navigator.of(context)
+                                              .pop(recipe['presetRecipe']);
                                         }
                                       },
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
                                         children: [
                                           // Recipe image with delete button overlay
                                           Expanded(
                                             child: Stack(
                                               fit: StackFit.expand,
                                               children: [
-                                                (recipe['photoPath'] as String?) != null
+                                                (recipe['photoPath']
+                                                            as String?) !=
+                                                        null
                                                     ? Image.asset(
-                                                        recipe['photoPath'] as String,
+                                                        recipe['photoPath']
+                                                            as String,
                                                         fit: BoxFit.cover,
-                                                        errorBuilder: (context, error, stackTrace) {
+                                                        errorBuilder: (context,
+                                                            error, stackTrace) {
                                                           return Container(
-                                                            color: Theme.of(context)
+                                                            color: Theme.of(
+                                                                    context)
                                                                 .colorScheme
                                                                 .outlineVariant,
-                                                            child: const Icon(Icons.restaurant),
+                                                            child: const Icon(
+                                                                Icons
+                                                                    .restaurant),
                                                           );
                                                         },
                                                       )
@@ -167,7 +179,8 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                                         color: Theme.of(context)
                                                             .colorScheme
                                                             .outlineVariant,
-                                                        child: const Icon(Icons.restaurant),
+                                                        child: const Icon(
+                                                            Icons.restaurant),
                                                       ),
                                                 // Delete button overlay
                                                 Positioned(
@@ -175,17 +188,25 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                                   right: 4,
                                                   child: GestureDetector(
                                                     onTap: () async {
-                                                      final recipeIdentifier = isCustom
-                                                          ? recipe['id'] as String
-                                                          : recipe['name'] as String;
+                                                      final recipeIdentifier =
+                                                          isCustom
+                                                              ? recipe['id']
+                                                                  as String
+                                                              : recipe['name']
+                                                                  as String;
                                                       await _deleteRecipe(
-                                                          recipeIdentifier, isCustom);
+                                                          recipeIdentifier,
+                                                          isCustom);
                                                     },
                                                     child: Container(
-                                                      padding: const EdgeInsets.all(4),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4),
                                                       decoration: BoxDecoration(
                                                         color: Colors.black54,
-                                                        borderRadius: BorderRadius.circular(8),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
                                                       ),
                                                       child: const Icon(
                                                         Icons.delete_outline,
@@ -202,7 +223,8 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                           Padding(
                                             padding: const EdgeInsets.all(8),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   recipe['name'] as String,
@@ -210,13 +232,16 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                                       .textTheme
                                                       .bodySmall
                                                       ?.copyWith(
-                                                          fontWeight: FontWeight.bold,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                           fontSize: 11,
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onSurface),
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
                                                   maxLines: 2,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                                 const SizedBox(height: 2),
                                                 Text(
@@ -233,16 +258,19 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                                 ),
                                                 const SizedBox(height: 1),
                                                 Text(
-                                                  (recipe['suggestedMealType'] as MealType)
+                                                  (recipe['suggestedMealType']
+                                                          as MealType)
                                                       .displayName,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall
                                                       ?.copyWith(
                                                         fontSize: 10,
-                                                        color:
-                                                            Theme.of(context).colorScheme.primary,
-                                                        fontWeight: FontWeight.w500,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                       ),
                                                 ),
                                               ],

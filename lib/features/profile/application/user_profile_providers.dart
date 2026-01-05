@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/config/env.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
+import 'package:qkomo_ui/features/auth/application/secure_token_store.dart';
 import 'package:qkomo_ui/features/profile/data/hybrid_user_profile_repository.dart';
 import 'package:qkomo_ui/features/profile/data/local_user_profile_repository.dart';
 import 'package:qkomo_ui/features/profile/data/remote_user_profile_repository.dart';
@@ -42,36 +44,53 @@ final userProfileRepositoryProvider = Provider<UserProfileRepository>((ref) {
 /// Provides methods to:
 /// - sync(): Manually trigger background sync (called after login)
 /// - clear(): Clear profile on logout
+///
+/// IMPORTANT: Only syncs with backend when user is authenticated
 final userProfileProvider =
     StateNotifierProvider<UserProfileNotifier, AsyncValue<UserProfile?>>((ref) {
   final repository = ref.watch(userProfileRepositoryProvider);
-  return UserProfileNotifier(repository);
+  final tokenStore = ref.watch(secureTokenStoreProvider);
+  return UserProfileNotifier(repository, tokenStore);
 });
 
 /// Notifier for managing user profile state
 ///
 /// Behavior (identical to feature toggles):
 /// - Always loads from cache immediately (never shows loading state)
-/// - Refreshes in background using unawaited()
+/// - Refreshes in background using unawaited() ONLY if user is authenticated
 /// - Silent failures (no errors shown to user)
 class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
-  UserProfileNotifier(this._repository) : super(const AsyncValue.data(null)) {
+  UserProfileNotifier(
+    this._repository,
+    this._tokenStore,
+  ) : super(const AsyncValue.data(null)) {
     _loadProfile();
   }
 
   final UserProfileRepository _repository;
+  final SecureTokenStore _tokenStore;
 
   /// Load profile with cache-first strategy (identical to feature toggles)
   ///
   /// - Always loads local cache immediately (non-blocking)
-  /// - Triggers background refresh using unawaited()
+  /// - Triggers background refresh using unawaited() ONLY if user is authenticated
   Future<void> _loadProfile() async {
     // Load local immediately (never blocks UI)
     final cached = await _repository.loadProfile();
     state = AsyncValue.data(cached);
 
-    // Trigger background refresh (fire-and-forget, exactly like feature toggles)
-    unawaited(_refreshInBackground());
+    // Check if user is authenticated before syncing
+    final hasToken = await _isAuthenticated();
+    if (hasToken) {
+      // Trigger background refresh only if authenticated
+      unawaited(_refreshInBackground());
+    }
+  }
+
+  /// Check if user is authenticated by verifying token exists
+  Future<bool> _isAuthenticated() async {
+    final token = await _tokenStore.readToken();
+    return token != null && token.isNotEmpty;
   }
 
   /// Refresh from API in background without blocking UI
@@ -79,6 +98,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   /// - Fails silently if network is unavailable
   /// - Updates state only if fresh data is available
   /// - Preserves cached data on error
+  /// - ONLY executes if user is authenticated
   Future<void> _refreshInBackground() async {
     try {
       await _repository.triggerSync();

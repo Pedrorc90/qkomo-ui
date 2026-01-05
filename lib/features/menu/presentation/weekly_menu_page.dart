@@ -1,20 +1,67 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/selected_day_meals_section.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/weekly_calendar_widget.dart';
 
-class WeeklyMenuPage extends ConsumerWidget {
+class WeeklyMenuPage extends ConsumerStatefulWidget {
   const WeeklyMenuPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WeeklyMenuPage> createState() => _WeeklyMenuPageState();
+}
+
+class _WeeklyMenuPageState extends ConsumerState<WeeklyMenuPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Try to load AI weekly menu on page mount
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final isEnabled = ref.read(
+        featureEnabledProvider(FeatureToggleKeys.aiWeeklyMenuIsEnabled),
+      );
+      debugPrint('[WeeklyMenuPage] aiWeeklyMenuIsEnabled = $isEnabled');
+
+      final menuState = ref.read(menuControllerProvider);
+      debugPrint(
+          '[WeeklyMenuPage] MenuState: isAiModeActive=${menuState.isAiModeActive}, aiDisabled=${menuState.aiDisabled}');
+
+      final weekStart = ref.read(currentWeekStartProvider);
+      ref
+          .read(menuControllerProvider.notifier)
+          .loadAiWeekIfEnabled(weekStart: weekStart);
+
+      // Sync selectedDay with MenuController
+      final selectedDay = ref.read(selectedDayProvider);
+      ref.read(menuControllerProvider.notifier).setSelectedDay(selectedDay);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final weekStart = ref.watch(currentWeekStartProvider);
     final dateFormat = DateFormat('d MMM', 'es');
+
+    // Sync selectedDay changes with MenuController
+    ref.listen<DateTime?>(selectedDayProvider, (previous, next) {
+      ref.read(menuControllerProvider.notifier).setSelectedDay(next);
+    });
+
+    // Reload AI menu when week changes
+    ref.listen<DateTime>(currentWeekStartProvider, (previous, next) {
+      if (previous != null && previous != next) {
+        ref
+            .read(menuControllerProvider.notifier)
+            .loadAiWeekIfEnabled(weekStart: next);
+      }
+    });
 
     final weekEnd = weekStart.add(const Duration(days: 6));
     final weekRange =

@@ -182,12 +182,8 @@ class _MealCard extends StatelessWidget {
 
   IconData _getMealIcon(MealType mealType) {
     switch (mealType) {
-      case MealType.breakfast:
-        return Icons.free_breakfast_outlined;
       case MealType.lunch:
         return Icons.restaurant_outlined;
-      case MealType.snack:
-        return Icons.cookie_outlined;
       case MealType.dinner:
         return Icons.dinner_dining_outlined;
     }

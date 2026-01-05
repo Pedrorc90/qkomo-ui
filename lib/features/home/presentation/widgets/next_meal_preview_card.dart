@@ -18,7 +18,8 @@ class NextMealPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final isAsset = nextMeal.photoPath != null && nextMeal.photoPath!.startsWith('assets/');
+    final isAsset =
+        nextMeal.photoPath != null && nextMeal.photoPath!.startsWith('assets/');
 
     return SemanticWrapper(
       onTap: onTap,
@@ -73,7 +74,8 @@ class NextMealPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(BuildContext context, String path, bool isAsset, ColorScheme scheme) {
+  Widget _buildImage(
+      BuildContext context, String path, bool isAsset, ColorScheme scheme) {
     if (isAsset) {
       return Image.asset(
         path,

@@ -31,14 +31,14 @@ class HybridMealRepository implements MealRepository, SyncableRepository {
 
     if (from != null) {
       meals = meals
-          .where((m) => m.scheduledFor
-              .isAfter(from.subtract(const Duration(days: 1))))
+          .where((m) =>
+              m.scheduledFor.isAfter(from.subtract(const Duration(days: 1))))
           .toList();
     }
     if (to != null) {
       meals = meals
-          .where((m) =>
-              m.scheduledFor.isBefore(to.add(const Duration(days: 1))))
+          .where(
+              (m) => m.scheduledFor.isBefore(to.add(const Duration(days: 1))))
           .toList();
     }
 

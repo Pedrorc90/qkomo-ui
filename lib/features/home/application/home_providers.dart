@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/capture/application/capture_providers.dart';
 import 'package:qkomo_ui/features/capture/domain/entities/capture_result.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 
 // Today's entries
@@ -76,4 +79,39 @@ final lastAnalysisProvider = Provider<CaptureResult?>((ref) {
   // Since captureResultsProvider already sorts by savedAt descending,
   // the first item is the most recent one.
   return allResults.first;
+});
+
+// Get current week's menu from local storage (Hive) - reactive stream
+final currentWeeklyMenuProvider = StreamProvider<WeeklyMenu?>((ref) {
+  final localRepo = ref.watch(localWeeklyMenuRepositoryProvider);
+  final now = DateTime.now();
+  final weekStart = now.subtract(Duration(days: now.weekday - 1));
+  final normalizedWeekStart = DateTime(weekStart.year, weekStart.month, weekStart.day);
+
+  debugPrint('[currentWeeklyMenuProvider] Looking for menu with weekStart: $normalizedWeekStart');
+
+  // Watch all weekly menus and filter for current week
+  return localRepo.watchWeeklyMenus().map((menus) {
+    debugPrint('[currentWeeklyMenuProvider] Found ${menus.length} menus in Hive');
+    for (final menu in menus) {
+      debugPrint('[currentWeeklyMenuProvider] Menu weekStart: ${menu.weekStart}, days: ${menu.days.length}');
+    }
+
+    final found = menus.where((menu) {
+      final menuWeekStart = DateTime(menu.weekStart.year, menu.weekStart.month, menu.weekStart.day);
+      return menuWeekStart.isAtSameMomentAs(normalizedWeekStart);
+    }).firstOrNull;
+
+    debugPrint('[currentWeeklyMenuProvider] Found menu for current week: ${found != null}');
+    return found;
+  });
+});
+
+// Check if user has a generated weekly menu
+final hasWeeklyMenuProvider = Provider<bool>((ref) {
+  final weeklyMenu = ref.watch(currentWeeklyMenuProvider).value;
+  final weekMeals = ref.watch(weekMealsProvider);
+
+  // Check both: new WeeklyMenu from backend (stored in Hive) and legacy Meal entities
+  return weeklyMenu != null || weekMeals.isNotEmpty;
 });

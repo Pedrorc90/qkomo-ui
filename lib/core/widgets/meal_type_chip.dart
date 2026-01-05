@@ -14,13 +14,11 @@ enum MealTypeChipVariant {
   iconOnly,
 }
 
-/// A color-coded meal type chip widget for selecting breakfast, lunch, dinner, or snack.
+/// A color-coded meal type chip widget for selecting lunch or dinner.
 ///
 /// Displays meal types with semantically meaningful colors:
-/// - Breakfast (Desayuno): Orange (#FFB74D)
 /// - Lunch (Comida): Teal (#4DB6AC)
 /// - Dinner (Cena): Purple (#9575CD)
-/// - Snack (Merienda): Pink (#E57373)
 ///
 /// Supports three display variants:
 /// - **standard**: FilterChip with icon and Spanish label (default)
@@ -30,9 +28,9 @@ enum MealTypeChipVariant {
 /// Example:
 /// ```dart
 /// MealTypeChip(
-///   mealType: MealType.breakfast,
+///   mealType: MealType.lunch,
 ///   isSelected: true,
-///   onTap: () => print('Breakfast selected'),
+///   onTap: () => print('Lunch selected'),
 /// )
 ///
 /// // Compact variant for meal selection in lists
@@ -71,28 +69,20 @@ class MealTypeChip extends StatelessWidget {
   /// Get the accent color for a meal type
   Color _getMealTypeColor() {
     switch (mealType) {
-      case MealType.breakfast:
-        return const Color(0xFFFFB74D); // Orange
       case MealType.lunch:
         return const Color(0xFF4DB6AC); // Teal
       case MealType.dinner:
         return const Color(0xFF9575CD); // Purple
-      case MealType.snack:
-        return const Color(0xFFE57373); // Pink
     }
   }
 
   /// Get the icon for a meal type
   IconData _getMealTypeIcon() {
     switch (mealType) {
-      case MealType.breakfast:
-        return Icons.free_breakfast;
       case MealType.lunch:
         return Icons.restaurant;
       case MealType.dinner:
         return Icons.dinner_dining;
-      case MealType.snack:
-        return Icons.cookie;
     }
   }
 

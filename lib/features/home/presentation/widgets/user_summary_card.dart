@@ -16,9 +16,12 @@ class UserSummaryCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 26,
-              backgroundColor:
-                  Theme.of(context).colorScheme.primary.withAlpha((0.15 * 255).round()),
-              child: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .primary
+                  .withAlpha((0.15 * 255).round()),
+              child: Icon(Icons.person,
+                  color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -33,10 +36,8 @@ class UserSummaryCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(email,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface)),
                 ],
               ),
             ),

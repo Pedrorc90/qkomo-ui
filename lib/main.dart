@@ -72,13 +72,11 @@ class _SyncInitializerState extends ConsumerState<SyncInitializer> {
     // Initialize SyncService
     ref.read(syncServiceProvider).init();
 
-    // Sync user profile if authenticated (fire-and-forget, non-blocking)
+    // Initialize user profile provider (triggers automatic sync in UserProfileNotifier)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authState = ref.read(authStateChangesProvider).valueOrNull;
-      if (authState != null) {
-        // User is already authenticated, sync profile in background
-        ref.read(userProfileProvider.notifier).sync();
-      }
+      // Simply reading the provider initializes the UserProfileNotifier,
+      // which automatically loads cache and syncs in background
+      ref.read(userProfileProvider);
     });
   }
 

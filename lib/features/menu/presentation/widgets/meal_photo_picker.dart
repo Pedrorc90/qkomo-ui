@@ -20,8 +20,9 @@ class MealPhotoPicker extends StatelessWidget {
       children: [
         Text(
           'Foto (opcional)',
-          style:
-              TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary),
         ),
         const SizedBox(height: 8),
         Center(
@@ -31,7 +32,10 @@ class MealPhotoPicker extends StatelessWidget {
               width: double.infinity,
               height: 150,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(128),
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHighest
+                    .withAlpha(128),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: Theme.of(context).colorScheme.outline.withAlpha(77),

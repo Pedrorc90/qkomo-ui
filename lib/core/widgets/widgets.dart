@@ -16,7 +16,7 @@
 ///
 /// // Use any core widget
 /// AllergenBadge(allergen: 'Gluten')
-/// MealTypeChip(mealType: MealType.breakfast)
+/// MealTypeChip(mealType: MealType.lunch)
 /// EmptyState(icon: Icons.inbox_outlined, title: 'No items')
 /// AppButton(label: 'Save', onPressed: save)
 /// AnimatedCard(onTap: navigate, child: widget)

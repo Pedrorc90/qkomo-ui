@@ -19,7 +19,10 @@ class AddMealButton extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(12),
       ),
-      color: Theme.of(context).colorScheme.primaryContainer.withAlpha((0.3 * 255).round()),
+      color: Theme.of(context)
+          .colorScheme
+          .primaryContainer
+          .withAlpha((0.3 * 255).round()),
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(12),

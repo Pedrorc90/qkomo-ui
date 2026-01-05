@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
+import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_card.dart';
@@ -20,9 +22,13 @@ class DayMealSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weekMeals = ref.watch(weekMealsProvider);
+    final isManualMealAddEnabled = ref.watch(
+        featureEnabledProvider(FeatureToggleKeys.isManualMealAddEnabled));
     final mealsOfDay = weekMeals.where((meal) {
       final mealDate = meal.scheduledFor;
-      return mealDate.year == date.year && mealDate.month == date.month && mealDate.day == date.day;
+      return mealDate.year == date.year &&
+          mealDate.month == date.month &&
+          mealDate.day == date.day;
     }).toList();
 
     // Sort meals by type
@@ -85,50 +91,51 @@ class DayMealSection extends ConsumerWidget {
             ),
           );
         }),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                color: Theme.of(context).colorScheme.outlineVariant,
+        if (isManualMealAddEnabled)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+                borderRadius: BorderRadius.circular(12),
               ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => MealFormDialog(
-                    date: date,
-                  ),
-                );
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: Theme.of(context).colorScheme.primary,
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => MealFormDialog(
+                      date: date,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Agregar comida',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontWeight: FontWeight.w500,
+                  );
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Text(
+                        'Agregar comida',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
         const Divider(height: 24),
       ],
     );
@@ -136,12 +143,8 @@ class DayMealSection extends ConsumerWidget {
 
   IconData _getMealIcon(MealType type) {
     switch (type) {
-      case MealType.breakfast:
-        return Icons.free_breakfast;
       case MealType.lunch:
         return Icons.restaurant;
-      case MealType.snack:
-        return Icons.cookie;
       case MealType.dinner:
         return Icons.dinner_dining;
     }

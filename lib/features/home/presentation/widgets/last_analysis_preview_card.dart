@@ -23,7 +23,8 @@ class LastAnalysisPreviewCard extends StatelessWidget {
 
     return SemanticWrapper(
       onTap: onTap,
-      label: 'Último análisis: ${lastAnalysis.title ?? 'comida'}. Toca para analizar otra.',
+      label:
+          'Último análisis: ${lastAnalysis.title ?? 'comida'}. Toca para analizar otra.',
       isButton: true,
       child: Container(
         width: double.infinity,
@@ -48,7 +49,8 @@ class LastAnalysisPreviewCard extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 if (hasImage)
-                  _buildImage(context, imagePath, imagePath.startsWith('assets/'), scheme)
+                  _buildImage(context, imagePath,
+                      imagePath.startsWith('assets/'), scheme)
                 else
                   Container(color: scheme.surfaceContainer),
                 _buildGradient(),
@@ -89,7 +91,8 @@ class LastAnalysisPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(BuildContext context, String path, bool isAsset, ColorScheme scheme) {
+  Widget _buildImage(
+      BuildContext context, String path, bool isAsset, ColorScheme scheme) {
     if (isAsset) {
       return Image.asset(
         path,

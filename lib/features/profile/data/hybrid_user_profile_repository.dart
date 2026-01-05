@@ -31,15 +31,9 @@ class HybridUserProfileRepository implements UserProfileRepository {
 
   @override
   Future<UserProfile?> loadProfile() async {
-    // 1. Always return local immediately (Offline-first)
-    final localProfile = await _localRepo.loadProfile();
-
-    // 2. Sync with backend in background (fire-and-forget)
-    if (enableCloudSync) {
-      unawaited(triggerSync());
-    }
-
-    return localProfile;
+    // Always return local immediately (Offline-first)
+    // Sync is triggered explicitly by UserProfileNotifier, not automatically here
+    return _localRepo.loadProfile();
   }
 
   @override

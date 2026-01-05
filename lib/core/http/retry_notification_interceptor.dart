@@ -24,8 +24,6 @@ class RetryNotificationInterceptor extends Interceptor {
 
     // If it's a silent request, don't show retry overlay
     if (isSilent) {
-      debugPrint(
-          '[RetryNotificationInterceptor] Silent request to ${err.requestOptions.uri.path}, overlay will not be shown');
       super.onError(err, handler);
       return;
     }

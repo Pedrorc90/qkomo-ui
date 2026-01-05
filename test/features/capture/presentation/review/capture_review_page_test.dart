@@ -87,7 +87,7 @@ void main() {
     ingredients: ['Harina', 'Azúcar', 'Huevos'],
     allergens: ['Gluten', 'Huevo'],
     title: 'Pastel de chocolate',
-    mealType: MealType.snack,
+    mealType: MealType.lunch,
     notes: 'Delicioso postre',
     imagePath: '/test/image.jpg',
     estimatedPortionG: 150,

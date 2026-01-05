@@ -60,7 +60,8 @@ class CustomRecipeRepositoryImpl implements CustomRecipeRepository {
   List<UserRecipe> byMealType(MealType mealType) {
     return _recipeBox.values
         .whereType<Map<dynamic, dynamic>>()
-        .where((recipe) => recipe['userId'] == _userId && recipe['mealType'] == mealType.index)
+        .where((recipe) =>
+            recipe['userId'] == _userId && recipe['mealType'] == mealType.index)
         .map(_mapToRecipe)
         .toList()
       ..sort((a, b) => a.name.compareTo(b.name));
@@ -102,8 +103,9 @@ class CustomRecipeRepositoryImpl implements CustomRecipeRepository {
       name: data['name'] as String? ?? '',
       ingredients: (data['ingredients'] as List?)?.cast<String>() ?? [],
       mealType: MealType.values[data['mealType'] as int? ?? 0],
-      createdAt:
-          data['createdAt'] != null ? DateTime.parse(data['createdAt'] as String) : DateTime.now(),
+      createdAt: data['createdAt'] != null
+          ? DateTime.parse(data['createdAt'] as String)
+          : DateTime.now(),
       photoPath: data['photoPath'] as String?,
     );
   }

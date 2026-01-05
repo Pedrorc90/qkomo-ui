@@ -16,40 +16,6 @@ class PresetRecipe {
 
 class PresetRecipes {
   static final List<PresetRecipe> all = [
-    // Desayunos
-    const PresetRecipe(
-      name: 'Tostadas con Tomate',
-      ingredients: [
-        'Pan',
-        'Tomate',
-        'Aceite de oliva',
-        'Sal',
-        'Jamón serrano',
-      ],
-      photoPath: MealImages.tostadas,
-      suggestedMealType: MealType.breakfast,
-    ),
-    const PresetRecipe(
-      name: 'Café con Leche y Galletas',
-      ingredients: [
-        'Café',
-        'Leche',
-        'Galletas María',
-        'Azúcar',
-      ],
-      photoPath: MealImages.cafeGalletas,
-      suggestedMealType: MealType.breakfast,
-    ),
-    const PresetRecipe(
-      name: 'Churros con Chocolate',
-      ingredients: [
-        'Churros',
-        'Chocolate caliente',
-        'Azúcar',
-      ],
-      photoPath: MealImages.churros,
-      suggestedMealType: MealType.breakfast,
-    ),
     // Comidas
     const PresetRecipe(
       name: 'Paella Valenciana',
@@ -125,42 +91,6 @@ class PresetRecipes {
       ],
       photoPath: MealImages.lentejas,
       suggestedMealType: MealType.lunch,
-    ),
-    // Meriendas
-    const PresetRecipe(
-      name: 'Bocadillo de Jamón',
-      ingredients: [
-        'Pan',
-        'Jamón serrano',
-        'Tomate',
-        'Aceite de oliva',
-      ],
-      photoPath: MealImages.bocadilloJamon,
-      suggestedMealType: MealType.snack,
-    ),
-    const PresetRecipe(
-      name: 'Frutas y Yogur',
-      ingredients: [
-        'Yogur natural',
-        'Fresas',
-        'Plátano',
-        'Miel',
-      ],
-      photoPath: MealImages.frutasYogur,
-      suggestedMealType: MealType.snack,
-    ),
-    const PresetRecipe(
-      name: 'Magdalenas Caseras',
-      ingredients: [
-        'Harina',
-        'Huevos',
-        'Azúcar',
-        'Aceite',
-        'Levadura',
-        'Leche',
-      ],
-      photoPath: MealImages.magdalenas,
-      suggestedMealType: MealType.snack,
     ),
     // Cenas
     const PresetRecipe(

@@ -139,8 +139,9 @@ class AuthController {
     await _tokenStore.save(token);
     _notifyTokenChanged();
 
-    // Sync user profile after successful login (fire-and-forget)
-    unawaited(_userProfileRepo.triggerSync());
+    // Trigger UserProfile sync after successful login
+    // This is necessary because UserProfileNotifier only syncs when authenticated
+    await _userProfileRepo.triggerSync();
   }
 
   void _notifyTokenChanged() => _onTokenChanged();
