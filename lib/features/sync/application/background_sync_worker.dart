@@ -2,12 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qkomo_ui/core/config/feature_flags.dart';
-import 'package:qkomo_ui/features/capture/data/hive_adapters/capture_result_adapter.dart';
-import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/data/local_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/entities/entry.dart';
-
 import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
@@ -27,31 +21,13 @@ void callbackDispatcher() {
         // Initialize Hive for background isolate
         await Hive.initFlutter();
 
-        // Register adapters if needed (V2 FIRST for Meal)
-        if (!Hive.isAdapterRegistered(0)) {
-          Hive.registerAdapter(CaptureResultAdapter());
-        }
-        if (!Hive.isAdapterRegistered(1)) {
-          Hive.registerAdapter(EntryAdapter());
-        }
+        // Register Meal adapter (V2)
         if (!Hive.isAdapterRegistered(6)) {
-          Hive.registerAdapter(MealV2Adapter()); // Meal V2 adapter (ALWAYS)
+          Hive.registerAdapter(MealV2Adapter());
         }
-        // Note: V1 adapter NOT registered in background worker
-        // (migration only runs in foreground)
 
-        // Open boxes
-        final entryBox = await Hive.openBox<Entry>('entries');
+        // Open Meal box
         final mealBox = await Hive.openBox<Meal>('meals');
-
-        // Setup Entry repositories
-        final localEntryRepo = LocalEntryRepository(entryBox: entryBox);
-        final remoteEntryRepo = RemoteEntryRepository(dio: Dio());
-        final hybridEntryRepo = HybridEntryRepository(
-          localRepo: localEntryRepo,
-          remoteRepo: remoteEntryRepo,
-          enableCloudSync: true,
-        );
 
         // Setup Meal repositories
         // TODO: Get userId from secure storage in background context
@@ -66,8 +42,7 @@ void callbackDispatcher() {
           enableCloudSync: true,
         );
 
-        // Run sync for both repositories
-        await hybridEntryRepo.sync();
+        // Run sync for Meals
         await hybridMealRepo.sync();
 
         return Future.value(true);

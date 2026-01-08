@@ -293,16 +293,6 @@ class MockFirebaseAuth extends _i1.Mock implements _i5.FirebaseAuth {
       ) as Map<dynamic, dynamic>);
 
   @override
-  _i7.Future<void> useEmulator(String? origin) => (super.noSuchMethod(
-        Invocation.method(
-          #useEmulator,
-          [origin],
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
   _i7.Future<void> useAuthEmulator(
     String? host,
     int? port, {
@@ -719,31 +709,6 @@ class MockFirebaseAuth extends _i1.Mock implements _i5.FirebaseAuth {
       ) as _i7.Future<_i5.UserCredential>);
 
   @override
-  _i7.Future<_i5.UserCredential> signInWithAuthProvider(
-          _i4.AuthProvider? provider) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #signInWithAuthProvider,
-          [provider],
-        ),
-        returnValue: _i7.Future<_i5.UserCredential>.value(_FakeUserCredential_3(
-          this,
-          Invocation.method(
-            #signInWithAuthProvider,
-            [provider],
-          ),
-        )),
-        returnValueForMissingStub:
-            _i7.Future<_i5.UserCredential>.value(_FakeUserCredential_3(
-          this,
-          Invocation.method(
-            #signInWithAuthProvider,
-            [provider],
-          ),
-        )),
-      ) as _i7.Future<_i5.UserCredential>);
-
-  @override
   _i7.Future<_i5.UserCredential> signInWithProvider(
           _i4.AuthProvider? provider) =>
       (super.noSuchMethod(
@@ -915,6 +880,16 @@ class MockFirebaseAuth extends _i1.Mock implements _i5.FirebaseAuth {
         Invocation.method(
           #revokeTokenWithAuthorizationCode,
           [authorizationCode],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> initializeRecaptchaConfig() => (super.noSuchMethod(
+        Invocation.method(
+          #initializeRecaptchaConfig,
+          [],
         ),
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),

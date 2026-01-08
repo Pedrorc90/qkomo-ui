@@ -6,18 +6,8 @@ class ApiEndpoints {
   // Private constructor to prevent instantiation
   ApiEndpoints._();
 
-  // Capture endpoints
-  static const String analyzeImage = '/v1/analyze';
-  static const String analyzeBarcode = '/v1/analyze/barcode';
-  static const String uploadPhoto = '/v1/photos';
-  static String photoById(String id) => '/v1/photos/$id';
-
   // Profile endpoints
   static const String userProfile = '/api/v1/users/me';
-
-  // Entry endpoints
-  static const String entries = '/v1/entries';
-  static String entryById(String id) => '/v1/entries/$id';
 
   // Companion endpoints
   static const String companions = '/v1/companions';

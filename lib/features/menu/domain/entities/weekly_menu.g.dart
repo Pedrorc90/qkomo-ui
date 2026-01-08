@@ -102,8 +102,9 @@ const _$WeeklyMenuStatusEnumMap = {
 };
 
 const _$SyncStatusEnumMap = {
-  SyncStatus.synced: 'synced',
   SyncStatus.pending: 'pending',
+  SyncStatus.synced: 'synced',
   SyncStatus.failed: 'failed',
+  SyncStatus.localOnly: 'localOnly',
   SyncStatus.conflict: 'conflict',
 };

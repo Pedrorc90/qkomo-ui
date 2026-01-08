@@ -13,12 +13,6 @@ class FeatureToggleKeys {
   /// Companion (community) features - share weekly menu with others
   static const String companion = 'companion';
 
-  /// Historical profile data tracking
-  static const String profileDataHistoricalIsEnabled = 'profile_data_historical_is_enabled';
-
-  /// Enable/disable image analysis feature
-  static const String isImageAnalysisEnabled = 'is_image_analysis_enabled';
-
   /// Enable/disable manual meal adding feature
   static const String isManualMealAddEnabled = 'is_manual_meal_add_enabled';
 

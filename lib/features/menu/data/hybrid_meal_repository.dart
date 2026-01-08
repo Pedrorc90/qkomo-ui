@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:qkomo_ui/core/services/logger_service.dart';
-import 'package:qkomo_ui/features/entry/data/remote_entry_repository.dart';
-import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
+import 'package:qkomo_ui/core/sync/sync_status.dart';
+import 'package:qkomo_ui/core/sync/sync_status.dart';
 import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';

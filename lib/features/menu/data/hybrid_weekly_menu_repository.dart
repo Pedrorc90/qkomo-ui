@@ -33,10 +33,8 @@ class HybridWeeklyMenuRepository
     final localMenu = _localRepo.getWeeklyMenu(weekStart);
 
     if (localMenu != null) {
-      // Trigger background sync to get latest from server
-      if (enableCloudSync) {
-        unawaited(_syncSingle(weekStart));
-      }
+      // Return local menu without background sync
+      // Sync can be triggered manually or via periodic background task
       return localMenu;
     }
 

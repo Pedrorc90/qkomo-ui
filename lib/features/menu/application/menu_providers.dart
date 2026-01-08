@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:qkomo_ui/config/env.dart';
@@ -75,11 +76,12 @@ final mealsProvider = StreamProvider<List<Meal>>((ref) {
   return repo.watchMeals();
 });
 
-// Current week provider
+// Current week provider (normalized to midnight)
 final currentWeekStartProvider = StateProvider<DateTime>((ref) {
   final now = DateTime.now();
-  // Monday as first day of week
-  return now.subtract(Duration(days: now.weekday - 1));
+  final normalizedNow = DateTime(now.year, now.month, now.day);
+  // Monday as first day of week, normalized to 00:00:00.000
+  return normalizedNow.subtract(Duration(days: now.weekday - 1));
 });
 
 // Filtered meals for current week
@@ -128,6 +130,20 @@ final todayMealsProvider = Provider<List<Meal>>((ref) {
     return mealDate.year == now.year &&
         mealDate.month == now.month &&
         mealDate.day == now.day;
+  }).toList()
+    ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
+});
+
+// Tomorrow's meals provider
+final tomorrowMealsProvider = Provider<List<Meal>>((ref) {
+  final allMeals = ref.watch(mealsProvider).value ?? [];
+  final tomorrow = DateTime.now().add(const Duration(days: 1));
+
+  return allMeals.where((meal) {
+    final mealDate = meal.scheduledFor;
+    return mealDate.year == tomorrow.year &&
+        mealDate.month == tomorrow.month &&
+        mealDate.day == tomorrow.day;
   }).toList()
     ..sort((a, b) => a.mealType.index.compareTo(b.mealType.index));
 });
@@ -288,11 +304,18 @@ final weeklyMenuApiProvider = Provider<WeeklyMenuApi>((ref) {
   return WeeklyMenuApi(dio);
 });
 
+// Stable userId provider that only changes when userId actually changes
+final currentUserIdProvider = Provider<String>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  final userId = user?.uid ?? '';
+  debugPrint('[currentUserIdProvider] 🔄 userId changed to: ${userId.isEmpty ? "EMPTY" : userId}');
+  return userId;
+});
+
 final localWeeklyMenuRepositoryProvider =
     Provider<LocalWeeklyMenuRepository>((ref) {
   final box = ref.watch(weeklyMenuBoxProvider);
-  final user = ref.watch(authStateChangesProvider).value;
-  final userId = user?.uid ?? '';
+  final userId = ref.watch(currentUserIdProvider);
 
   return LocalWeeklyMenuRepository(weeklyMenuBox: box, userId: userId);
 });
@@ -306,8 +329,7 @@ final remoteWeeklyMenuRepositoryProvider =
 final weeklyMenuRepositoryProvider = Provider<WeeklyMenuRepository>((ref) {
   final localRepo = ref.watch(localWeeklyMenuRepositoryProvider);
   final remoteRepo = ref.watch(remoteWeeklyMenuRepositoryProvider);
-  final user = ref.watch(authStateChangesProvider).value;
-  final userId = user?.uid ?? '';
+  final userId = ref.watch(currentUserIdProvider);
 
   return HybridWeeklyMenuRepository(
     localRepo: localRepo,
@@ -320,6 +342,61 @@ final weeklyMenuRepositoryProvider = Provider<WeeklyMenuRepository>((ref) {
 final aiWeeklyMenuAvailabilityProvider =
     Provider<AiWeeklyMenuAvailability>((ref) {
   return AiWeeklyMenuAvailability();
+});
+
+// Weekly menu provider with caching by weekStart and userId
+final weeklyMenuByWeekProvider = FutureProvider.family<WeeklyMenu?, (DateTime, String)>((ref, params) async {
+  final (weekStartRaw, userId) = params;
+  // Normalize weekStart to midnight to ensure consistent cache keys
+  final weekStart = DateTime(weekStartRaw.year, weekStartRaw.month, weekStartRaw.day);
+  debugPrint('[weeklyMenuByWeekProvider] 🔄 Provider executing for week: $weekStart, userId: $userId');
+
+  // Use read() instead of watch() to avoid rebuilding when these providers change
+  final repository = ref.read(weeklyMenuRepositoryProvider);
+  final localRepo = ref.read(localWeeklyMenuRepositoryProvider);
+
+  // First check local cache synchronously
+  final localMenu = localRepo.getWeeklyMenu(weekStart);
+  if (localMenu != null) {
+    debugPrint('[weeklyMenuByWeekProvider] ✅ Returning local cache');
+    return localMenu;
+  }
+
+  // If no local cache and cloud sync disabled, return null
+  if (!EnvConfig.enableCloudSync) {
+    debugPrint('[weeklyMenuByWeekProvider] ⚠️ No local cache and sync disabled');
+    return null;
+  }
+
+  // Fetch from remote only if no local cache
+  if (userId.isEmpty) {
+    debugPrint('[weeklyMenuByWeekProvider] ⚠️ No userId, returning null');
+    return null;
+  }
+
+  try {
+    debugPrint('[weeklyMenuByWeekProvider] 🌐 Fetching from remote for userId: $userId');
+    return await repository.getWeek(weekStart, userId: userId);
+  } catch (e) {
+    debugPrint('[weeklyMenuByWeekProvider] ❌ Error: $e');
+    return null;
+  }
+});
+
+// Current weekly menu provider (convenience wrapper)
+final currentWeeklyMenuProvider = Provider<AsyncValue<WeeklyMenu?>>((ref) {
+  final now = DateTime.now();
+  final weekStart = now.subtract(Duration(days: now.weekday - 1));
+  final normalizedWeekStart = DateTime(weekStart.year, weekStart.month, weekStart.day);
+  final userId = ref.watch(currentUserIdProvider);
+
+  return ref.watch(weeklyMenuByWeekProvider((normalizedWeekStart, userId)));
+});
+
+// Has weekly menu provider (checks current week menu from cached provider)
+final hasWeeklyMenuProvider = Provider<bool>((ref) {
+  final weeklyMenuAsync = ref.watch(currentWeeklyMenuProvider);
+  return weeklyMenuAsync.value != null;
 });
 
 // Controller provider

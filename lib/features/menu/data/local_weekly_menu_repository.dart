@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
+import 'package:qkomo_ui/core/sync/sync_status.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
 
 /// Local-only repository for WeeklyMenu operations using Hive

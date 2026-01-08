@@ -8,38 +8,43 @@ part of 'sync_status.dart';
 
 class SyncStatusAdapter extends TypeAdapter<SyncStatus> {
   @override
-  final int typeId = 7;
+  final int typeId = 26;
 
   @override
   SyncStatus read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return SyncStatus.synced;
-      case 1:
         return SyncStatus.pending;
+      case 1:
+        return SyncStatus.synced;
       case 2:
         return SyncStatus.failed;
       case 3:
+        return SyncStatus.localOnly;
+      case 4:
         return SyncStatus.conflict;
       default:
-        return SyncStatus.synced;
+        return SyncStatus.pending;
     }
   }
 
   @override
   void write(BinaryWriter writer, SyncStatus obj) {
     switch (obj) {
-      case SyncStatus.synced:
+      case SyncStatus.pending:
         writer.writeByte(0);
         break;
-      case SyncStatus.pending:
+      case SyncStatus.synced:
         writer.writeByte(1);
         break;
       case SyncStatus.failed:
         writer.writeByte(2);
         break;
-      case SyncStatus.conflict:
+      case SyncStatus.localOnly:
         writer.writeByte(3);
+        break;
+      case SyncStatus.conflict:
+        writer.writeByte(4);
         break;
     }
   }

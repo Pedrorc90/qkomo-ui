@@ -77,8 +77,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                                     height: 60,
                                     fit: BoxFit.cover,
                                     semanticLabel: SemanticLabels.mealImage,
-                                    errorBuilder: (_, __, ___) =>
-                                        _buildPlaceholder(context),
+                                    errorBuilder: (_, __, ___) => _buildPlaceholder(context),
                                   )
                                 : Image.file(
                                     File(widget.meal.photoPath!),
@@ -86,8 +85,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                                     height: 60,
                                     fit: BoxFit.cover,
                                     semanticLabel: SemanticLabels.mealImage,
-                                    errorBuilder: (_, __, ___) =>
-                                        _buildPlaceholder(context),
+                                    errorBuilder: (_, __, ___) => _buildPlaceholder(context),
                                   ))
                             : _buildPlaceholder(context),
                       ),
@@ -142,12 +140,10 @@ class _MealCardState extends ConsumerState<MealCard> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: mealTypeColor
-                                    .withAlpha((0.15 * 255).round()),
+                                color: mealTypeColor.withAlpha((0.15 * 255).round()),
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
-                                  color: mealTypeColor
-                                      .withAlpha((0.3 * 255).round()),
+                                  color: mealTypeColor.withAlpha((0.3 * 255).round()),
                                 ),
                               ),
                               child: Text(
@@ -167,8 +163,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                             Icon(
                               Icons.layers,
                               size: 14,
-                              color: colorScheme.onSurfaceVariant
-                                  .withAlpha((0.7 * 255).round()),
+                              color: colorScheme.onSurfaceVariant.withAlpha((0.7 * 255).round()),
                               semanticLabel: '',
                             ),
                             const SizedBox(width: 4),
@@ -190,17 +185,14 @@ class _MealCardState extends ConsumerState<MealCard> {
                     child: IconButton(
                       icon: Icon(
                         Icons.delete_outline,
-                        color: _isHovered
-                            ? colorScheme.error
-                            : colorScheme.onSurfaceVariant,
+                        color: _isHovered ? colorScheme.error : colorScheme.onSurfaceVariant,
                       ),
                       tooltip: SemanticLabels.deleteMeal,
                       onPressed: () async {
                         final confirmed = await showDialog<bool>(
                           context: context,
                           builder: (context) => Dialog(
-                            insetPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 24),
+                            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                             child: Padding(
                               padding: const EdgeInsets.all(24),
                               child: Column(
@@ -208,9 +200,7 @@ class _MealCardState extends ConsumerState<MealCard> {
                                 children: [
                                   Text(
                                     'Eliminar comida',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall,
+                                    style: Theme.of(context).textTheme.headlineSmall,
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
@@ -220,14 +210,12 @@ class _MealCardState extends ConsumerState<MealCard> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
+                                        onPressed: () => Navigator.of(context).pop(false),
                                         child: const Text('Cancelar'),
                                       ),
                                       const SizedBox(width: 8),
                                       FilledButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(true),
+                                        onPressed: () => Navigator.of(context).pop(true),
                                         child: const Text('Eliminar'),
                                       ),
                                     ],

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
-import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
+import 'package:qkomo_ui/core/sync/sync_status.dart';
 
 part 'user_profile.freezed.dart';
 part 'user_profile.g.dart';

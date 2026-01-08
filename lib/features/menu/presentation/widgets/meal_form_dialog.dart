@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qkomo_ui/core/utils/sanitizer.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
-import 'package:qkomo_ui/features/menu/application/image_picker_service.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
@@ -33,7 +33,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
   final _nameController = TextEditingController();
   final _notesController = TextEditingController();
   final List<TextEditingController> _ingredientControllers = [];
-  final _imagePickerService = ImagePickerService();
+  final _imagePicker = ImagePicker();
 
   late MealType _selectedMealType;
   String? _photoPath;
@@ -106,9 +106,11 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
               title: const Text('Galería'),
               onTap: () async {
                 Navigator.pop(context);
-                final path = await _imagePickerService.pickImageFromGallery();
-                if (path != null) {
-                  setState(() => _photoPath = path);
+                final image = await _imagePicker.pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (image != null) {
+                  setState(() => _photoPath = image.path);
                 }
               },
             ),
@@ -117,9 +119,11 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
               title: const Text('Cámara'),
               onTap: () async {
                 Navigator.pop(context);
-                final path = await _imagePickerService.pickImageFromCamera();
-                if (path != null) {
-                  setState(() => _photoPath = path);
+                final image = await _imagePicker.pickImage(
+                  source: ImageSource.camera,
+                );
+                if (image != null) {
+                  setState(() => _photoPath = image.path);
                 }
               },
             ),

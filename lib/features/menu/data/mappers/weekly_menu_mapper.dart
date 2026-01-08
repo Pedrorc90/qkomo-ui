@@ -1,4 +1,4 @@
-import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
+import 'package:qkomo_ui/core/sync/sync_status.dart';
 import 'package:qkomo_ui/features/menu/application/date_utils.dart';
 import 'package:qkomo_ui/features/menu/data/models/weekly_menu_day_dto.dart';
 import 'package:qkomo_ui/features/menu/data/models/weekly_menu_dto.dart';

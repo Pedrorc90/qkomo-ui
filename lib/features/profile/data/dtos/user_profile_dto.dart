@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:qkomo_ui/features/entry/domain/entities/sync_status.dart';
+import 'package:qkomo_ui/core/sync/sync_status.dart';
 import 'package:qkomo_ui/features/profile/domain/entities/user_profile.dart';
 
 part 'user_profile_dto.freezed.dart';

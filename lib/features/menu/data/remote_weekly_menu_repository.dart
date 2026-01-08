@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:qkomo_ui/features/menu/data/mappers/weekly_menu_mapper.dart';
 import 'package:qkomo_ui/features/menu/data/weekly_menu_api.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
@@ -8,10 +9,37 @@ class RemoteWeeklyMenuRepository implements WeeklyMenuRepository {
 
   final WeeklyMenuApi _api;
 
+  // Cache for in-flight requests to prevent duplicate calls
+  final Map<String, Future<WeeklyMenu>> _inflightRequests = {};
+
   @override
   Future<WeeklyMenu> getWeek(DateTime weekStart, {required String userId}) async {
-    final dto = await _api.getWeeklyMenu(weekStart);
-    return WeeklyMenuMapper.toEntity(dto, userId: userId);
+    // Normalize weekStart to midnight to ensure consistent cache keys
+    final normalizedWeekStart = DateTime(weekStart.year, weekStart.month, weekStart.day);
+    final key = 'getWeek_${normalizedWeekStart.toIso8601String()}';
+
+    // If there's already a request in progress for this week, return it
+    if (_inflightRequests.containsKey(key)) {
+      debugPrint('[RemoteWeeklyMenuRepository] ♻️ Reusing in-flight request for $key');
+      return _inflightRequests[key]!;
+    }
+
+    debugPrint('[RemoteWeeklyMenuRepository] 🌐 Starting new request for $key');
+
+    // Create new request and cache it (use normalized date for API call too)
+    final request = _api.getWeeklyMenu(normalizedWeekStart).then((dto) {
+      final entity = WeeklyMenuMapper.toEntity(dto, userId: userId);
+      // Remove from cache once complete
+      _inflightRequests.remove(key);
+      return entity;
+    }).catchError((error) {
+      // Remove from cache on error too
+      _inflightRequests.remove(key);
+      throw error;
+    });
+
+    _inflightRequests[key] = request;
+    return request;
   }
 
   @override

@@ -5,20 +5,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:qkomo_ui/core/config/feature_flags.dart';
-import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart';
+import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
 import 'package:qkomo_ui/features/sync/application/sync_service.dart';
 
 import 'sync_service_test.mocks.dart';
 
 @GenerateNiceMocks(
-    [MockSpec<HybridEntryRepository>(), MockSpec<Connectivity>()])
+    [MockSpec<HybridMealRepository>(), MockSpec<Connectivity>()])
 void main() {
   late SyncService service;
-  late MockHybridEntryRepository mockRepo;
+  late MockHybridMealRepository mockRepo;
   late MockConnectivity mockConnectivity;
 
   setUp(() {
-    mockRepo = MockHybridEntryRepository();
+    mockRepo = MockHybridMealRepository();
     mockConnectivity = MockConnectivity();
 
     // Enable flag for testing

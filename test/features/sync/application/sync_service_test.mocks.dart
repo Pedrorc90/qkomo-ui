@@ -10,9 +10,8 @@ import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_
     as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i3;
-import 'package:qkomo_ui/features/entry/data/hybrid_entry_repository.dart'
-    as _i2;
-import 'package:qkomo_ui/features/entry/domain/entities/entry.dart' as _i5;
+import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart' as _i2;
+import 'package:qkomo_ui/features/menu/domain/meal.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,11 +26,11 @@ import 'package:qkomo_ui/features/entry/domain/entities/entry.dart' as _i5;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-/// A class which mocks [HybridEntryRepository].
+/// A class which mocks [HybridMealRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHybridEntryRepository extends _i1.Mock
-    implements _i2.HybridEntryRepository {
+class MockHybridMealRepository extends _i1.Mock
+    implements _i2.HybridMealRepository {
   @override
   bool get enableCloudSync => (super.noSuchMethod(
         Invocation.getter(#enableCloudSync),
@@ -53,48 +52,48 @@ class MockHybridEntryRepository extends _i1.Mock
       ) as String);
 
   @override
-  _i4.Future<List<_i5.Entry>> getEntries({
+  _i4.Future<List<_i5.Meal>> getMeals({
     DateTime? from,
     DateTime? to,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
-          #getEntries,
+          #getMeals,
           [],
           {
             #from: from,
             #to: to,
           },
         ),
-        returnValue: _i4.Future<List<_i5.Entry>>.value(<_i5.Entry>[]),
+        returnValue: _i4.Future<List<_i5.Meal>>.value(<_i5.Meal>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i5.Entry>>.value(<_i5.Entry>[]),
-      ) as _i4.Future<List<_i5.Entry>>);
+            _i4.Future<List<_i5.Meal>>.value(<_i5.Meal>[]),
+      ) as _i4.Future<List<_i5.Meal>>);
 
   @override
-  _i4.Future<_i5.Entry?> getEntryById(String? id) => (super.noSuchMethod(
+  _i4.Future<_i5.Meal?> getMealById(String? id) => (super.noSuchMethod(
         Invocation.method(
-          #getEntryById,
+          #getMealById,
           [id],
         ),
-        returnValue: _i4.Future<_i5.Entry?>.value(),
-        returnValueForMissingStub: _i4.Future<_i5.Entry?>.value(),
-      ) as _i4.Future<_i5.Entry?>);
+        returnValue: _i4.Future<_i5.Meal?>.value(),
+        returnValueForMissingStub: _i4.Future<_i5.Meal?>.value(),
+      ) as _i4.Future<_i5.Meal?>);
 
   @override
-  _i4.Future<void> saveEntry(_i5.Entry? entry) => (super.noSuchMethod(
+  _i4.Future<void> saveMeal(_i5.Meal? meal) => (super.noSuchMethod(
         Invocation.method(
-          #saveEntry,
-          [entry],
+          #saveMeal,
+          [meal],
         ),
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<void> deleteEntry(String? id) => (super.noSuchMethod(
+  _i4.Future<void> deleteMeal(String? id) => (super.noSuchMethod(
         Invocation.method(
-          #deleteEntry,
+          #deleteMeal,
           [id],
         ),
         returnValue: _i4.Future<void>.value(),
@@ -102,14 +101,14 @@ class MockHybridEntryRepository extends _i1.Mock
       ) as _i4.Future<void>);
 
   @override
-  _i4.Stream<List<_i5.Entry>> watchEntries() => (super.noSuchMethod(
+  _i4.Stream<List<_i5.Meal>> watchMeals() => (super.noSuchMethod(
         Invocation.method(
-          #watchEntries,
+          #watchMeals,
           [],
         ),
-        returnValue: _i4.Stream<List<_i5.Entry>>.empty(),
-        returnValueForMissingStub: _i4.Stream<List<_i5.Entry>>.empty(),
-      ) as _i4.Stream<List<_i5.Entry>>);
+        returnValue: _i4.Stream<List<_i5.Meal>>.empty(),
+        returnValueForMissingStub: _i4.Stream<List<_i5.Meal>>.empty(),
+      ) as _i4.Stream<List<_i5.Meal>>);
 
   @override
   _i4.Future<void> sync() => (super.noSuchMethod(

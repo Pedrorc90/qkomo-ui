@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'package:qkomo_ui/core/sync/sync_status.dart';
 import 'package:qkomo_ui/features/menu/data/models/weekly_meal_type.dart';
 import 'package:qkomo_ui/features/menu/data/models/weekly_menu_status.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
@@ -16,6 +17,9 @@ class MenuHiveBoxes {
   static const migrationKey = 'meal_sync_migration_v2';
 
   static Future<void> init([Uint8List? encryptionKey]) async {
+    // Register SyncStatus adapter (shared across features)
+    Hive.registerAdapter(SyncStatusAdapter(), override: true);
+
     // Register Meal V2 adapter (generated version)
     // FORCE override to ensure the correct adapter is used for _$MealImpl
     // This fixes "unknown type: _$MealImpl" error if ID 6 was claimed by another adapter

@@ -22,13 +22,11 @@ class DayMealSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weekMeals = ref.watch(weekMealsProvider);
-    final isManualMealAddEnabled = ref.watch(
-        featureEnabledProvider(FeatureToggleKeys.isManualMealAddEnabled));
+    final isManualMealAddEnabled =
+        ref.watch(featureEnabledProvider(FeatureToggleKeys.isManualMealAddEnabled));
     final mealsOfDay = weekMeals.where((meal) {
       final mealDate = meal.scheduledFor;
-      return mealDate.year == date.year &&
-          mealDate.month == date.month &&
-          mealDate.day == date.day;
+      return mealDate.year == date.year && mealDate.month == date.month && mealDate.day == date.day;
     }).toList();
 
     // Sort meals by type
@@ -91,51 +89,6 @@ class DayMealSection extends ConsumerWidget {
             ),
           );
         }),
-        if (isManualMealAddEnabled)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => MealFormDialog(
-                      date: date,
-                    ),
-                  );
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.add,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Agregar comida',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
         const Divider(height: 24),
       ],
     );
