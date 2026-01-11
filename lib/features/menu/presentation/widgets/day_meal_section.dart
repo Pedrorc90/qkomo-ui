@@ -22,8 +22,6 @@ class DayMealSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weekMeals = ref.watch(weekMealsProvider);
-    final isManualMealAddEnabled =
-        ref.watch(featureEnabledProvider(FeatureToggleKeys.isManualMealAddEnabled));
     final mealsOfDay = weekMeals.where((meal) {
       final mealDate = meal.scheduledFor;
       return mealDate.year == date.year && mealDate.month == date.month && mealDate.day == date.day;

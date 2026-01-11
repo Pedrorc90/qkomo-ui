@@ -30,4 +30,13 @@ enum WeeklyMealType {
         return 'DINNER';
     }
   }
+
+  String get displayName {
+    switch (this) {
+      case WeeklyMealType.lunch:
+        return 'COMIDA';
+      case WeeklyMealType.dinner:
+        return 'CENA';
+    }
+  }
 }

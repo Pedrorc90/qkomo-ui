@@ -293,9 +293,6 @@ const _$DietaryRestrictionEnumMap = {
 };
 
 const _$AppThemeTypeEnumMap = {
-  AppThemeType.warm: 'warm',
-  AppThemeType.offWhite: 'offWhite',
-  AppThemeType.dark: 'dark',
   AppThemeType.forest: 'forest',
-  AppThemeType.indigo: 'indigo',
+  AppThemeType.dark: 'dark',
 };

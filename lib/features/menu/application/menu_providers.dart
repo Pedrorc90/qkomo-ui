@@ -6,9 +6,6 @@ import 'package:hive/hive.dart';
 import 'package:qkomo_ui/config/env.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
-import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
-import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
-import 'package:qkomo_ui/features/menu/application/ai_weekly_menu_availability.dart';
 import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
 import 'package:qkomo_ui/features/menu/application/menu_state.dart';
 import 'package:qkomo_ui/features/menu/data/custom_recipe_repository.dart'
@@ -339,11 +336,6 @@ final weeklyMenuRepositoryProvider = Provider<WeeklyMenuRepository>((ref) {
   );
 });
 
-final aiWeeklyMenuAvailabilityProvider =
-    Provider<AiWeeklyMenuAvailability>((ref) {
-  return AiWeeklyMenuAvailability();
-});
-
 // Weekly menu provider with caching by weekStart and userId
 final weeklyMenuByWeekProvider = FutureProvider.family<WeeklyMenu?, (DateTime, String)>((ref, params) async {
   final (weekStartRaw, userId) = params;
@@ -407,13 +399,9 @@ final menuControllerProvider =
   final deletedPresetRecipesRepository =
       ref.watch(deletedPresetRecipesRepositoryProvider);
   final weeklyMenuRepository = ref.watch(weeklyMenuRepositoryProvider);
-  final aiAvailability = ref.watch(aiWeeklyMenuAvailabilityProvider);
 
   return MenuController(
     repository,
-    isAiWeeklyMenuEnabled: () {
-      return ref.read(featureEnabledProvider(FeatureToggleKeys.aiWeeklyMenuIsEnabled));
-    },
     getUserId: () {
       final user = ref.read(authStateChangesProvider).value;
       return user?.uid ?? '';
@@ -421,6 +409,5 @@ final menuControllerProvider =
     customRecipeRepository: customRecipeRepository,
     deletedPresetRecipesRepository: deletedPresetRecipesRepository,
     weeklyMenuRepository: weeklyMenuRepository,
-    aiAvailability: aiAvailability,
   );
 });

@@ -23,7 +23,10 @@ class LocalWeeklyMenuRepository {
   /// Get weekly menu by week start date (null if not found or deleted)
   WeeklyMenu? getWeeklyMenu(DateTime weekStart) {
     final key = _buildKey(weekStart);
+    print('[LocalWeeklyMenuRepository] 🔍 getWeeklyMenu - userId: $_userId, weekStart: $weekStart, key: $key');
+    print('[LocalWeeklyMenuRepository] 📦 All keys in box: ${_weeklyMenuBox.keys.toList()}');
     final menu = _weeklyMenuBox.get(key);
+    print('[LocalWeeklyMenuRepository] 📋 Found menu: ${menu != null ? "YES" : "NO"}, isDeleted: ${menu?.isDeleted}');
     if (menu == null || menu.isDeleted) return null;
     return menu;
   }

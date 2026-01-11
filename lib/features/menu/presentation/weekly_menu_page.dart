@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_labels.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/core/widgets/qkomo_navbar.dart';
-import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_providers.dart';
-import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/generate_ai_menu_cta.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/premium_images_cta.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/selected_day_meals_section.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/weekly_calendar_widget.dart';
 
@@ -22,17 +22,8 @@ class _WeeklyMenuPageState extends ConsumerState<WeeklyMenuPage> {
   @override
   void initState() {
     super.initState();
-    // Try to load AI weekly menu on page mount
+    // Load AI weekly menu on page mount
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final isEnabled = ref.read(
-        featureEnabledProvider(FeatureToggleKeys.aiWeeklyMenuIsEnabled),
-      );
-      debugPrint('[WeeklyMenuPage] aiWeeklyMenuIsEnabled = $isEnabled');
-
-      final menuState = ref.read(menuControllerProvider);
-      debugPrint(
-          '[WeeklyMenuPage] MenuState: isAiModeActive=${menuState.isAiModeActive}, aiDisabled=${menuState.aiDisabled}');
-
       final weekStart = ref.read(currentWeekStartProvider);
       ref
           .read(menuControllerProvider.notifier)
@@ -47,25 +38,42 @@ class _WeeklyMenuPageState extends ConsumerState<WeeklyMenuPage> {
   @override
   Widget build(BuildContext context) {
     final weekStart = ref.watch(currentWeekStartProvider);
+    final userId = ref.watch(currentUserIdProvider);
     final dateFormat = DateFormat('d MMM', 'es');
+
+    // Load menu for current week - this runs on every build when weekStart changes
+    final menuStateAsync = ref.watch(weeklyMenuByWeekProvider((weekStart, userId)));
+
+    // Sync the loaded menu to MenuController
+    menuStateAsync.whenData((weeklyMenu) {
+      final currentMenu = ref.read(menuControllerProvider).aiWeeklyMenu;
+      // Only update if menu changed to avoid rebuild loops
+      if (weeklyMenu != currentMenu) {
+        Future.microtask(() {
+          ref.read(menuControllerProvider.notifier).state = ref.read(menuControllerProvider).copyWith(
+            aiWeeklyMenu: weeklyMenu,
+            clearAiWeeklyMenu: weeklyMenu == null,
+          );
+        });
+      }
+    });
+
+    final menuState = ref.watch(menuControllerProvider);
 
     // Sync selectedDay changes with MenuController
     ref.listen<DateTime?>(selectedDayProvider, (previous, next) {
       ref.read(menuControllerProvider.notifier).setSelectedDay(next);
     });
 
-    // Reload AI menu when week changes
-    ref.listen<DateTime>(currentWeekStartProvider, (previous, next) {
-      if (previous != null && previous != next) {
-        ref
-            .read(menuControllerProvider.notifier)
-            .loadAiWeekIfEnabled(weekStart: next);
-      }
-    });
-
     final weekEnd = weekStart.add(const Duration(days: 6));
     final weekRange =
         '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
+
+    // Check if we should show the AI CTA below calendar
+    final showAiCtaBelowCalendar = menuState.showAiGenerateCta;
+
+    debugPrint('[WeeklyMenuPage] BUILD - weekStart=$weekStart, showAiCtaBelowCalendar=$showAiCtaBelowCalendar, '
+        'aiWeeklyMenu=${menuState.aiWeeklyMenu != null ? "EXISTS" : "NULL"}');
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -142,8 +150,26 @@ class _WeeklyMenuPageState extends ConsumerState<WeeklyMenuPage> {
             // Upper half: Weekly Calendar
             WeeklyCalendarWidget(weekStart: weekStart),
             const Divider(height: 1),
-            // Lower half: Selected Day Meals
-            const SelectedDayMealsSection(),
+            // Show AI CTA below calendar if no menu generated
+            if (showAiCtaBelowCalendar)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: GenerateAiMenuCta(
+                  onPressed: () async {
+                    await ref
+                        .read(menuControllerProvider.notifier)
+                        .generateAiWeek(weekStart: weekStart);
+                    // Invalidate cache to force reload
+                    ref.invalidate(weeklyMenuByWeekProvider((weekStart, userId)));
+                  },
+                ),
+              )
+            else ...[
+              // Premium CTA for unlocking images (shown when menu exists)
+              const PremiumImagesCta(),
+              // Lower half: Selected Day Meals
+              const SelectedDayMealsSection(),
+            ],
           ],
         ),
       ),

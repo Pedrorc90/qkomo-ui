@@ -14,37 +14,22 @@ class AppThemeTypeAdapter extends TypeAdapter<AppThemeType> {
   AppThemeType read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return AppThemeType.warm;
-      case 1:
-        return AppThemeType.offWhite;
-      case 2:
-        return AppThemeType.dark;
-      case 3:
         return AppThemeType.forest;
-      case 4:
-        return AppThemeType.indigo;
+      case 1:
+        return AppThemeType.dark;
       default:
-        return AppThemeType.warm;
+        return AppThemeType.forest;
     }
   }
 
   @override
   void write(BinaryWriter writer, AppThemeType obj) {
     switch (obj) {
-      case AppThemeType.warm:
+      case AppThemeType.forest:
         writer.writeByte(0);
         break;
-      case AppThemeType.offWhite:
-        writer.writeByte(1);
-        break;
       case AppThemeType.dark:
-        writer.writeByte(2);
-        break;
-      case AppThemeType.forest:
-        writer.writeByte(3);
-        break;
-      case AppThemeType.indigo:
-        writer.writeByte(4);
+        writer.writeByte(1);
         break;
     }
   }

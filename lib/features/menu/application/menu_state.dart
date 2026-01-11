@@ -7,9 +7,7 @@ class MenuState {
     this.isLoading = false,
     this.errorMessage,
     this.editingMeal,
-    this.isAiModeActive = false,
     this.aiWeeklyMenu,
-    this.aiDisabled = false,
     this.selectedDay,
   });
 
@@ -18,13 +16,8 @@ class MenuState {
   final Meal? editingMeal;
 
   // AI weekly menu fields
-  final bool isAiModeActive;
   final WeeklyMenu? aiWeeklyMenu;
-  final bool aiDisabled;
   final DateTime? selectedDay;
-
-  // Helpers
-  bool get canManualEdit => !isAiModeActive;
 
   List<WeeklyMenuItem> selectedDayAiItems() {
     if (aiWeeklyMenu == null || selectedDay == null) return [];
@@ -38,7 +31,7 @@ class MenuState {
     return day?.items ?? [];
   }
 
-  bool get showAiGenerateCta => isAiModeActive && aiWeeklyMenu == null;
+  bool get showAiGenerateCta => aiWeeklyMenu == null;
 
   MenuState copyWith({
     bool? isLoading,
@@ -46,9 +39,7 @@ class MenuState {
     Meal? editingMeal,
     bool clearError = false,
     bool clearEditing = false,
-    bool? isAiModeActive,
     WeeklyMenu? aiWeeklyMenu,
-    bool? aiDisabled,
     DateTime? selectedDay,
     bool clearAiWeeklyMenu = false,
   }) {
@@ -56,10 +47,8 @@ class MenuState {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       editingMeal: clearEditing ? null : (editingMeal ?? this.editingMeal),
-      isAiModeActive: isAiModeActive ?? this.isAiModeActive,
       aiWeeklyMenu:
           clearAiWeeklyMenu ? null : (aiWeeklyMenu ?? this.aiWeeklyMenu),
-      aiDisabled: aiDisabled ?? this.aiDisabled,
       selectedDay: selectedDay ?? this.selectedDay,
     );
   }

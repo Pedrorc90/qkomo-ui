@@ -23,25 +23,6 @@ class ThemeSelectionPage extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    // Original themes
-                    // _ThemeOption(
-                    //   label: 'Cálido',
-                    //   description: 'Naranja cálido e invitador',
-                    //   isSelected: currentTheme == AppThemeType.warm,
-                    //   color: const Color(0xFFFF6F3C),
-                    //   onTap: () =>
-                    //       ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.warm),
-                    // ),
-                    // const Divider(),
-                    _ThemeOption(
-                      label: 'Off-White',
-                      description: 'Gris minimalista neutral',
-                      isSelected: currentTheme == AppThemeType.offWhite,
-                      color: const Color(0xFF5D5D5D),
-                      onTap: () => ref
-                          .read(userSettingsProvider.notifier)
-                          .setThemeType(AppThemeType.offWhite),
-                    ),
                     const Divider(),
                     _ThemeOption(
                       label: 'Oscuro',
@@ -60,15 +41,6 @@ class ThemeSelectionPage extends ConsumerWidget {
                       onTap: () =>
                           ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.forest),
                     ),
-                    //const Divider(),
-                    // _ThemeOption(
-                    //   label: 'Índigo',
-                    //   description: 'Índigo profundo y elegante',
-                    //   isSelected: currentTheme == AppThemeType.indigo,
-                    //   color: const Color(0xFF4338CA),
-                    //   onTap: () =>
-                    //       ref.read(userSettingsProvider.notifier).setThemeType(AppThemeType.indigo),
-                    // ),
                   ],
                 ),
               ),

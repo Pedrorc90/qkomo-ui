@@ -18,7 +18,9 @@ class WeeklyCalendarWidget extends ConsumerWidget {
     final selectedDay = ref.watch(selectedDayProvider);
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final weekMeals = ref.watch(weekMealsProvider);
+
+    // Get menu state for AI weekly menu
+    final menuState = ref.watch(menuControllerProvider);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -46,8 +48,7 @@ class WeeklyCalendarWidget extends ConsumerWidget {
                 itemCount: 7,
                 itemBuilder: (context, index) {
                   final date = weekStart.add(Duration(days: index));
-                  final normalizedDate =
-                      DateTime(date.year, date.month, date.day);
+                  final normalizedDate = DateTime(date.year, date.month, date.day);
                   final isSelected = selectedDay != null &&
                       normalizedDate.year == selectedDay.year &&
                       normalizedDate.month == selectedDay.month &&
@@ -56,16 +57,27 @@ class WeeklyCalendarWidget extends ConsumerWidget {
                       normalizedDate.month == today.month &&
                       normalizedDate.day == today.day;
 
-                  // Get meal types for this day
-                  final mealTypesForDay = weekMeals
-                      .where((meal) {
-                        final mealDate = meal.scheduledFor;
-                        return mealDate.year == normalizedDate.year &&
-                            mealDate.month == normalizedDate.month &&
-                            mealDate.day == normalizedDate.day;
-                      })
-                      .map((meal) => meal.mealType)
-                      .toSet();
+                  // Get meal types for this day from AI weekly menu
+                  Set<MealType> mealTypesForDay = {};
+
+                  final aiMenu = menuState.aiWeeklyMenu;
+                  if (aiMenu != null) {
+                    try {
+                      final dayData = aiMenu.days.firstWhere(
+                        (d) =>
+                            d.date.year == normalizedDate.year &&
+                            d.date.month == normalizedDate.month &&
+                            d.date.day == normalizedDate.day,
+                      );
+
+                      mealTypesForDay = dayData.items.map((item) {
+                        return item.mealType.name == 'lunch' ? MealType.lunch : MealType.dinner;
+                      }).toSet();
+                    } catch (_) {
+                      // Day not found in menu
+                      mealTypesForDay = {};
+                    }
+                  }
 
                   return _DayCard(
                     date: date,
@@ -73,8 +85,7 @@ class WeeklyCalendarWidget extends ConsumerWidget {
                     isToday: isToday,
                     mealTypes: mealTypesForDay,
                     onTap: () {
-                      ref.read(selectedDayProvider.notifier).state =
-                          normalizedDate;
+                      ref.read(selectedDayProvider.notifier).state = normalizedDate;
                     },
                   );
                 },
@@ -119,8 +130,7 @@ class _DayCard extends StatelessWidget {
       textColor = colorScheme.onPrimaryContainer;
       borderColor = colorScheme.primary;
     } else if (isToday) {
-      backgroundColor =
-          colorScheme.secondaryContainer.withAlpha((0.3 * 255).round());
+      backgroundColor = colorScheme.secondaryContainer.withAlpha((0.3 * 255).round());
       textColor = colorScheme.onSurface;
       borderColor = colorScheme.secondary;
     } else {
@@ -172,22 +182,24 @@ class _DayCard extends StatelessWidget {
                   color: textColor.withAlpha((0.6 * 255).round()),
                 ),
               ),
-              const SizedBox(height: 6),
-              // Meal type indicators
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _MealIndicator(
-                    isActive: mealTypes.contains(MealType.lunch),
-                    color: textColor,
-                  ),
-                  const SizedBox(width: 4),
-                  _MealIndicator(
-                    isActive: mealTypes.contains(MealType.dinner),
-                    color: textColor,
-                  ),
-                ],
-              ),
+              if (mealTypes.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                // Meal type indicators
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _MealIndicator(
+                      isActive: mealTypes.contains(MealType.lunch),
+                      color: colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(width: 4),
+                    _MealIndicator(
+                      isActive: mealTypes.contains(MealType.dinner),
+                      color: textColor,
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),

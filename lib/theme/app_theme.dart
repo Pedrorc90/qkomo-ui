@@ -11,54 +11,21 @@ class AppTheme {
 
   static ThemeData theme(AppThemeType type) {
     switch (type) {
-      case AppThemeType.warm:
-        return _warmTheme;
-      case AppThemeType.offWhite:
-        return _offWhiteTheme;
       case AppThemeType.dark:
         return _darkTheme;
       case AppThemeType.forest:
         return _forestTheme;
-      case AppThemeType.indigo:
-        return _indigoTheme;
     }
   }
 
   static LinearGradient gradient(AppThemeType type) {
     switch (type) {
-      case AppThemeType.warm:
-        return AppColors.gradientWarm;
-      case AppThemeType.offWhite:
-        return AppColors.gradientOffWhite;
       case AppThemeType.dark:
         return AppColors.gradientDark;
       case AppThemeType.forest:
         return AppColors.gradientForest;
-      case AppThemeType.indigo:
-        return AppColors.gradientIndigo;
     }
   }
-
-  // -- Warm (actual) --
-  /// Warm theme with orange/coral primary colors and inviting surfaces
-  static final ColorScheme _warmScheme = ColorScheme.fromSeed(
-    seedColor: AppColors.primaryMain,
-    surface: AppColors.warmSurface,
-  );
-
-  static ThemeData get _warmTheme => _baseTheme(_warmScheme);
-
-  // -- Off-White (Dirty White) --
-  /// Minimalist theme with neutral grays and clean off-white surfaces
-  static final ColorScheme _offWhiteScheme = ColorScheme.fromSeed(
-    seedColor: AppColors.neutralMediumDark,
-    surface: AppColors.offWhiteSurface,
-    primary: AppColors.offWhitePrimary,
-    onSurface: AppColors.neutralDark,
-    secondary: AppColors.neutralMedium,
-  );
-
-  static ThemeData get _offWhiteTheme => _baseTheme(_offWhiteScheme);
 
   // -- Dark --
   /// Dark theme for night mode - natural forest night with moonlit greens
@@ -85,16 +52,6 @@ class AppTheme {
 
   static ThemeData get _forestTheme => _baseTheme(_forestScheme);
 
-  // -- Indigo --
-  /// Indigo theme with deep indigo and purple elegant colors
-  static final ColorScheme _indigoScheme = ColorScheme.fromSeed(
-    seedColor: AppColors.indigoPrimary,
-    surface: AppColors.indigoSurface,
-    secondary: AppColors.indigoSecondary,
-  );
-
-  static ThemeData get _indigoTheme => _baseTheme(_indigoScheme);
-
   static ThemeData _baseTheme(ColorScheme scheme) {
     final baseText = AppTypography.baseTextTheme;
     return ThemeData(
@@ -112,9 +69,8 @@ class AppTheme {
         ),
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: scheme.brightness == Brightness.dark
-              ? Brightness.light
-              : Brightness.dark,
+          statusBarIconBrightness:
+              scheme.brightness == Brightness.dark ? Brightness.light : Brightness.dark,
           statusBarBrightness: scheme.brightness,
         ),
       ),
@@ -125,9 +81,7 @@ class AppTheme {
                 scheme.surface,
               )
             : Colors.white,
-        surfaceTintColor: scheme.brightness == Brightness.dark
-            ? Colors.transparent
-            : Colors.white,
+        surfaceTintColor: scheme.brightness == Brightness.dark ? Colors.transparent : Colors.white,
         elevation: DesignTokens.elevationSm,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(

@@ -14,7 +14,7 @@ void main() {
     const size = 1024.0;
 
     // Get the primary color from the warm theme
-    final theme = AppTheme.theme(AppThemeType.warm);
+    final theme = AppTheme.theme(AppThemeType.forest);
     final primaryColor = theme.colorScheme.primary;
 
     // Build the widget

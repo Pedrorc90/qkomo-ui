@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:qkomo_ui/core/accessibility/semantic_wrapper.dart';
 import 'package:qkomo_ui/core/animations/page_transitions.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/hero_cta_card.dart';
-import 'package:qkomo_ui/features/home/presentation/widgets/weekly_menu_preview_card.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/presentation/weekly_menu_page.dart';
 import 'package:qkomo_ui/theme/design_tokens.dart';
@@ -67,12 +66,8 @@ class HomeHeader extends ConsumerWidget {
     bool hasWeeklyMenu,
     int weekMealCount,
   ) {
-    if (hasWeeklyMenu) {
-      return WeeklyMenuPreviewCard(
-        mealCount: weekMealCount,
-        onTap: () => context.pushSlide(const WeeklyMenuPage()),
-      );
-    } else {
+    // Solo mostrar CTA si NO hay menú
+    if (!hasWeeklyMenu) {
       return HeroCTACard(
         title: 'Generar menú semanal',
         subtitle: 'Planifica con IA',
@@ -81,5 +76,7 @@ class HomeHeader extends ConsumerWidget {
         isPrimary: true,
       );
     }
+    // Si ya hay menú, no mostrar nada
+    return const SizedBox.shrink();
   }
 }

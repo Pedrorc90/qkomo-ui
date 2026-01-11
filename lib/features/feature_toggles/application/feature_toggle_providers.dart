@@ -10,9 +10,7 @@ import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dar
 import 'package:qkomo_ui/features/feature_toggles/domain/repositories/feature_toggle_repository.dart';
 
 /// Feature toggles that are enabled by default when no data is available
-const _defaultEnabledToggles = <String>{
-  FeatureToggleKeys.aiWeeklyMenuIsEnabled,
-};
+const _defaultEnabledToggles = <String>{};
 
 final featureToggleRepositoryProvider =
     Provider<FeatureToggleRepository>((ref) {
