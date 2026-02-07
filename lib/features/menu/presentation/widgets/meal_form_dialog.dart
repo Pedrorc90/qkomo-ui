@@ -8,8 +8,13 @@ import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_action_buttons.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_footer.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_form_header.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_ingredients_input.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_name_field.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_notes_field.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/meal_photo_picker.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/meal_type_selector.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/preset_recipe_dialog.dart';
 
 class MealFormDialog extends ConsumerStatefulWidget {
@@ -133,52 +138,52 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     );
   }
 
+  void _clearIngredientControllers() {
+    for (var controller in _ingredientControllers) {
+      controller.dispose();
+    }
+    _ingredientControllers.clear();
+  }
+
+  void _applyPresetRecipe(PresetRecipe recipe) {
+    _nameController.text = recipe.name;
+    _selectedMealType = recipe.suggestedMealType;
+    _photoPath = recipe.photoPath;
+    _clearIngredientControllers();
+    for (final ingredient in recipe.ingredients) {
+      _ingredientControllers.add(TextEditingController(text: ingredient));
+    }
+  }
+
+  void _applyCustomRecipe(Map<String, dynamic> recipe) {
+    _nameController.text = recipe['name'] as String? ?? '';
+    _selectedMealType = recipe['mealType'] as MealType? ?? MealType.lunch;
+    _photoPath = recipe['photoPath'] as String?;
+    _clearIngredientControllers();
+    final ingredients = recipe['ingredients'] as List<dynamic>? ?? [];
+    for (final ingredient in ingredients.cast<String>()) {
+      _ingredientControllers.add(TextEditingController(text: ingredient));
+    }
+  }
+
   Future<void> _showPresetRecipes() async {
     final selected = await showDialog<dynamic>(
       context: context,
       builder: (context) => const PresetRecipeDialog(),
     );
 
-    if (selected != null) {
-      setState(() {
-        _showForm = true; // Show form when recipe is selected
-        _isCreatingCustom = false; // Hide photo section for preset recipes
+    if (selected == null) return;
 
-        // Handle both PresetRecipe and custom recipe Map
-        if (selected is PresetRecipe) {
-          _nameController.text = selected.name;
-          _selectedMealType = selected.suggestedMealType;
-          _photoPath = selected.photoPath;
+    setState(() {
+      _showForm = true;
+      _isCreatingCustom = false;
 
-          // Clear current ingredients and add from recipe
-          for (var controller in _ingredientControllers) {
-            controller.dispose();
-          }
-          _ingredientControllers.clear();
-
-          for (final ingredient in selected.ingredients) {
-            _ingredientControllers.add(TextEditingController(text: ingredient));
-          }
-        } else if (selected is Map<String, dynamic>) {
-          // Custom recipe
-          _nameController.text = selected['name'] as String? ?? '';
-          _selectedMealType =
-              selected['mealType'] as MealType? ?? MealType.lunch;
-          _photoPath = selected['photoPath'] as String?;
-
-          // Clear current ingredients and add from recipe
-          for (var controller in _ingredientControllers) {
-            controller.dispose();
-          }
-          _ingredientControllers.clear();
-
-          final ingredients = selected['ingredients'] as List<dynamic>? ?? [];
-          for (final ingredient in ingredients.cast<String>()) {
-            _ingredientControllers.add(TextEditingController(text: ingredient));
-          }
-        }
-      });
-    }
+      if (selected is PresetRecipe) {
+        _applyPresetRecipe(selected);
+      } else if (selected is Map<String, dynamic>) {
+        _applyCustomRecipe(selected);
+      }
+    });
   }
 
   Future<void> _saveMeal() async {
@@ -304,6 +309,28 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
     return existsInPreset;
   }
 
+  void _handleBack() {
+    // If showing form and not editing existing meal, go back to initial state
+    if (_showForm && widget.existingMeal == null) {
+      setState(() {
+        _showForm = false;
+        _isCreatingCustom = false;
+        // Clear form data
+        _nameController.clear();
+        _notesController.clear();
+        _photoPath = null;
+        for (var controller in _ingredientControllers) {
+          controller.dispose();
+        }
+        _ingredientControllers.clear();
+        _ingredientControllers.add(TextEditingController());
+      });
+    } else {
+      // Otherwise close the dialog
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final menuState = ref.watch(menuControllerProvider);
@@ -313,55 +340,11 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      // If showing form and not editing existing meal, go back to initial state
-                      if (_showForm && widget.existingMeal == null) {
-                        setState(() {
-                          _showForm = false;
-                          _isCreatingCustom = false;
-                          // Clear form data
-                          _nameController.clear();
-                          _notesController.clear();
-                          _photoPath = null;
-                          for (var controller in _ingredientControllers) {
-                            controller.dispose();
-                          }
-                          _ingredientControllers.clear();
-                          _ingredientControllers.add(TextEditingController());
-                        });
-                      } else {
-                        // Otherwise close the dialog
-                        Navigator.of(context).pop();
-                      }
-                    },
-                  ),
-                ),
-                Center(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
-                    child: Text(
-                      widget.existingMeal != null
-                          ? 'Editar ${_selectedMealType.displayName}'
-                          : 'Agregar comida',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          MealFormHeader(
+            isEditing: widget.existingMeal != null,
+            selectedMealType: _selectedMealType,
+            showingForm: _showForm,
+            onBack: _handleBack,
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -386,40 +369,16 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
 
                     // Form content (shown when editing or when user clicks "Add")
                     if (_showForm) ...[
-                      // Meal Type Selector
-                      DropdownButtonFormField<MealType>(
-                        initialValue: _selectedMealType,
-                        decoration: const InputDecoration(
-                          labelText: 'Tipo de comida',
-                        ),
-                        items: MealType.values.map((type) {
-                          return DropdownMenuItem(
-                            value: type,
-                            child: Text(type.displayName),
-                          );
-                        }).toList(),
+                      MealTypeSelector(
+                        selectedMealType: _selectedMealType,
                         onChanged: (value) {
                           if (value != null) {
-                            setState(() {
-                              _selectedMealType = value;
-                            });
+                            setState(() => _selectedMealType = value);
                           }
                         },
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Nombre de la comida',
-                          hintText: 'Ej: Ensalada César',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'El nombre es obligatorio';
-                          }
-                          return null;
-                        },
-                      ),
+                      MealNameField(controller: _nameController),
                       const SizedBox(height: 16),
                       MealIngredientsInput(
                         controllers: _ingredientControllers,
@@ -428,14 +387,7 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
                         onRemoveIngredient: _removeIngredient,
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _notesController,
-                        decoration: const InputDecoration(
-                          labelText: 'Notas (opcional)',
-                          hintText: 'Ej: Sin cebolla',
-                        ),
-                        maxLines: 2,
-                      ),
+                      MealNotesField(controller: _notesController),
                       if (_isCreatingCustom) ...[
                         const SizedBox(height: 16),
                         MealPhotoPicker(
@@ -460,48 +412,15 @@ class _MealFormDialogState extends ConsumerState<MealFormDialog> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: menuState.isLoading || _isSavingAsRecipe
-                      ? null
-                      : () => Navigator.of(context).pop(),
-                  child: const Text('Cancelar'),
-                ),
-                const SizedBox(width: 8),
-                if (_showForm &&
-                    !_recipeAlreadyExists(_nameController.text)) ...[
-                  IconButton(
-                    onPressed: (menuState.isLoading || _isSavingAsRecipe)
-                        ? null
-                        : _saveAsRecipe,
-                    icon: _isSavingAsRecipe
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.bookmark_add),
-                  )
-                ],
-                FilledButton(
-                  onPressed: (menuState.isLoading || _isSavingAsRecipe)
-                      ? null
-                      : _saveMeal,
-                  child: menuState.isLoading
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(
-                          widget.existingMeal != null ? 'Guardar' : 'Añadir'),
-                ),
-              ],
-            ),
+          MealFormFooter(
+            isLoading: menuState.isLoading,
+            isSavingAsRecipe: _isSavingAsRecipe,
+            isEditing: widget.existingMeal != null,
+            showSaveAsRecipe:
+                _showForm && !_recipeAlreadyExists(_nameController.text),
+            onCancel: () => Navigator.of(context).pop(),
+            onSaveAsRecipe: _saveAsRecipe,
+            onSave: _saveMeal,
           ),
         ],
       ),

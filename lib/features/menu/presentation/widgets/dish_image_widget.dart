@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:qkomo_ui/features/menu/data/models/weekly_meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/weekly_meal_type.dart';
 
 enum DishImageType {
   aiGenerated,

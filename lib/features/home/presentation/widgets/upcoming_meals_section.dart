@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qkomo_ui/features/home/presentation/widgets/weekly_menu_empty_state.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu_item.dart';
 import 'package:qkomo_ui/features/menu/presentation/widgets/dish_image_widget.dart';
@@ -98,7 +99,7 @@ class UpcomingMealsSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (!hasTodayMeals && !hasTomorrowMeals)
-                  _buildEmptyState(context, colorScheme)
+                  const WeeklyMenuEmptyState()
                 else ...[
                   if (todayWeeklyItems.isNotEmpty) ...[
                     _buildDaySubsection(
@@ -206,40 +207,4 @@ class UpcomingMealsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, ColorScheme colorScheme) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.auto_awesome,
-              size: 48,
-              color: colorScheme.primary.withAlpha((0.7 * 255).round()),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Aún no tienes un menú semanal',
-              style: TextStyle(
-                color: colorScheme.onSurface,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Genéralo en un solo paso con IA',
-              style: TextStyle(
-                color: colorScheme.onSurfaceVariant,
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/day_card_colors.dart';
 
 class WeeklyCalendarWidget extends ConsumerWidget {
   const WeeklyCalendarWidget({
@@ -120,24 +121,11 @@ class _DayCard extends StatelessWidget {
     final monthFormat = DateFormat('MMM', 'es');
 
     final colorScheme = Theme.of(context).colorScheme;
-
-    Color backgroundColor;
-    Color textColor;
-    Color borderColor;
-
-    if (isSelected) {
-      backgroundColor = colorScheme.primaryContainer;
-      textColor = colorScheme.onPrimaryContainer;
-      borderColor = colorScheme.primary;
-    } else if (isToday) {
-      backgroundColor = colorScheme.secondaryContainer.withAlpha((0.3 * 255).round());
-      textColor = colorScheme.onSurface;
-      borderColor = colorScheme.secondary;
-    } else {
-      backgroundColor = colorScheme.surface;
-      textColor = colorScheme.onSurface;
-      borderColor = colorScheme.outlineVariant;
-    }
+    final colors = DayCardColors.fromState(
+      colorScheme: colorScheme,
+      isSelected: isSelected,
+      isToday: isToday,
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -147,11 +135,11 @@ class _DayCard extends StatelessWidget {
         child: Container(
           width: 70,
           decoration: BoxDecoration(
-            color: backgroundColor,
+            color: colors.backgroundColor,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: borderColor,
-              width: isSelected ? 2 : 1,
+              color: colors.borderColor,
+              width: colors.borderWidth,
             ),
           ),
           child: Column(
@@ -162,7 +150,7 @@ class _DayCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: textColor.withAlpha((0.7 * 255).round()),
+                  color: colors.textColor.withAlpha((0.7 * 255).round()),
                 ),
               ),
               const SizedBox(height: 4),
@@ -171,7 +159,7 @@ class _DayCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: textColor,
+                  color: colors.textColor,
                 ),
               ),
               Text(
@@ -179,7 +167,7 @@ class _DayCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w400,
-                  color: textColor.withAlpha((0.6 * 255).round()),
+                  color: colors.textColor.withAlpha((0.6 * 255).round()),
                 ),
               ),
               if (mealTypes.isNotEmpty) ...[
@@ -195,7 +183,7 @@ class _DayCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     _MealIndicator(
                       isActive: mealTypes.contains(MealType.dinner),
-                      color: textColor,
+                      color: colors.textColor,
                     ),
                   ],
                 ),

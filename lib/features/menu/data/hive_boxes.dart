@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:qkomo_ui/core/sync/sync_status.dart';
-import 'package:qkomo_ui/features/menu/data/models/weekly_meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/weekly_meal_type.dart';
 import 'package:qkomo_ui/features/menu/data/models/weekly_menu_status.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu_day.dart';

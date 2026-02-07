@@ -1,4 +1,4 @@
-import 'package:qkomo_ui/features/menu/data/models/weekly_meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/weekly_meal_type.dart';
 
 class WeeklyMenuItemDto {
   WeeklyMenuItemDto({

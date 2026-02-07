@@ -6,11 +6,15 @@ import 'package:qkomo_ui/features/feature_toggles/application/feature_toggle_pro
 import 'package:qkomo_ui/features/feature_toggles/domain/feature_toggle_keys.dart';
 import 'package:qkomo_ui/features/home/presentation/widgets/user_summary_card.dart';
 import 'package:qkomo_ui/features/profile/application/companion_controller.dart';
+import 'package:qkomo_ui/features/profile/domain/entities/companion.dart';
 import 'package:qkomo_ui/features/profile/presentation/allergens_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/dietary_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/theme_selection_page.dart';
 import 'package:qkomo_ui/features/profile/presentation/widgets/add_companion_dialog.dart';
+import 'package:qkomo_ui/features/profile/presentation/widgets/companion_card.dart';
 import 'package:qkomo_ui/features/profile/presentation/widgets/profile_option_card.dart';
+import 'package:qkomo_ui/features/profile/presentation/widgets/profile_section_header.dart';
+import 'package:qkomo_ui/features/profile/presentation/widgets/remove_companion_dialog.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -35,13 +39,7 @@ class ProfilePage extends ConsumerWidget {
             const SizedBox(height: 24),
             const _CompanionSection(),
             const SizedBox(height: 24),
-            Text(
-              'Preferencias',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
+            const ProfileSectionHeader(title: 'Preferencias'),
             const SizedBox(height: 12),
             ProfileOptionCard(
               title: 'Mis Alérgenos',
@@ -74,13 +72,7 @@ class ProfilePage extends ConsumerWidget {
             //const _LanguageOption(),
             if (showAppearance) ...[
               const SizedBox(height: 24),
-              Text(
-                'Apariencia',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-              ),
+              const ProfileSectionHeader(title: 'Apariencia'),
               const SizedBox(height: 12),
               ProfileOptionCard(
                 title: 'Apariencia',
@@ -95,13 +87,7 @@ class ProfilePage extends ConsumerWidget {
               ),
             ],
             const SizedBox(height: 24),
-            Text(
-              'Cuenta',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
+            const ProfileSectionHeader(title: 'Cuenta'),
             const SizedBox(height: 12),
             Card(
               child: ListTile(
@@ -131,6 +117,26 @@ class ProfilePage extends ConsumerWidget {
 class _CompanionSection extends ConsumerWidget {
   const _CompanionSection();
 
+  Future<void> _handleRemoveCompanion(
+    BuildContext context,
+    WidgetRef ref,
+    Companion companion,
+  ) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => RemoveCompanionDialog(
+        companionName: companion.displayName ?? companion.email,
+      ),
+    );
+
+    if (confirm == true) {
+      await ref
+          .read(companionControllerProvider.notifier)
+          .removeCompanion(companion.id);
+      ref.invalidate(companionListProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isEnabled =
@@ -145,13 +151,7 @@ class _CompanionSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Comunidad',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-        ),
+        const ProfileSectionHeader(title: 'Comunidad'),
         const SizedBox(height: 12),
         companionListAsync.when(
           data: (companions) {
@@ -170,94 +170,9 @@ class _CompanionSection extends ConsumerWidget {
             }
 
             final companion = companions.first;
-            return Card(
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: companion.photoUrl != null
-                      ? NetworkImage(companion.photoUrl!)
-                      : null,
-                  child: companion.photoUrl == null
-                      ? const Icon(Icons.person)
-                      : null,
-                ),
-                title: Text(
-                  companion.displayName ?? companion.email,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                subtitle: Text(
-                  companion.isPending ? 'Invitación enviada' : 'Compañero',
-                  style: TextStyle(
-                    color: companion.isPending
-                        ? Theme.of(context).colorScheme.error
-                        : Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => Dialog(
-                        insetPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 24),
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Desvincular compañero',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                    ),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                '¿Seguro que quieres eliminar a ${companion.displayName ?? companion.email}? Dejarán de compartir el menú semanal.',
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: const Text('Cancelar'),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    child: const Text('Desvincular'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-
-                    if (confirm == true) {
-                      await ref
-                          .read(companionControllerProvider.notifier)
-                          .removeCompanion(companion.id);
-                      ref.invalidate(companionListProvider);
-                    }
-                  },
-                ),
-              ),
+            return CompanionCard(
+              companion: companion,
+              onRemove: () => _handleRemoveCompanion(context, ref, companion),
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),

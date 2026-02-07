@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/features/menu/application/menu_providers.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/preset_recipe.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/recipe_filter_chips.dart';
+import 'package:qkomo_ui/features/menu/presentation/widgets/recipe_grid_card.dart';
 
 class PresetRecipeDialog extends ConsumerStatefulWidget {
   const PresetRecipeDialog({super.key});
@@ -81,36 +83,11 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
 
                   return Column(
                     children: [
-                      // Meal type filters (horizontal scroll)
-                      SizedBox(
-                        height: 40,
-                        child: Center(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                (MealType.lunch, 'Comida'),
-                                (MealType.dinner, 'Cena'),
-                              ].map((filter) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: FilterChip(
-                                    label: Text(filter.$2),
-                                    selected: _selectedMealType == filter.$1,
-                                    onSelected: (selected) {
-                                      setState(() {
-                                        _selectedMealType =
-                                            selected ? filter.$1 : null;
-                                      });
-                                    },
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
+                      RecipeFilterChips(
+                        selectedMealType: _selectedMealType,
+                        onMealTypeSelected: (mealType) {
+                          setState(() => _selectedMealType = mealType);
+                        },
                       ),
                       const SizedBox(height: 16),
                       // Recipe grid
@@ -134,151 +111,28 @@ class _PresetRecipeDialogState extends ConsumerState<PresetRecipeDialog> {
                                 itemBuilder: (context, index) {
                                   final recipe = filteredRecipes[index];
                                   final isCustom = recipe['isCustom'] as bool;
+                                  final recipeIdentifier = isCustom
+                                      ? recipe['id'] as String
+                                      : recipe['name'] as String;
 
-                                  return Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    child: InkWell(
-                                      onTap: () {
-                                        if (isCustom) {
-                                          Navigator.of(context).pop(recipe);
-                                        } else {
-                                          Navigator.of(context)
-                                              .pop(recipe['presetRecipe']);
-                                        }
-                                      },
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          // Recipe image with delete button overlay
-                                          Expanded(
-                                            child: Stack(
-                                              fit: StackFit.expand,
-                                              children: [
-                                                (recipe['photoPath']
-                                                            as String?) !=
-                                                        null
-                                                    ? Image.asset(
-                                                        recipe['photoPath']
-                                                            as String,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (context,
-                                                            error, stackTrace) {
-                                                          return Container(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .outlineVariant,
-                                                            child: const Icon(
-                                                                Icons
-                                                                    .restaurant),
-                                                          );
-                                                        },
-                                                      )
-                                                    : Container(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .outlineVariant,
-                                                        child: const Icon(
-                                                            Icons.restaurant),
-                                                      ),
-                                                // Delete button overlay
-                                                Positioned(
-                                                  top: 4,
-                                                  right: 4,
-                                                  child: GestureDetector(
-                                                    onTap: () async {
-                                                      final recipeIdentifier =
-                                                          isCustom
-                                                              ? recipe['id']
-                                                                  as String
-                                                              : recipe['name']
-                                                                  as String;
-                                                      await _deleteRecipe(
-                                                          recipeIdentifier,
-                                                          isCustom);
-                                                    },
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.black54,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.delete_outline,
-                                                        size: 16,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          // Recipe details
-                                          Padding(
-                                            padding: const EdgeInsets.all(8),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  recipe['name'] as String,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 11,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .onSurface),
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  '${(recipe['ingredients'] as List<dynamic>).length} ingredientes',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.copyWith(
-                                                        fontSize: 10,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onSurfaceVariant,
-                                                      ),
-                                                ),
-                                                const SizedBox(height: 1),
-                                                Text(
-                                                  (recipe['suggestedMealType']
-                                                          as MealType)
-                                                      .displayName,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.copyWith(
-                                                        fontSize: 10,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primary,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                  return RecipeGridCard(
+                                    name: recipe['name'] as String,
+                                    photoPath: recipe['photoPath'] as String?,
+                                    ingredientCount:
+                                        (recipe['ingredients'] as List<dynamic>)
+                                            .length,
+                                    mealType:
+                                        recipe['suggestedMealType'] as MealType,
+                                    onTap: () {
+                                      final result = isCustom
+                                          ? recipe
+                                          : recipe['presetRecipe'];
+                                      Navigator.of(context).pop(result);
+                                    },
+                                    onDelete: () async {
+                                      await _deleteRecipe(
+                                          recipeIdentifier, isCustom);
+                                    },
                                   );
                                 },
                               ),

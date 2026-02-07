@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
-import 'package:qkomo_ui/features/menu/data/models/weekly_meal_type.dart';
+import 'package:qkomo_ui/features/menu/domain/entities/weekly_meal_type.dart';
 
 part 'weekly_menu_item.freezed.dart';
 part 'weekly_menu_item.g.dart';
