@@ -25,7 +25,9 @@
       "Bash(git log:*)",
       "Bash(git checkout:*)",
       "Bash(git push:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(python3:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

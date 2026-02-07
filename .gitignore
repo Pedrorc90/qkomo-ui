@@ -21,3 +21,8 @@ docs/
 # Misc
 .DS_Store
 
+
+#AI Config
+.claude/
+.agents/
+

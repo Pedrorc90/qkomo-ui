@@ -4,8 +4,8 @@ import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_reposit
 import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
 import 'package:uuid/uuid.dart';
 
-class CustomRecipeRepositoryImpl implements CustomRecipeRepository {
-  CustomRecipeRepositoryImpl({
+class LocalCustomRecipeRepository implements CustomRecipeRepository {
+  LocalCustomRecipeRepository({
     required Box<dynamic> recipeBox,
     required String userId,
     Uuid? uuid,

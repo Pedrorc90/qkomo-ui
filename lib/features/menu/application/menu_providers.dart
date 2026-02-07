@@ -9,7 +9,7 @@ import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
 import 'package:qkomo_ui/features/menu/application/menu_controller.dart';
 import 'package:qkomo_ui/features/menu/application/menu_state.dart';
-import 'package:qkomo_ui/features/menu/data/custom_recipe_repository.dart'
+import 'package:qkomo_ui/features/menu/data/local_custom_recipe_repository.dart'
     as impl;
 import 'package:qkomo_ui/features/menu/data/deleted_preset_recipes_repository.dart'
     as impl2;
@@ -211,7 +211,7 @@ final customRecipeRepositoryProvider = Provider<CustomRecipeRepository?>((ref) {
     final user = ref.watch(firebaseAuthProvider).currentUser;
     final userId = user?.uid ?? '';
 
-    return impl.CustomRecipeRepositoryImpl(recipeBox: box, userId: userId);
+    return impl.LocalCustomRecipeRepository(recipeBox: box, userId: userId);
   } catch (e) {
     // If repository creation fails, return null
     return null;

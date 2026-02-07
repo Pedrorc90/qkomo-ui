@@ -42,16 +42,8 @@ This file tracks pending implementation tasks for the qkomo-ui Flutter mobile ap
 - [] Add accessibility features
   - [ ] High contrast mode
   - [ ] Font size scaling
-- [ ] Add haptic feedback
-  - [ ] Capture button feedback
-  - [ ] Error vibration
-  - [ ] Success confirmation
 
 ### Feature Enhancements (Post-MVP)
-- [ ] Add batch capture mode
-  - [ ] Capture multiple products in one session
-  - [ ] Queue all for processing
-  - [ ] Review all before saving
 - [ ] Add meal tagging
   - [ ] Tag as breakfast, lunch, dinner, snack
   - [ ] Custom tags
@@ -116,14 +108,6 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 
 ### 🟢 Baja Prioridad - Optimizaciones
 
-#### P9 - Optimizar queries de Hive con índices
-**Ubicación:** `lib/features/capture/application/capture_providers.dart`
-**Problema:** Los providers filtran datos iterando sobre todos los valores del box cada vez.
-**Propuesta:**
-- Mantener índices secundarios en memoria para filtros frecuentes (por status, por fecha)
-- Usar `box.listenable()` con `ValueListenableBuilder` en lugar de StreamController manual
-- Beneficio: Mejor rendimiento con grandes volúmenes de datos
-
 #### P10 - Implementar caché de imágenes
 **Ubicación:** `lib/features/capture/presentation/review/widgets/photo_viewer.dart`
 **Problema:** No hay estrategia visible de caché de imágenes.
@@ -132,14 +116,6 @@ Las siguientes propuestas surgen del análisis del código actual y buscan mejor
 - Implementar LRU cache para imágenes locales procesadas
 - Beneficio: Mejor rendimiento y experiencia de usuario
 
-
-#### P12 - Añadir documentación de código público
-**Ubicación:** Múltiples archivos (repositories, controllers, services)
-**Problema:** Falta documentación en clases y métodos públicos de la capa de dominio y aplicación.
-**Propuesta:**
-- Documentar todas las clases públicas con `///` dartdoc
-- Agregar ejemplos de uso donde sea apropiado
-- Beneficio: Mejor mantenibilidad y onboarding
 
 ### 🔵 Mejoras de Testing
 
