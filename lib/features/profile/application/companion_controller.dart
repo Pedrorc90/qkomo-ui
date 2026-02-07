@@ -1,15 +1,26 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/profile/data/companion_local_data_source.dart';
-import 'package:qkomo_ui/features/profile/data/companion_repository.dart' as impl;
+import 'package:qkomo_ui/features/profile/data/repositories/hybrid_companion_repository.dart';
+import 'package:qkomo_ui/features/profile/data/repositories/local_companion_repository.dart';
+import 'package:qkomo_ui/features/profile/data/repositories/remote_companion_repository.dart';
 import 'package:qkomo_ui/features/profile/domain/entities/companion.dart';
 import 'package:qkomo_ui/features/profile/domain/repositories/companion_repository.dart';
 
 final companionRepositoryProvider = Provider<CompanionRepository>((ref) {
   final dio = ref.watch(dioProvider);
-  return impl.CompanionRepositoryImpl(
-    dio: dio,
+
+  final localRepo = LocalCompanionRepository(
     localDataSource: CompanionLocalDataSource(),
+  );
+
+  final remoteRepo = RemoteCompanionRepository(dio: dio);
+
+  return HybridCompanionRepository(
+    localRepo: localRepo,
+    remoteRepo: remoteRepo,
   );
 });
 
@@ -27,15 +38,15 @@ class CompanionListNotifier extends AutoDisposeAsyncNotifier<List<Companion>> {
     final cached = repository.getCachedCompanions();
 
     // 2. Background Sync: Trigger remote fetch
-    // Use Future.microtask to avoid build side-effects or just fire-and-forget
-    _syncRemote(repository);
+    // Fire-and-forget to avoid blocking initial load
+    unawaited(_syncRemote(repository));
 
     return cached;
   }
 
   Future<void> _syncRemote(CompanionRepository repository) async {
     // Wait for the build phase to complete to safely update state
-    await Future.delayed(Duration.zero);
+    await Future<void>.delayed(Duration.zero);
 
     try {
       final remoteData = await repository.syncRemoteCompanions();

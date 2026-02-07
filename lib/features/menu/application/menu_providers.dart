@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+
 import 'package:qkomo_ui/config/env.dart';
 import 'package:qkomo_ui/core/http/dio_provider.dart';
 import 'package:qkomo_ui/features/auth/application/auth_providers.dart';
@@ -14,10 +15,10 @@ import 'package:qkomo_ui/features/menu/data/deleted_preset_recipes_repository.da
     as impl2;
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/hybrid_meal_repository.dart';
-import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
-import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/hybrid_weekly_menu_repository.dart';
+import 'package:qkomo_ui/features/menu/data/local_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/local_weekly_menu_repository.dart';
+import 'package:qkomo_ui/features/menu/data/remote_meal_repository.dart';
 import 'package:qkomo_ui/features/menu/data/remote_weekly_menu_repository.dart';
 import 'package:qkomo_ui/features/menu/data/weekly_menu_api.dart';
 import 'package:qkomo_ui/features/menu/domain/entities/weekly_menu.dart';
@@ -27,6 +28,11 @@ import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/weekly_menu_repository.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/create_meal.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/delete_meal.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/delete_recipe.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/save_meal_as_recipe.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/update_meal.dart';
 import 'package:qkomo_ui/features/menu/domain/user_recipe.dart';
 
 // Box provider
@@ -391,23 +397,62 @@ final hasWeeklyMenuProvider = Provider<bool>((ref) {
   return weeklyMenuAsync.value != null;
 });
 
-// Controller provider
-final menuControllerProvider =
-    StateNotifierProvider<MenuController, MenuState>((ref) {
+// UseCase providers
+final createMealProvider = Provider<CreateMeal>((ref) {
   final repository = ref.watch(mealRepositoryProvider);
+  return CreateMeal(repository);
+});
+
+final updateMealProvider = Provider<UpdateMeal>((ref) {
+  final repository = ref.watch(mealRepositoryProvider);
+  return UpdateMeal(repository);
+});
+
+final deleteMealProvider = Provider<DeleteMeal>((ref) {
+  final repository = ref.watch(mealRepositoryProvider);
+  return DeleteMeal(repository);
+});
+
+final saveMealAsRecipeProvider = Provider<SaveMealAsRecipe>((ref) {
+  final customRecipeRepository = ref.watch(customRecipeRepositoryProvider);
+  if (customRecipeRepository == null) {
+    throw Exception('CustomRecipeRepository not available');
+  }
+  return SaveMealAsRecipe(customRecipeRepository);
+});
+
+final deleteRecipeProvider = Provider<DeleteRecipe>((ref) {
   final customRecipeRepository = ref.watch(customRecipeRepositoryProvider);
   final deletedPresetRecipesRepository =
       ref.watch(deletedPresetRecipesRepositoryProvider);
+  return DeleteRecipe(
+    customRecipeRepository: customRecipeRepository,
+    deletedPresetRecipesRepository: deletedPresetRecipesRepository,
+  );
+});
+
+// Controller provider
+final menuControllerProvider =
+    StateNotifierProvider<MenuController, MenuState>((ref) {
+  final createMeal = ref.watch(createMealProvider);
+  final updateMeal = ref.watch(updateMealProvider);
+  final deleteMeal = ref.watch(deleteMealProvider);
+  final saveMealAsRecipe = ref.watch(saveMealAsRecipeProvider);
+  final deleteRecipe = ref.watch(deleteRecipeProvider);
+  final repository = ref.watch(mealRepositoryProvider);
   final weeklyMenuRepository = ref.watch(weeklyMenuRepositoryProvider);
 
   return MenuController(
-    repository,
+    createMeal: createMeal,
+    updateMeal: updateMeal,
+    deleteMeal: deleteMeal,
+    saveMealAsRecipe: saveMealAsRecipe,
+    deleteRecipe: deleteRecipe,
+    repository: repository,
     getUserId: () {
       final user = ref.read(authStateChangesProvider).value;
       return user?.uid ?? '';
     },
-    customRecipeRepository: customRecipeRepository,
-    deletedPresetRecipesRepository: deletedPresetRecipesRepository,
     weeklyMenuRepository: weeklyMenuRepository,
   );
 });

@@ -1,36 +1,46 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:qkomo_ui/features/menu/application/date_utils.dart';
 import 'package:qkomo_ui/features/menu/application/menu_state.dart';
 import 'package:qkomo_ui/features/menu/domain/meal.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/meal_type.dart';
-import 'package:qkomo_ui/features/menu/domain/repositories/custom_recipe_repository.dart';
-import 'package:qkomo_ui/features/menu/domain/repositories/deleted_preset_recipes_repository.dart';
 import 'package:qkomo_ui/features/menu/domain/repositories/weekly_menu_repository.dart';
-import 'package:uuid/uuid.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/create_meal.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/delete_meal.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/delete_recipe.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/save_meal_as_recipe.dart';
+import 'package:qkomo_ui/features/menu/domain/usecases/update_meal.dart';
 
 class MenuController extends StateNotifier<MenuState> {
-  MenuController(
-    this._repository, {
+  MenuController({
+    required CreateMeal createMeal,
+    required UpdateMeal updateMeal,
+    required DeleteMeal deleteMeal,
+    required SaveMealAsRecipe saveMealAsRecipe,
+    required DeleteRecipe deleteRecipe,
+    required MealRepository repository,
     required String Function() getUserId,
-    CustomRecipeRepository? customRecipeRepository,
-    DeletedPresetRecipesRepository? deletedPresetRecipesRepository,
     WeeklyMenuRepository? weeklyMenuRepository,
-    Uuid? uuid,
-  })  : _getUserId = getUserId,
-        _customRecipeRepository = customRecipeRepository,
-        _deletedPresetRecipesRepository = deletedPresetRecipesRepository,
+  })  : _createMeal = createMeal,
+        _updateMeal = updateMeal,
+        _deleteMeal = deleteMeal,
+        _saveMealAsRecipe = saveMealAsRecipe,
+        _deleteRecipe = deleteRecipe,
+        _repository = repository,
+        _getUserId = getUserId,
         _weeklyMenuRepository = weeklyMenuRepository,
-        _uuid = uuid ?? const Uuid(),
         super(MenuState());
 
-  final MealRepository _repository; // Interface (can be Hybrid)
-  final Uuid _uuid;
+  final CreateMeal _createMeal;
+  final UpdateMeal _updateMeal;
+  final DeleteMeal _deleteMeal;
+  final SaveMealAsRecipe _saveMealAsRecipe;
+  final DeleteRecipe _deleteRecipe;
+  final MealRepository _repository;
   final String Function() _getUserId;
-  final CustomRecipeRepository? _customRecipeRepository;
-  final DeletedPresetRecipesRepository? _deletedPresetRecipesRepository;
   final WeeklyMenuRepository? _weeklyMenuRepository;
 
   Future<void> createMeal({
@@ -44,20 +54,15 @@ class MenuController extends StateNotifier<MenuState> {
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final meal = Meal(
-        id: _uuid.v4(),
+      await _createMeal(CreateMealParams(
         userId: userId,
         name: name,
         ingredients: ingredients,
         mealType: mealType,
         scheduledFor: scheduledFor,
-        createdAt: DateTime.now(),
         notes: notes,
         photoPath: photoPath,
-        lastModifiedAt: DateTime.now(),
-      );
-
-      await _repository.saveMeal(meal);
+      ));
       state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(
@@ -78,26 +83,15 @@ class MenuController extends StateNotifier<MenuState> {
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final existing = await _repository.getMealById(id);
-      if (existing == null) {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: 'Comida no encontrada',
-        );
-        return;
-      }
-
-      final updatedMeal = existing.copyWith(
+      await _updateMeal(UpdateMealParams(
+        id: id,
         name: name,
         ingredients: ingredients,
         mealType: mealType,
         scheduledFor: scheduledFor,
-        updatedAt: DateTime.now(),
         notes: notes,
         photoPath: photoPath,
-      );
-
-      await _repository.saveMeal(updatedMeal);
+      ));
       state = state.copyWith(isLoading: false, clearEditing: true);
     } catch (e) {
       state = state.copyWith(
@@ -110,7 +104,7 @@ class MenuController extends StateNotifier<MenuState> {
   Future<void> deleteMeal(String id) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      await _repository.deleteMeal(id);
+      await _deleteMeal(id);
       state = state.copyWith(isLoading: false, clearEditing: true);
     } catch (e) {
       state = state.copyWith(
@@ -126,7 +120,7 @@ class MenuController extends StateNotifier<MenuState> {
       // Get meals for that day and delete each one
       final meals = await _repository.getMeals(from: date, to: date);
       for (final meal in meals) {
-        await _repository.deleteMeal(meal.id);
+        await _deleteMeal(meal.id);
       }
       state = state.copyWith(isLoading: false);
     } catch (e) {
@@ -151,22 +145,14 @@ class MenuController extends StateNotifier<MenuState> {
     required MealType mealType,
     String? photoPath,
   }) async {
-    if (_customRecipeRepository == null) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: 'No se puede guardar la receta en este momento',
-      );
-      return;
-    }
-
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      await _customRecipeRepository.create(
+      await _saveMealAsRecipe(SaveMealAsRecipeParams(
         name: name,
         ingredients: ingredients,
         mealType: mealType,
         photoPath: photoPath,
-      );
+      ));
       state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(
@@ -178,24 +164,7 @@ class MenuController extends StateNotifier<MenuState> {
 
   Future<void> deleteRecipe(String recipeId, {bool isCustom = true}) async {
     try {
-      if (isCustom) {
-        if (_customRecipeRepository == null) {
-          state = state.copyWith(
-            errorMessage: 'No se puede eliminar la receta en este momento',
-          );
-          return;
-        }
-        await _customRecipeRepository.delete(recipeId);
-      } else {
-        // Delete preset recipe by marking it as deleted
-        if (_deletedPresetRecipesRepository == null) {
-          state = state.copyWith(
-            errorMessage: 'No se puede eliminar la receta en este momento',
-          );
-          return;
-        }
-        await _deletedPresetRecipesRepository.markAsDeleted(recipeId);
-      }
+      await _deleteRecipe(recipeId: recipeId, isCustom: isCustom);
       state = state.copyWith(clearError: true);
     } catch (e) {
       state = state.copyWith(
