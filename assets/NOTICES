@@ -1980,6 +1980,7 @@ image_picker_macos
 image_picker_platform_interface
 path_provider_android
 path_provider_foundation
+vector_graphics_compiler
 
 Copyright 2013 The Flutter Authors
 
@@ -6105,7 +6106,6 @@ path_provider_windows
 plugin_platform_interface
 vector_graphics
 vector_graphics_codec
-vector_graphics_compiler
 xdg_directories
 
 Copyright 2013 The Flutter Authors. All rights reserved.
