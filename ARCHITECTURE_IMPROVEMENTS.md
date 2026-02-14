@@ -237,156 +237,6 @@ class AuthController {
 
 ## PRIORIDAD 2 - ALTA (Inconsistencias arquitecturales) [COMPLETADA]
 
-### ✅ P2.1 - Refactorizar CompanionRepository siguiendo patrón Local/Remote/Hybrid [COMPLETADO]
-
-**Problema:**
-- `lib/features/profile/data/companion_repository.dart` mezclaba lógica local (Hive) + remote (Dio) en una sola clase
-- Otros repositorios (Meal, Profile, Settings) siguen patrón **Local/Remote/Hybrid** separado
-- Inconsistencia arquitectural
-
-**Solución implementada:**
-- Creados `LocalCompanionRepository`, `RemoteCompanionRepository`, `HybridCompanionRepository`
-- Patrón offline-first consistente con otros repositorios
-
-**Ubicación:** `lib/features/profile/data/companion_repository.dart`
-
-**Estructura actual:**
-```
-profile/data/
-├── companion_repository.dart         # ❌ Mezcla local + remote
-├── companion_local_data_source.dart  # Acceso a Hive
-├── hybrid_user_profile_repository.dart
-├── local_user_profile_repository.dart
-└── remote_user_profile_repository.dart
-```
-
-**Propuesta de estructura:**
-```
-profile/data/
-├── repositories/
-│   ├── local_companion_repository.dart   # Nuevo: Solo Hive
-│   ├── remote_companion_repository.dart  # Nuevo: Solo API
-│   └── hybrid_companion_repository.dart  # Nuevo: Offline-first
-├── companion_local_data_source.dart      # Mantener
-├── hybrid_user_profile_repository.dart
-└── ...
-```
-
-**Código propuesto:**
-
-```dart
-// data/repositories/local_companion_repository.dart
-class LocalCompanionRepository {
-  final CompanionLocalDataSource _localDataSource;
-
-  LocalCompanionRepository(this._localDataSource);
-
-  Future<List<Companion>> getAll() async {
-    return await _localDataSource.getAll();
-  }
-
-  Future<void> save(Companion companion) async {
-    await _localDataSource.save(companion);
-  }
-
-  Future<void> delete(String id) async {
-    await _localDataSource.delete(id);
-  }
-}
-
-// data/repositories/remote_companion_repository.dart
-class RemoteCompanionRepository {
-  final Dio _dio;
-
-  RemoteCompanionRepository(this._dio);
-
-  Future<List<Companion>> fetchAll() async {
-    final response = await _dio.get(ApiEndpoints.companions);
-    return (response.data as List)
-        .map((json) => Companion.fromJson(json))
-        .toList();
-  }
-
-  Future<Companion> create(Companion companion) async {
-    final response = await _dio.post(
-      ApiEndpoints.companions,
-      data: companion.toJson(),
-    );
-    return Companion.fromJson(response.data);
-  }
-
-  Future<void> delete(String id) async {
-    await _dio.delete('${ApiEndpoints.companions}/$id');
-  }
-}
-
-// data/repositories/hybrid_companion_repository.dart
-class HybridCompanionRepository implements CompanionRepository {
-  final LocalCompanionRepository _local;
-  final RemoteCompanionRepository _remote;
-
-  HybridCompanionRepository(this._local, this._remote);
-
-  @override
-  Future<List<Companion>> getAll() async {
-    // 1. Return local cache immediately
-    final localCompanions = await _local.getAll();
-
-    // 2. Sync in background (don't await)
-    unawaited(_syncFromRemote());
-
-    return localCompanions;
-  }
-
-  @override
-  Future<void> create(Companion companion) async {
-    // 1. Save locally first (optimistic UI)
-    await _local.save(companion);
-
-    // 2. Push to server
-    try {
-      final serverCompanion = await _remote.create(companion);
-      // Update local with server version (has server-generated ID)
-      await _local.save(serverCompanion);
-    } catch (e) {
-      // Mark as pending sync
-      await _local.save(companion.copyWith(syncStatus: SyncStatus.pending));
-      rethrow;
-    }
-  }
-
-  Future<void> _syncFromRemote() async {
-    try {
-      final remoteCompanions = await _remote.fetchAll();
-      for (final companion in remoteCompanions) {
-        await _local.save(companion.copyWith(syncStatus: SyncStatus.synced));
-      }
-    } catch (e) {
-      // Silent fail, user sees cached data
-    }
-  }
-}
-```
-
-**Archivos a crear:**
-- `lib/features/profile/data/repositories/local_companion_repository.dart`
-- `lib/features/profile/data/repositories/remote_companion_repository.dart`
-- `lib/features/profile/data/repositories/hybrid_companion_repository.dart`
-
-**Archivos a eliminar:**
-- `lib/features/profile/data/companion_repository.dart` (reemplazado por Hybrid)
-
-**Archivos a refactorizar:**
-- `lib/features/profile/application/companion_controller.dart` (usar HybridCompanionRepository)
-
-**Beneficios:**
-- Consistencia con otros repositorios (Meal, Profile, Settings)
-- Separación de responsabilidades (local/remote/hybrid)
-- Facilita testing (mock cada capa)
-- Patrón offline-first uniforme
-
----
-
 ### ✅ P2.2 - Mover WeeklyMealType de data a domain [COMPLETADO]
 
 **Problema:**
@@ -428,8 +278,8 @@ class HybridCompanionRepository implements CompanionRepository {
   - Creados: RecipeFilterChips, RecipeGridCard
 - ✅ `meal_card.dart`: ~~274 líneas~~ → **178 líneas** (-35%)
   - Creados: MealCardImage, DeleteMealConfirmDialog
-- ✅ `profile_page.dart`: ~~274 líneas~~ → **188 líneas** (-31%)
-  - Creados: ProfileSectionHeader, CompanionCard, RemoveCompanionDialog
+- ✅ `profile_page.dart`: ~~274 líneas~~ → **115 líneas** (-58%)
+  - Creados: ProfileSectionHeader
 - ✅ `upcoming_meals_section.dart`: ~~245 líneas~~ → **210 líneas** (-14%)
   - Creados: WeeklyMenuEmptyState
 - ✅ `weekly_calendar_widget.dart`: ~~234 líneas~~ → **222 líneas** (-5%)
@@ -591,12 +441,24 @@ class _MealIngredientsSectionState extends State<MealIngredientsSection> {
 
 ---
 
-### P3.2 - Crear UseCases para profile, settings, auth
+### ⏭️ P3.2 - Crear UseCases para profile, settings [POSPUESTO]
 
 **Problema:**
 - Solo el feature `menu` tiene UseCases
-- `profile`, `settings`, `auth` implementan lógica de negocio directamente en controllers/notifiers
+- `profile`, `settings` implementan lógica directamente en controllers/notifiers
 - Inconsistencia arquitectural
+
+**Análisis realizado:**
+- **UserSettingsNotifier**: Lógica muy simple (toggles, getters/setters)
+- **AuthController**: Ya refactorizado con AuthRepository (P1.2)
+
+**Decisión:** POSPONER
+- Los controllers actuales son simples, crear UseCases sería over-engineering
+- UseCases solo se justifican cuando hay lógica de negocio compleja
+- `menu` tiene UseCases porque gestiona validaciones, transformaciones, reglas de negocio
+- `profile` y `settings` son CRUD simples
+
+**Recomendación:** Implementar UseCases solo si la lógica de negocio se vuelve más compleja
 
 **Propuesta:**
 
@@ -612,8 +474,6 @@ auth/application/usecases/
 **profile:**
 ```
 profile/domain/usecases/
-├── invite_companion.dart
-├── remove_companion.dart
 ├── update_user_profile.dart
 └── get_user_profile.dart
 ```
@@ -625,78 +485,6 @@ settings/domain/usecases/
 ├── get_user_settings.dart
 ├── toggle_allergen.dart
 └── update_dietary_preferences.dart
-```
-
-**Ejemplo (InviteCompanion UseCase):**
-
-```dart
-// profile/domain/usecases/invite_companion.dart
-class InviteCompanion {
-  final CompanionRepository _repository;
-
-  InviteCompanion(this._repository);
-
-  Future<Either<Failure, Companion>> call(InviteCompanionParams params) async {
-    // Validación de negocio
-    if (params.name.trim().isEmpty) {
-      return Left(ValidationFailure('El nombre no puede estar vacío'));
-    }
-
-    // Crear companion
-    final companion = Companion(
-      id: generateId(),
-      name: params.name,
-      relationship: params.relationship,
-      createdAt: DateTime.now(),
-    );
-
-    // Persistir
-    try {
-      await _repository.create(companion);
-      return Right(companion);
-    } catch (e) {
-      return Left(RepositoryFailure(e.toString()));
-    }
-  }
-}
-
-@freezed
-class InviteCompanionParams with _$InviteCompanionParams {
-  const factory InviteCompanionParams({
-    required String name,
-    required String relationship,
-  }) = _InviteCompanionParams;
-}
-
-// Uso en CompanionController (REFACTORIZADO):
-class CompanionListNotifier extends AutoDisposeAsyncNotifier<List<Companion>> {
-  late final InviteCompanion _inviteCompanion;
-  late final RemoveCompanion _removeCompanion;
-
-  @override
-  Future<List<Companion>> build() async {
-    _inviteCompanion = ref.read(inviteCompanionProvider);
-    _removeCompanion = ref.read(removeCompanionProvider);
-
-    return await _loadCompanions();
-  }
-
-  Future<void> inviteCompanion(String name, String relationship) async {
-    state = const AsyncValue.loading();
-
-    final result = await _inviteCompanion(
-      InviteCompanionParams(name: name, relationship: relationship),
-    );
-
-    result.fold(
-      (failure) => state = AsyncValue.error(failure, StackTrace.current),
-      (companion) async {
-        final companions = await _loadCompanions();
-        state = AsyncValue.data(companions);
-      },
-    );
-  }
-}
 ```
 
 **Beneficios:**

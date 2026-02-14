@@ -9,10 +9,6 @@ class ApiEndpoints {
   // Profile endpoints
   static const String userProfile = '/api/v1/users/me';
 
-  // Companion endpoints
-  static const String companions = '/v1/companions';
-  static String companionById(String id) => '/v1/companions/$id';
-
   // Settings endpoints
   static const String preferences = '/v1/preferences';
 

@@ -78,11 +78,6 @@ class FeatureToggleRepositoryImpl implements FeatureToggleRepository {
         debugPrint('[FeatureToggleRepository] Raw API response: ${response.data}');
         final toggles = _parseFeatureToggles(response.data as Map<String, dynamic>);
 
-        debugPrint(
-          '[FeatureToggleRepository] API returned ${toggles.length} toggles: '
-          '${toggles.map((t) => '${t.key}=${t.enabled}').join(', ')}',
-        );
-
         // Save to cache
         await _saveToCache(toggles);
 
@@ -101,7 +96,6 @@ class FeatureToggleRepositoryImpl implements FeatureToggleRepository {
   /// Converts the API response structure from:
   /// {
   ///   "ai_suggestions": true,
-  ///   "companion": false,
   ///   "show_history": true
   /// }
   /// Into a list of FeatureToggle objects

@@ -8,7 +8,6 @@ import 'package:qkomo_ui/core/security/hive_encryption_service.dart';
 import 'package:qkomo_ui/features/feature_toggles/data/feature_toggle_hive_boxes.dart';
 import 'package:qkomo_ui/features/menu/data/hive_boxes.dart' as menu_hive;
 import 'package:qkomo_ui/features/profile/application/user_profile_providers.dart';
-import 'package:qkomo_ui/features/profile/data/companion_hive_boxes.dart';
 import 'package:qkomo_ui/features/profile/data/profile_hive_boxes.dart';
 import 'package:qkomo_ui/features/settings/data/settings_hive_boxes.dart';
 import 'package:qkomo_ui/features/sync/application/background_sync_worker.dart';
@@ -40,7 +39,6 @@ Future<void> main({List<Override> overrides = const []}) async {
   await menu_hive.MenuHiveBoxes.init(encryptionKey);
   await SettingsHiveBoxes.init(encryptionKey);
   await FeatureToggleHiveBoxes.init(encryptionKey);
-  await CompanionHiveBoxes.init(encryptionKey);
   await ProfileHiveBoxes.init(encryptionKey);
 
   // Initialize background sync worker
