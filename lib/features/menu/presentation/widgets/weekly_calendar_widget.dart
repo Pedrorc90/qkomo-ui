@@ -20,8 +20,10 @@ class WeeklyCalendarWidget extends ConsumerWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    // Get menu state for AI weekly menu
-    final menuState = ref.watch(menuControllerProvider);
+    // Get weekly menu
+    final userId = ref.watch(currentUserIdProvider);
+    final menuStateAsync = ref.watch(weeklyMenuByWeekProvider((weekStart, userId)));
+    final weeklyMenu = menuStateAsync.valueOrNull;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -58,13 +60,12 @@ class WeeklyCalendarWidget extends ConsumerWidget {
                       normalizedDate.month == today.month &&
                       normalizedDate.day == today.day;
 
-                  // Get meal types for this day from AI weekly menu
+                  // Get meal types for this day from weekly menu
                   Set<MealType> mealTypesForDay = {};
 
-                  final aiMenu = menuState.aiWeeklyMenu;
-                  if (aiMenu != null) {
+                  if (weeklyMenu != null) {
                     try {
-                      final dayData = aiMenu.days.firstWhere(
+                      final dayData = weeklyMenu.days.firstWhere(
                         (d) =>
                             d.date.year == normalizedDate.year &&
                             d.date.month == normalizedDate.month &&

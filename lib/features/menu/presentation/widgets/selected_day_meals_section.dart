@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -11,22 +10,25 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final menuState = ref.watch(menuControllerProvider);
     final selectedDay = ref.watch(selectedDayProvider);
+    final weekStart = ref.watch(currentWeekStartProvider);
+    final userId = ref.watch(currentUserIdProvider);
 
-    // Always use AI mode
-    debugPrint('[SelectedDayMealsSection] Rendering AI mode');
-    return _buildAiMode(context, ref, menuState, selectedDay);
+    // Load weekly menu for current week
+    final menuStateAsync = ref.watch(weeklyMenuByWeekProvider((weekStart, userId)));
+    final weeklyMenu = menuStateAsync.valueOrNull;
+
+    return _buildAiMode(context, ref, weeklyMenu, selectedDay);
   }
 
   Widget _buildAiMode(
     BuildContext context,
     WidgetRef ref,
-    dynamic menuState,
+    dynamic weeklyMenu,
     DateTime? selectedDay,
   ) {
     // If no menu generated, don't show anything (CTA is shown at page level)
-    if (menuState.aiWeeklyMenu == null) {
+    if (weeklyMenu == null) {
       return const SizedBox.shrink();
     }
 
@@ -36,11 +38,10 @@ class SelectedDayMealsSection extends ConsumerWidget {
 
     final dateFormat = DateFormat('EEEE, d \'de\' MMMM', 'es');
     final formattedDate = dateFormat.format(selectedDay);
-    final capitalizedDate =
-        formattedDate[0].toUpperCase() + formattedDate.substring(1);
+    final capitalizedDate = formattedDate[0].toUpperCase() + formattedDate.substring(1);
 
     // Show AI items for selected day
-    final aiItems = menuState.selectedDayAiItems();
+    final aiItems = _getSelectedDayAiItems(weeklyMenu, selectedDay);
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -95,10 +96,7 @@ class SelectedDayMealsSection extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withAlpha((0.3 * 255).round()),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
@@ -125,5 +123,22 @@ class SelectedDayMealsSection extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  List<dynamic> _getSelectedDayAiItems(dynamic weeklyMenu, DateTime selectedDay) {
+    if (weeklyMenu == null) return [];
+
+    try {
+      final day = weeklyMenu.days.firstWhere(
+        (d) =>
+            d.date.year == selectedDay.year &&
+            d.date.month == selectedDay.month &&
+            d.date.day == selectedDay.day,
+      );
+      return day.items ?? [];
+    } catch (_) {
+      // Day not found in menu
+      return [];
+    }
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -20,60 +19,24 @@ class WeeklyMenuPage extends ConsumerStatefulWidget {
 
 class _WeeklyMenuPageState extends ConsumerState<WeeklyMenuPage> {
   @override
-  void initState() {
-    super.initState();
-    // Load AI weekly menu on page mount
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final weekStart = ref.read(currentWeekStartProvider);
-      ref
-          .read(menuControllerProvider.notifier)
-          .loadAiWeekIfEnabled(weekStart: weekStart);
-
-      // Sync selectedDay with MenuController
-      final selectedDay = ref.read(selectedDayProvider);
-      ref.read(menuControllerProvider.notifier).setSelectedDay(selectedDay);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final weekStart = ref.watch(currentWeekStartProvider);
     final userId = ref.watch(currentUserIdProvider);
     final dateFormat = DateFormat('d MMM', 'es');
 
-    // Load menu for current week - this runs on every build when weekStart changes
+    // Load menu for current week
     final menuStateAsync = ref.watch(weeklyMenuByWeekProvider((weekStart, userId)));
-
-    // Sync the loaded menu to MenuController
-    menuStateAsync.whenData((weeklyMenu) {
-      final currentMenu = ref.read(menuControllerProvider).aiWeeklyMenu;
-      // Only update if menu changed to avoid rebuild loops
-      if (weeklyMenu != currentMenu) {
-        Future.microtask(() {
-          ref.read(menuControllerProvider.notifier).state = ref.read(menuControllerProvider).copyWith(
-            aiWeeklyMenu: weeklyMenu,
-            clearAiWeeklyMenu: weeklyMenu == null,
-          );
-        });
-      }
-    });
-
-    final menuState = ref.watch(menuControllerProvider);
-
-    // Sync selectedDay changes with MenuController
-    ref.listen<DateTime?>(selectedDayProvider, (previous, next) {
-      ref.read(menuControllerProvider.notifier).setSelectedDay(next);
-    });
+    final weeklyMenu = menuStateAsync.valueOrNull;
 
     final weekEnd = weekStart.add(const Duration(days: 6));
     final weekRange =
         '${dateFormat.format(weekStart)} - ${dateFormat.format(weekEnd)}';
 
     // Check if we should show the AI CTA below calendar
-    final showAiCtaBelowCalendar = menuState.showAiGenerateCta;
+    final showAiCtaBelowCalendar = weeklyMenu == null;
 
     debugPrint('[WeeklyMenuPage] BUILD - weekStart=$weekStart, showAiCtaBelowCalendar=$showAiCtaBelowCalendar, '
-        'aiWeeklyMenu=${menuState.aiWeeklyMenu != null ? "EXISTS" : "NULL"}');
+        'weeklyMenu=${weeklyMenu != null ? "EXISTS" : "NULL"}');
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,

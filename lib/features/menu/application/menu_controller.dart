@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qkomo_ui/features/menu/application/date_utils.dart';
@@ -175,55 +173,6 @@ class MenuController extends StateNotifier<MenuState> {
 
   // AI Weekly Menu methods
 
-  void setSelectedDay(DateTime? day) {
-    state = state.copyWith(selectedDay: day);
-  }
-
-  Future<void> loadAiWeekIfEnabled({DateTime? weekStart}) async {
-    final effectiveWeekStart = weekStart ?? mondayOfWeek(DateTime.now());
-    debugPrint('[MenuController] loadAiWeekIfEnabled() called for week: $effectiveWeekStart');
-
-    if (_weeklyMenuRepository == null) {
-      debugPrint('[MenuController] Missing weekly menu repository, aborting');
-      return;
-    }
-
-    debugPrint('[MenuController] Current aiWeeklyMenu before load: ${state.aiWeeklyMenu != null ? "EXISTS" : "NULL"}');
-
-    try {
-      final weeklyMenu = await _weeklyMenuRepository.getWeek(effectiveWeekStart,
-          userId: _getUserId());
-
-      debugPrint(
-          '[MenuController] Successfully loaded AI weekly menu for $effectiveWeekStart: ${weeklyMenu.days.length} days');
-      state = state.copyWith(
-        aiWeeklyMenu: weeklyMenu,
-      );
-      debugPrint('[MenuController] State updated, aiWeeklyMenu now: EXISTS');
-    } on DioException catch (e) {
-      // 404 means no menu generated yet -> empty AI state
-      if (e.response?.statusCode == 404) {
-        debugPrint(
-            '[MenuController] 404 response for $effectiveWeekStart, clearing menu (was: ${state.aiWeeklyMenu != null ? "EXISTS" : "NULL"})');
-        state = state.copyWith(
-          clearAiWeeklyMenu: true,
-        );
-        debugPrint('[MenuController] State updated, aiWeeklyMenu now: ${state.aiWeeklyMenu != null ? "EXISTS" : "NULL"}');
-      } else {
-        debugPrint(
-            '[MenuController] DioException (${e.response?.statusCode}): ${e.message}');
-        state = state.copyWith(
-          errorMessage: 'Error al cargar el menú semanal: ${e.message}',
-        );
-      }
-    } catch (e) {
-      debugPrint('[MenuController] Unexpected error: $e');
-      state = state.copyWith(
-        errorMessage: 'Error inesperado al cargar el menú semanal: $e',
-      );
-    }
-  }
-
   Future<void> generateAiWeek({DateTime? weekStart}) async {
     if (_weeklyMenuRepository == null) {
       state = state.copyWith(
@@ -236,21 +185,10 @@ class MenuController extends StateNotifier<MenuState> {
 
     try {
       final effectiveWeekStart = weekStart ?? mondayOfWeek(DateTime.now());
-      final weeklyMenu = await _weeklyMenuRepository
+      await _weeklyMenuRepository
           .generateWeek(effectiveWeekStart, userId: _getUserId());
 
-      debugPrint('[MenuController] Generated weekly menu with ${weeklyMenu.days.length} days');
-      for (final day in weeklyMenu.days) {
-        debugPrint('[MenuController] Day ${day.date}: ${day.items.length} items');
-        for (final item in day.items) {
-          debugPrint('[MenuController]   - ${item.dishName} (${item.mealType}): imageUrl=${item.imageUrl}');
-        }
-      }
-
-      state = state.copyWith(
-        isLoading: false,
-        aiWeeklyMenu: weeklyMenu,
-      );
+      state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -271,13 +209,10 @@ class MenuController extends StateNotifier<MenuState> {
 
     try {
       final weekStart = mondayOfWeek(date);
-      final weeklyMenu = await _weeklyMenuRepository
+      await _weeklyMenuRepository
           .regenerateDay(weekStart, date, userId: _getUserId());
 
-      state = state.copyWith(
-        isLoading: false,
-        aiWeeklyMenu: weeklyMenu,
-      );
+      state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,

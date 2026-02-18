@@ -349,31 +349,17 @@ final weeklyMenuByWeekProvider = FutureProvider.family<WeeklyMenu?, (DateTime, S
   final weekStart = DateTime(weekStartRaw.year, weekStartRaw.month, weekStartRaw.day);
   debugPrint('[weeklyMenuByWeekProvider] 🔄 Provider executing for week: $weekStart, userId: $userId');
 
-  // Use read() instead of watch() to avoid rebuilding when these providers change
-  final repository = ref.read(weeklyMenuRepositoryProvider);
-  final localRepo = ref.read(localWeeklyMenuRepositoryProvider);
-
-  // First check local cache synchronously
-  final localMenu = localRepo.getWeeklyMenu(weekStart);
-  if (localMenu != null) {
-    debugPrint('[weeklyMenuByWeekProvider] ✅ Returning local cache');
-    return localMenu;
-  }
-
-  // If no local cache and cloud sync disabled, return null
-  if (!EnvConfig.enableCloudSync) {
-    debugPrint('[weeklyMenuByWeekProvider] ⚠️ No local cache and sync disabled');
-    return null;
-  }
-
-  // Fetch from remote only if no local cache
+  // Early return if no userId
   if (userId.isEmpty) {
     debugPrint('[weeklyMenuByWeekProvider] ⚠️ No userId, returning null');
     return null;
   }
 
+  // Delegate all logic (local cache + remote fetch) to HybridRepository
+  // It handles: 1) Check local cache, 2) Fetch remote if needed, 3) Save to local
+  final repository = ref.read(weeklyMenuRepositoryProvider);
+
   try {
-    debugPrint('[weeklyMenuByWeekProvider] 🌐 Fetching from remote for userId: $userId');
     return await repository.getWeek(weekStart, userId: userId);
   } catch (e) {
     debugPrint('[weeklyMenuByWeekProvider] ❌ Error: $e');
